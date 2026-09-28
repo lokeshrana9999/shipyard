@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: clean-change
+tags: [pr-review]
+context:
+  scaffold_script: fixture.sh

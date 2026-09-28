@@ -1,0 +1,12 @@
+{
+  "name": "shipyard",
+  "description": "Software-delivery pipeline skills in the open Agent Skills (SKILL.md) format, for any coding agent: explain, plan, test design, implement, verify live, review, describe PR.",
+  "owner": { "name": "Lokesh Rana", "email": "lokeshrana9999@gmail.com" },
+  "plugins": [
+    {
+      "name": "delivery",
+      "source": "./plugins/delivery",
+      "description": "The delivery pipeline: a router skill plus one skill per stage, helper agents, and the signal output style. Skills use the Agent Skills format and work in any agent that reads SKILL.md."
+    }
+  ]
+}

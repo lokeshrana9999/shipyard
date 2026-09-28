@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: clean-ghost-31031
+tags: [pr-review-bench]
+context:
+  scaffold_script: fixture.sh

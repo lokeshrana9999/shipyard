@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: one-agent-suffices
+description: A one-entry, tightly coupled plan (rename a parameter and update its one caller); the skill should say one agent is enough and not launch a multi-agent run.
+tags: [build-workflow]
+context:
+  scaffold_script: fixture.sh

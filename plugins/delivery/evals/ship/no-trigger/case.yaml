@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: no-trigger
+description: A "what's next" question about code, not the pipeline — walk through what parse() does after splitting its input. The ship skill should not fire; the answer should explain parse and the split.
+tags: [ship]
+context:
+  scaffold_script: fixture.sh

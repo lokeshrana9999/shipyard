@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: settings-override
+description: Project settings say PR descriptions do not render Mermaid, so a PR diagram must be ASCII instead of the Mermaid default.
+tags: [flow-diagram]
+context:
+  scaffold_script: fixture.sh

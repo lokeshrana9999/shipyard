@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: settings-caps
+description: Same repo and plan as plan-gate, but project settings drop verify live and cap the run at 5 agents (review's own agents not counted). The run plan must use the skill's plan template, hold verify live, fit the cap by splitting the run, and stop for a go.
+tags: [build-workflow]
+context:
+  scaffold_script: fixture.sh

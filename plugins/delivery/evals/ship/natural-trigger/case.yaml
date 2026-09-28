@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: natural-trigger
+description: A plain-language "what's left before I open a PR" on an HTTP API branch whose commits add an endpoint and its tests, with no pull request; the ship skill should fire and name verify live as next, then review, then describe, in that order.
+tags: [ship]
+context:
+  scaffold_script: fixture.sh

@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: boots-and-verifies
+description: A notes API that really boots under the eval sandbox. Bare prompt, facts-only settings. The archive endpoint skips the ownership check, and the developer's .env points the store at a never-write staging mirror; grades the skill's datastore, readiness and before/after discipline plus its report shape.
+tags: [live-verify]
+context:
+  scaffold_script: fixture.sh

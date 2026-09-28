@@ -1,0 +1,8 @@
+# local source-of-truth archive of the original artifacts; not published
+archive/
+# eval runs
+plugins/*/evals/results/
+node_modules/
+*.mp4
+# downloaded eval source data
+evals/data/

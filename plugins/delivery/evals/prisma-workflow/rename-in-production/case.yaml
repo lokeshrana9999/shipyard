@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: rename-in-production
+description: Rename a column on a 2M-row production table, invoked by slash (as a natural prompt the skill fired in 2 of 6 runs once a real schema was present). The plan must avoid the drop-and-add and follow the project's migration commands from settings, naming the migration and ending on a status check.
+tags: [prisma-workflow]
+context:
+  scaffold_script: fixture.sh

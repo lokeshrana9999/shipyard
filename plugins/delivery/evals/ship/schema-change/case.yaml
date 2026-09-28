@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: schema-change
+description: An API on a feature branch whose commits add an Order status field to the Prisma schema plus code and tests that use it, but no migration for it (the only migration is the initial one); a settings file names the base branch. The router should name prisma-workflow as the next step, not review, and start nothing.
+tags: [ship]
+context:
+  scaffold_script: fixture.sh

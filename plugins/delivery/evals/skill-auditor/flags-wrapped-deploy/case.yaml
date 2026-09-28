@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: flags-wrapped-deploy
+description: Fixture skill has a folded multi-line description and deploys with no gate and no disable-model-invocation.
+tags: [skill-auditor, smoke]
+context:
+  scaffold_script: fixture.sh

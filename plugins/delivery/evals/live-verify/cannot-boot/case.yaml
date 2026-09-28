@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: cannot-boot
+description: No shell is available, so the app cannot be booted. Bare prompt, no output format. The reply must give a blocked verdict, keep every planned check (including the settings-only search-index check) as its own not-run line, say what wasn't exercised, never claim a pass, and probe for the missing tool before declaring it missing.
+tags: [live-verify]
+context:
+  scaffold_script: fixture.sh

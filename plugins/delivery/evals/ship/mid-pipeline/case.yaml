@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: mid-pipeline
+description: A library repo (no app to boot) on a feature branch whose commits add a module and its tests, with the plan's only entry ticked and no pull request; the router should skip verify live and name review as the next stage with the /delivery:pr-review command, without starting it.
+tags: [ship]
+context:
+  scaffold_script: fixture.sh

@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: plan-gate
+description: Four independent plan entries, one per package (billing, search, notifications, auth), in a committed repo with tests and no go given; the skill should look for settings, show a run plan with named agents and an agent count, and stop for a go before launching any stage agent.
+tags: [build-workflow]
+context:
+  scaffold_script: fixture.sh
