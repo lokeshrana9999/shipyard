@@ -11,11 +11,9 @@ What you get:
 - A `pr-review` that checks every finding against the diff and has a second agent validate it.
 - Per-project settings files, so each skill follows your team's conventions.
 
-The skills use the open [Agent Skills](https://agentskills.io) format (a folder with a `SKILL.md`). They are built and evaluated in Claude Code; running them in other agents is untested.
+The skills use the open [Agent Skills](https://agentskills.io) format (a folder with a `SKILL.md`). They are built and evaluated in Claude Code. In Codex, installing the skills and agents and having Codex find them is tested; running the stages end to end there isn't yet.
 
 ## Quick start
-
-The repo is private for now. Every install clones it with your own git credentials, so you need read access on GitHub (ask the author, [@lokeshrana9999](https://github.com/lokeshrana9999)) and a git login that can clone private repos.
 
 ### Claude Code
 
@@ -34,7 +32,7 @@ From your project root, with Node.js installed:
 npx skills add lokeshrana9999/claude-skills-pack --skill '*' --agent codex -y
 ```
 
-Replace `codex` with your agent (`cursor`, `gemini-cli`, ...). This uses the [skills CLI](https://github.com/vercel-labs/skills) to copy all ten skills into `.agents/skills/`. It was tested from a local clone of this repo; fetching the private repo by name was not. If that fails, clone the repo and pass the clone's path instead of `lokeshrana9999/claude-skills-pack`.
+Replace `codex` with your agent (`cursor`, `gemini-cli`, ...). This uses the [skills CLI](https://github.com/vercel-labs/skills) to copy all ten skills into `.agents/skills/`. Add `-g` to install for all your projects (into `~/.agents/skills/`) instead of one. Tested with `--agent codex -g`: all ten skills installed, and Codex listed them.
 
 Then paste the short snippet from [docs/agents-install.md](docs/agents-install.md#3-paste-the-agentsmd-snippet) into your project's `AGENTS.md` (`GEMINI.md` for Gemini CLI). It gives the agent the stage order and tells it not to start `pr-review`, `pr-description`, or `build-workflow` unless you ask, which Claude Code enforces on its own and other agents don't. The same page covers updating, the optional helper agents, and a manual copy without the CLI.
 

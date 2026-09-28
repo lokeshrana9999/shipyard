@@ -6,6 +6,7 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ### Added
 
+- Published as a public repo. Install tested in Claude Code (marketplace) and Codex (`npx skills add ... -g` plus the Codex agent files).
 - `concern-reviewer` agent: maps the review catalog onto one slice of the diff, then reviews each mapped concern.
 - `pr-review` ships `scope.sh`, which writes the diff and its added lines, and `references/workflow.js`, the runnable pipeline.
 - `pr-review-bench` evals: 12 pull requests with injected bugs and 4 clean ones from Qodo PR-Review-Bench, with upstream license notices.

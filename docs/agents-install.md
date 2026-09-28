@@ -1,8 +1,6 @@
 # installing in other agents
 
-Any agent that reads Agent Skills folders can run the pack: copy the ten skill folders into a folder it reads, optionally copy the four agents in its format, and paste a short snippet into its instructions file. None of this is tested outside Claude Code yet; the agents are optional, since without them each skill does the agent's step in the main session.
-
-The repo is private for now, so cloning it or fetching it with the skills CLI needs read access on GitHub.
+Any agent that reads Agent Skills folders can run the pack: copy the ten skill folders into a folder it reads, optionally copy the four agents in its format, and paste a short snippet into its instructions file. Of the other agents, only Codex is tested so far, and only for installing and finding the skills and agents; the agents are optional, since without them each skill does the agent's step in the main session.
 
 ## 1. copy the skills
 
@@ -12,7 +10,7 @@ With the [skills CLI](https://github.com/vercel-labs/skills), from your project 
 npx skills add lokeshrana9999/claude-skills-pack --skill '*' --agent codex -y
 ```
 
-Tested with skills CLI 1.7.0 against a local clone of this repo (`npx skills add <path to clone> ...`): it found all ten skills under `plugins/delivery/skills/`, copied each folder whole into `.agents/skills/<skill>/`, and wrote a `skills-lock.json` at the project root. `--agent cursor` and `--agent gemini-cli` wrote to the same `.agents/skills/` folder. Add `-g` for your user folder instead of the project. Fetching the private repo by its GitHub name wasn't tested; if it fails, clone the repo and pass the clone's path.
+Tested with skills CLI 1.7.0 against a local clone of this repo (`npx skills add <path to clone> ...`): it found all ten skills under `plugins/delivery/skills/`, copied each folder whole into `.agents/skills/<skill>/`, and wrote a `skills-lock.json` at the project root. `--agent cursor` and `--agent gemini-cli` wrote to the same `.agents/skills/` folder. Add `-g` for your user folder instead of the project. Fetching by GitHub name was tested on 2026-09-29: `npx skills add lokeshrana9999/claude-skills-pack --skill '*' --agent codex -g -y` installed all ten skills into `~/.agents/skills/`. With the four Codex agent files copied into `~/.codex/agents/`, `codex exec` listed the skills and the agents concern-reviewer, review-verifier, live-verifier, and test-designer.
 
 Without the CLI, clone the pack outside your project and copy the folders, keeping each one whole (`SKILL.md` plus `references/`):
 
