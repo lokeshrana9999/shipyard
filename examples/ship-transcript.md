@@ -1,6 +1,6 @@
 # example: /shipyard-delivery:ship on a finished feature branch
 
-Illustrative, not a recorded run. It shows what `ship` prints on the project from its `mid-pipeline` eval case ([fixture](../plugins/shipyard-delivery/evals/ship/mid-pipeline/fixture.sh)), in the report shape from [its SKILL.md](../plugins/shipyard-delivery/skills/ship/SKILL.md). A real run's wording differs; the four report lines and the stop before starting the next stage don't.
+Illustrative, not a recorded run. It shows what `ship` prints on the project from its `mid-pipeline` eval case ([fixture](../evals/shipyard-delivery/ship/mid-pipeline/fixture.sh)), in the report shape from [its SKILL.md](../plugins/shipyard-delivery/skills/ship/SKILL.md). A real run's wording differs; the four report lines and the stop before starting the next stage don't.
 
 ## the project
 

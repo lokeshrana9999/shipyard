@@ -107,4 +107,4 @@ Each skill reads an optional settings file at `.claude/shipyard/<skill>.md` in y
 
 [CONTRIBUTING.md](CONTRIBUTING.md) has the repo layout and the rules for changing a skill; [CHANGELOG.md](CHANGELOG.md) lists what changed between versions.
 
-MIT, see [LICENSE](LICENSE). The eval fixtures under `plugins/shipyard-delivery/evals/pr-review-bench/` include diffs from other projects under their own licenses, listed in [its README](plugins/shipyard-delivery/evals/pr-review-bench/README.md#license-and-attribution).
+MIT, see [LICENSE](LICENSE). The eval fixtures under `evals/shipyard-delivery/pr-review-bench/` include diffs from other projects under their own licenses, listed in [its README](evals/shipyard-delivery/pr-review-bench/README.md#license-and-attribution).

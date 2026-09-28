@@ -8,7 +8,7 @@ Plans or makes a Prisma migration ("plan a migration", "add a field to the Prism
 |---|---|
 | Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:prisma-workflow` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | none |
-| Allowed tools | Read, Edit, Glob, Grep, Bash |
+| Allowed tools | Read, Glob, Grep, Bash(npx prisma --version), Bash(npx prisma migrate status*), Bash(npx prisma migrate diff *), Bash(npx prisma migrate dev --create-only *), Bash(npx prisma generate*) |
 | Project settings | `.claude/shipyard/prisma-workflow.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/prisma-workflow/references/overlay-example.md) |
 | Hands off to | back to the implement stage, with the migration name and the final `migrate status` output. |

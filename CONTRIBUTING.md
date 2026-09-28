@@ -13,11 +13,11 @@ plugins/shipyard-delivery/
   agents/                         helper agents, Claude Code format (source)
   platforms/                      agents generated for Codex and Gemini CLI
   output-styles/signal.md         Claude Code output style
-  evals/<skill>/                  eval cases per skill
-  evals/pr-review-bench/          real-code cases for pr-review
   docs/sources/<skill>.md         where each skill's rules came from
 docs/                             user docs; docs/skills/ is generated
 examples/                         example project settings, example run
+evals/shipyard-delivery/<skill>/  eval cases per skill (kept out of the shipped plugin)
+evals/shipyard-delivery/pr-review-bench/  real-code cases for pr-review
 evals/config/                     per-OS eval config (windows.sh)
 scripts/                          run-evals.sh, eval-stats.py,
                                   gen-agents.mjs, gen-docs.mjs
@@ -40,7 +40,7 @@ scripts/                          run-evals.sh, eval-stats.py,
 5. Check nothing is stale: `node scripts/gen-agents.mjs --check`, `node scripts/gen-docs.mjs --check`, and `claude plugin validate plugins/shipyard-delivery`.
 6. Add a line under `Unreleased` in [CHANGELOG.md](CHANGELOG.md).
 
-Never commit eval results (`plugins/shipyard-delivery/evals/results/`) or downloaded eval data (`evals/data/`); both are git-ignored.
+Never commit eval results (`evals/shipyard-delivery/results/`) or downloaded eval data (`evals/data/`); both are git-ignored.
 
 ## trying a change
 

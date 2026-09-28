@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f6aa8"/>
+      <stop offset="0.62" stop-color="#5b93c9"/>
+      <stop offset="0.62" stop-color="#1f4f82"/>
+      <stop offset="1" stop-color="#173c66"/>
+    </linearGradient>
+    <clipPath id="tile">
+      <rect width="256" height="256" rx="48"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="256" height="256" fill="url(#sky)"/>
+    <circle cx="66" cy="60" r="22" fill="#f6c98f" opacity="0.9"/>
+    <!-- hull: navy upper, rust lower, bow to the right -->
+    <path d="M28 98 H196 L238 84 L214 176 Q210 188 196 188 H60 Q44 188 38 174 Z" fill="#1c2c4a"/>
+    <path d="M36 152 H224 L214 176 Q210 188 196 188 H60 Q44 188 38 174 Z" fill="#b0553b"/>
+    <path d="M28 98 H196 L238 84 L234 100 H30 Z" fill="#26395c"/>
+    <!-- circuit traces on the hull -->
+    <g fill="none" stroke="#9fd6f7" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M52 136 H92 L112 116 H148"/>
+      <path d="M52 124 H78"/>
+      <path d="M124 140 H160 L178 122"/>
+    </g>
+    <g fill="#9fd6f7">
+      <circle cx="152" cy="116" r="7"/>
+      <circle cx="82" cy="124" r="6"/>
+      <circle cx="182" cy="118" r="7"/>
+    </g>
+    <circle cx="206" cy="112" r="8" fill="none" stroke="#e8f3fb" stroke-width="4"/>
+    <!-- waterline ripples -->
+    <g fill="none" stroke="#9fd6f7" stroke-width="5" stroke-linecap="round" opacity="0.7">
+      <path d="M40 210 H104"/>
+      <path d="M128 210 H216"/>
+      <path d="M72 228 H176"/>
+    </g>
+  </g>
+</svg>

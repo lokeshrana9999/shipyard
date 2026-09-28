@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: 'dev-only-hmac-5c1e88f2'
+pattern: 'dev-only-hmac-[0-9a-f]{16}'
 match: not_contains
 ---

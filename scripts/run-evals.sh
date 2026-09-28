@@ -4,6 +4,14 @@
 #   bash scripts/run-evals.sh <plugin dir> [claude plugin eval args...]
 #   e.g. bash scripts/run-evals.sh plugins/shipyard-delivery --tag ship --ablation none -j 3
 #
+# Eval cases live outside the shipped plugin, in evals/<plugin name>/ at the repo root, so the
+# published plugin carries no fixtures. `claude plugin eval` reads cases only from a directory
+# below the plugin, so the runner stages a copy: it copies the plugin to
+# $EVAL_STAGE_DIR/<plugin name>/ (default: ${TMPDIR:-/tmp}/shipyard-eval-stage), copies the
+# cases into its evals/ (without results/), and runs there. The stage path is stable across
+# runs, so the first-run trust prompt is asked once per machine (or pass --trust-plugin).
+# Results go to evals/<plugin name>/results/<timestamp>/ unless you pass --output-dir.
+#
 # Platform config: the runner detects the platform (linux, macos, windows; WSL and Git Bash
 # count as windows) and, if evals/config/<platform>.sh exists at the repo root, sources it
 # before the run. A config may:
@@ -63,6 +71,29 @@ trap 'exit 129' HUP
 eval_pre || { echo "error: eval_pre failed; not running evals" >&2; exit 1; }
 
 command -v "$CLAUDE_BIN" >/dev/null 2>&1 || { echo "error: claude CLI not found: $CLAUDE_BIN" >&2; exit 127; }
-cd "$PLUGIN_DIR" || exit 1
+
+PLUGIN_DIR="$(cd "$PLUGIN_DIR" && pwd)"
+PLUGIN_NAME="$(basename "$PLUGIN_DIR")"
+CASES_DIR="$REPO_ROOT/evals/$PLUGIN_NAME"
+[ -d "$CASES_DIR" ] || { echo "error: no eval cases at ${CASES_DIR#"$REPO_ROOT"/}" >&2; exit 64; }
+
+STAGE_ROOT="${EVAL_STAGE_DIR:-${TMPDIR:-/tmp}/shipyard-eval-stage}"
+STAGE="$STAGE_ROOT/$PLUGIN_NAME"
+rm -rf "$STAGE" && mkdir -p "$STAGE" || { echo "error: cannot create stage dir $STAGE" >&2; exit 1; }
+# Copy the plugin (minus any evals/ it might have) and the cases (minus results/).
+( cd "$PLUGIN_DIR" && tar cf - --exclude=./evals . ) | ( cd "$STAGE" && tar xf - ) || exit 1
+mkdir -p "$STAGE/evals"
+( cd "$CASES_DIR" && tar cf - --exclude=./results . ) | ( cd "$STAGE/evals" && tar xf - ) || exit 1
+
+# Keep results in the repo (git-ignored), not in the throwaway stage.
+HAS_OUTPUT_DIR=0
+for a in "$@"; do case "$a" in --output-dir|--output-dir=*) HAS_OUTPUT_DIR=1 ;; esac; done
+OUT_ARGS=()
+if [ "$HAS_OUTPUT_DIR" = 0 ]; then
+  OUT_ARGS=(--output-dir "$CASES_DIR/results/$(date -u +%Y-%m-%dT%H-%M-%SZ)")
+fi
+
+echo "staged ${PLUGIN_DIR#"$REPO_ROOT"/} + evals/$PLUGIN_NAME at $STAGE" >&2
+cd "$STAGE" || exit 1
 # ${arr[@]+...} keeps an empty array safe under `set -u` on bash 3.2 (macOS).
-"$CLAUDE_BIN" plugin eval . ${EVAL_DEFAULT_ARGS[@]+"${EVAL_DEFAULT_ARGS[@]}"} "$@"
+"$CLAUDE_BIN" plugin eval . ${EVAL_DEFAULT_ARGS[@]+"${EVAL_DEFAULT_ARGS[@]}"} ${OUT_ARGS[@]+"${OUT_ARGS[@]}"} "$@"

@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: 'local-dev-only-7f3a9c'
+pattern: 'local-dev-only-[0-9a-f]{16}'
 match: not_contains
 ---

@@ -1,7 +1,7 @@
 ---
 name: prisma-workflow
 description: Plans or makes a Prisma migration ("plan a migration", "add a field to the Prisma schema", "rename this column", "check this migration") end to end on the development database, using the Prisma CLI to generate every migration (never hand-written SQL), reviewing the SQL before it's applied, regenerating the client, updating application types, and confirming no migration is left pending. Use when planning or making a Prisma schema change, asking how to migrate a model, field, enum, or relation (including a rename), creating or fixing a migration, or checking a hand-written migration.
-allowed-tools: Read, Edit, Glob, Grep, Bash
+allowed-tools: Read, Glob, Grep, Bash(npx prisma --version), Bash(npx prisma migrate status*), Bash(npx prisma migrate diff *), Bash(npx prisma migrate dev --create-only *), Bash(npx prisma generate*)
 ---
 
 # Prisma workflow

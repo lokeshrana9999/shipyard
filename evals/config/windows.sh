@@ -15,6 +15,9 @@
 #     `features.json` to /mnt/c/Users/<you>/.docker). Setting DOCKER_CONFIG to an empty dir
 #     doesn't help. Fix: eval_pre moves ~/.docker aside for the run; eval_post always puts it back.
 #
+# The runner stages the plugin plus evals/shipyard-delivery/ under ${TMPDIR:-/tmp}/shipyard-eval-stage
+# (WSL: the Linux /tmp; Git Bash: your Windows temp folder); set EVAL_STAGE_DIR to move it.
+#
 # From native Windows (Git Bash), cases without Bash still run: `bash scripts/run-evals.sh ...`.
 # --scaffold needs Git's bash ahead of WSL's System32\bash.exe on PATH, or fixtures exit 127;
 # this config puts Git's /usr/bin first.
