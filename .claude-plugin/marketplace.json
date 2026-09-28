@@ -1,12 +1,25 @@
 {
   "name": "shipyard",
   "description": "Software-delivery pipeline skills in the open Agent Skills (SKILL.md) format, for any coding agent: explain, plan, test design, implement, verify live, review, describe PR.",
-  "owner": { "name": "Lokesh Rana", "email": "lokeshrana9999@gmail.com" },
+  "owner": { "name": "Lokesh Rana", "email": "lokeshrana9999@gmail.com", "url": "https://github.com/lokeshrana9999" },
   "plugins": [
     {
-      "name": "delivery",
-      "source": "./plugins/delivery",
-      "description": "The delivery pipeline: a router skill plus one skill per stage, helper agents, and the signal output style. Skills use the Agent Skills format and work in any agent that reads SKILL.md."
+      "name": "shipyard-delivery",
+      "source": "./plugins/shipyard-delivery",
+      "description": "Take a code change from question to pull request: a ship router that names the next stage, plus skills for PR review, PR descriptions, Prisma migrations, live checks in the running app, test design, diagrams, and skill audits. Skills use the Agent Skills format and work in any agent that reads SKILL.md.",
+      "homepage": "https://github.com/lokeshrana9999/shipyard",
+      "relevance": {
+        "topic": "Prisma migrations",
+        "signals": {
+          "filesRead": ["**/schema.prisma", "**/prisma/migrations/**/migration.sql"],
+          "manifestDeps": [
+            { "file": "[/\\\\]package\\.json$", "pattern": "\"(?:prisma|@prisma/client)\"\\s*:" }
+          ]
+        }
+      }
     }
-  ]
+  ],
+  "renames": {
+    "delivery": "shipyard-delivery"
+  }
 }

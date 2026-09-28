@@ -2,13 +2,13 @@
 
 # build-workflow
 
-Designs and runs a multi-agent run across the delivery stages (pre-flight and orientation, test design, implement, verify live, review, describe) or any multi-step job the user describes, cheaply and honestly. It first decides whether one agent is enough, then runs the stages as a workflow script, as subagents, or as agents the session spawns directly, depending on what the platform supports, with capped fix loops, a separate skeptical verifier, and an honest blocked exit. Use when asked to build, design, or run a workflow, orchestrate subagents, run the delivery pipeline end to end, implement a plan with agents, or make a multi-agent run cheaper or more reliable.
+Runs a plan or the delivery stages as one multi-agent run ("run this plan with agents", "run the pipeline end to end", "build a workflow for this"), across pre-flight and orientation, test design, implement, verify live, review, and describe, or any multi-step job the user describes, cheaply and honestly. It first decides whether one agent is enough, then runs the stages as a workflow script, as subagents, or as agents the session spawns directly, depending on what the platform supports, with capped fix loops, a separate skeptical verifier, and an honest blocked exit. Use when asked to build, design, or run a workflow, orchestrate subagents, run the delivery pipeline end to end, implement a plan with agents, or make a multi-agent run cheaper or more reliable.
 
 | | |
 |---|---|
-| Who starts it | You, by name: `/delivery:build-workflow` in Claude Code, or ask for it in other agents. The agent doesn't start it on its own. |
+| Who starts it | You, by name: `/shipyard-delivery:build-workflow` in Claude Code, or ask for it in other agents. The agent doesn't start it on its own. |
 | Arguments | `[goal \| plan file] [stages to run] [go]` |
 | Project settings | `.claude/shipyard/build-workflow.md` |
-| Settings fields | [overlay-example.md](../../plugins/delivery/skills/build-workflow/references/overlay-example.md) |
+| Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/build-workflow/references/overlay-example.md) |
 | Hands off to | a clean run goes to the describe stage (pr-description) if it didn't run; a blocked or halted run goes back to the user with the blocker and the run's trail. |
-| Source | [SKILL.md](../../plugins/delivery/skills/build-workflow/SKILL.md); where its rules came from: [docs/sources/build-workflow.md](../../plugins/delivery/docs/sources/build-workflow.md) |
+| Source | [SKILL.md](../../plugins/shipyard-delivery/skills/build-workflow/SKILL.md); where its rules came from: [docs/sources/build-workflow.md](../../plugins/shipyard-delivery/docs/sources/build-workflow.md) |

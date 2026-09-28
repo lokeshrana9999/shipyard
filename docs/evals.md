@@ -1,17 +1,17 @@
 # evals
 
-Each skill has eval cases under `plugins/delivery/evals/<skill>/`, scored with the plugin loaded and again without it, so a case only counts when the plugin makes the difference. They run through Claude Code's `claude plugin eval`, so running them needs Claude Code even though using the skills doesn't.
+Each skill has eval cases under `plugins/shipyard-delivery/evals/<skill>/`, scored with the plugin loaded and again without it, so a case only counts when the plugin makes the difference. They run through Claude Code's `claude plugin eval`, so running them needs Claude Code even though using the skills doesn't.
 
 ## running
 
 From the repo root, in a POSIX shell (Git Bash works on Windows); `eval-stats.py` needs Python 3:
 
 ```sh
-bash scripts/run-evals.sh plugins/delivery --tag walkthrough -j 3
-python scripts/eval-stats.py plugins/delivery/evals/results/<timestamp>/aggregate-result.json
+bash scripts/run-evals.sh plugins/shipyard-delivery --tag walkthrough -j 3
+python scripts/eval-stats.py plugins/shipyard-delivery/evals/results/<timestamp>/aggregate-result.json
 ```
 
-`scripts/run-evals.sh <plugin dir> [claude plugin eval args...]` loads the config for your OS (see [platform config](#platform-config)) and passes every other argument to `claude plugin eval`. It works as-is on Linux and macOS. Results land in `plugins/delivery/evals/results/<timestamp>/aggregate-result.json`, which is git-ignored; never commit them.
+`scripts/run-evals.sh <plugin dir> [claude plugin eval args...]` loads the config for your OS (see [platform config](#platform-config)) and passes every other argument to `claude plugin eval`. It works as-is on Linux and macOS. Results land in `plugins/shipyard-delivery/evals/results/<timestamp>/aggregate-result.json`, which is git-ignored; never commit them.
 
 Flags this repo uses (`claude plugin eval --help` has the full list):
 
@@ -34,7 +34,7 @@ Flags this repo uses (`claude plugin eval --help` has the full list):
 ## reading results with eval-stats
 
 ```sh
-python scripts/eval-stats.py plugins/delivery/evals/results/<ts>/aggregate-result.json
+python scripts/eval-stats.py plugins/shipyard-delivery/evals/results/<ts>/aggregate-result.json
 python scripts/eval-stats.py --merge <a.json> <b.json>   # pool runs of same-named cases
 python scripts/eval-stats.py --json <a.json> > stats.json
 ```
@@ -60,7 +60,7 @@ Known result: live-verify `boots-and-verifies` (2026-09-28) scores 1.00 in both 
 
 ## pr-review-bench
 
-`plugins/delivery/evals/pr-review-bench/` holds 12 injected-bug pull requests and 4 clean ones from Qodo's PR-Review-Bench, graded on whether `pr-review` finds each known bug near its line and raises no bugs on the clean diffs. It's a smoke test at one run per case, not a benchmark score. How to run it, how it's graded, its caveats, and the upstream licenses are in [its README](../plugins/delivery/evals/pr-review-bench/README.md).
+`plugins/shipyard-delivery/evals/pr-review-bench/` holds 12 injected-bug pull requests and 4 clean ones from Qodo's PR-Review-Bench, graded on whether `pr-review` finds each known bug near its line and raises no bugs on the clean diffs. It's a smoke test at one run per case, not a benchmark score. How to run it, how it's graded, its caveats, and the upstream licenses are in [its README](../plugins/shipyard-delivery/evals/pr-review-bench/README.md).
 
 ## platform config
 

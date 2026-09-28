@@ -2,14 +2,14 @@
 
 # prisma-workflow
 
-Makes a Prisma schema change end to end on the development database, using the Prisma CLI to generate every migration (never hand-written SQL), reviewing the SQL before it's applied, regenerating the client, updating application types, and confirming no migration is left pending. Use when changing a Prisma schema, adding or altering a model, field, enum, or relation, creating or fixing a migration, or checking a hand-written migration.
+Plans or makes a Prisma migration ("plan a migration", "add a field to the Prisma schema", "rename this column", "check this migration") end to end on the development database, using the Prisma CLI to generate every migration (never hand-written SQL), reviewing the SQL before it's applied, regenerating the client, updating application types, and confirming no migration is left pending. Use when planning or making a Prisma schema change, asking how to migrate a model, field, enum, or relation (including a rename), creating or fixing a migration, or checking a hand-written migration.
 
 | | |
 |---|---|
-| Who starts it | You or the agent. You can ask for it by name (`/delivery:prisma-workflow` in Claude Code); the agent also starts it when the request matches the description. |
+| Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:prisma-workflow` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | none |
 | Allowed tools | Read, Edit, Glob, Grep, Bash |
 | Project settings | `.claude/shipyard/prisma-workflow.md` |
-| Settings fields | [overlay-example.md](../../plugins/delivery/skills/prisma-workflow/references/overlay-example.md) |
+| Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/prisma-workflow/references/overlay-example.md) |
 | Hands off to | back to the implement stage, with the migration name and the final `migrate status` output. |
-| Source | [SKILL.md](../../plugins/delivery/skills/prisma-workflow/SKILL.md); where its rules came from: [docs/sources/prisma-workflow.md](../../plugins/delivery/docs/sources/prisma-workflow.md) |
+| Source | [SKILL.md](../../plugins/shipyard-delivery/skills/prisma-workflow/SKILL.md); where its rules came from: [docs/sources/prisma-workflow.md](../../plugins/shipyard-delivery/docs/sources/prisma-workflow.md) |

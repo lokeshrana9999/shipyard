@@ -17,6 +17,6 @@ The pack has four agents, each running one step in its own context so the main s
 
 ## files
 
-The source files are in [plugins/delivery/agents/](../plugins/delivery/agents/), in Claude Code's format. Codex and Gemini CLI copies are generated into `plugins/delivery/platforms/` by `node scripts/gen-agents.mjs`; where to put them for each tool is in [agents-install.md](agents-install.md#2-copy-the-agents).
+The source files are in [plugins/shipyard-delivery/agents/](../plugins/shipyard-delivery/agents/), in Claude Code's format. Codex and Gemini CLI copies are generated into `plugins/shipyard-delivery/platforms/` by `node scripts/gen-agents.mjs`; where to put them for each tool is in [agents-install.md](agents-install.md#2-copy-the-agents).
 
-Claude Code also gets the `signal` output style (`plugins/delivery/output-styles/signal.md`: answer first, one next step, progress markers), which you pick in Claude Code's settings. It isn't an agent and nothing starts it for you.
+Claude Code also gets the `signal` output style (`plugins/shipyard-delivery/output-styles/signal.md`: answer first, one next step, progress markers), which you pick in Claude Code's settings. It isn't an agent and nothing starts it for you.

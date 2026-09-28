@@ -2,7 +2,7 @@
 # Runs `claude plugin eval` for one plugin. Works as-is on Linux and macOS.
 #
 #   bash scripts/run-evals.sh <plugin dir> [claude plugin eval args...]
-#   e.g. bash scripts/run-evals.sh plugins/delivery --tag ship --ablation none -j 3
+#   e.g. bash scripts/run-evals.sh plugins/shipyard-delivery --tag ship --ablation none -j 3
 #
 # Platform config: the runner detects the platform (linux, macos, windows; WSL and Git Bash
 # count as windows) and, if evals/config/<platform>.sh exists at the repo root, sources it

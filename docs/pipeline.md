@@ -11,8 +11,8 @@ A change moves through eight stages, each run by one skill or by your agent's no
 | 2 | test design | `design-tests` | `test-designer` (in multi-agent runs) | you or the agent |
 | 3 | implement | you and your agent in the normal session; `prisma-workflow` when a Prisma schema changes | | you or the agent |
 | 4 | verify live | `live-verify` | `live-verifier` (in multi-agent runs) | you or the agent |
-| 5 | review | `pr-review` | `concern-reviewer`, `review-verifier` | you, `/delivery:pr-review` |
-| 6 | describe | `pr-description`, drawing with `flow-diagram` | | you, `/delivery:pr-description` |
+| 5 | review | `pr-review` | `concern-reviewer`, `review-verifier` | you, `/shipyard-delivery:pr-review` |
+| 6 | describe | `pr-description`, drawing with `flow-diagram` | | you, `/shipyard-delivery:pr-description` |
 | 7 | demo | no skill yet | | |
 
 Usable at any stage: `flow-diagram` (Mermaid for pages that render it, ASCII for terminals and editors), `skill-auditor` (scores `SKILL.md` files), and in Claude Code the `signal` output style (answer first, one next step, progress markers), picked in Claude Code's settings.
@@ -27,7 +27,7 @@ It walks the stage table top-down. The current stage is the last one done, or on
 
 On a yes, it starts the next skill itself when the agent may start it (walkthrough, design-tests, prisma-workflow, live-verify, flow-diagram). For `pr-review`, `pr-description`, and `build-workflow` it prints the exact command for you to run, because those skills set `disable-model-invocation` and Claude Code blocks the agent from starting them. Agents that ignore that field may start them unasked, which is why the [AGENTS.md snippet](agents-install.md#3-paste-the-agentsmd-snippet) says not to. Plan and implement belong to your agent: `ship` tells you to enter plan mode or to continue in the session.
 
-Arguments: a stage (number, name, or skill name) jumps to it, asking first if its entry condition isn't met. `all` prints a `/delivery:build-workflow <plan file> <remaining stages>` command, which runs the remaining stages as one multi-agent run; it shows its own run plan and waits for a go. When demo comes next, `ship` says it has no skill yet and stops.
+Arguments: a stage (number, name, or skill name) jumps to it, asking first if its entry condition isn't met. `all` prints a `/shipyard-delivery:build-workflow <plan file> <remaining stages>` command, which runs the remaining stages as one multi-agent run; it shows its own run plan and waits for a go. When demo comes next, `ship` says it has no skill yet and stops.
 
 ## handoffs
 
@@ -62,7 +62,7 @@ check (no model)   drop findings whose evidence_line isn't at location; flag unr
 report from confirmed findings only: Bugs / Issues / Nits / Summary + coverage
 ```
 
-The catalog is the list of concerns a reviewer checks: the starter files in the skill's `references/catalog-*.md` plus the project's own `.claude/shipyard/pr-review/concerns.md`, which wins when ids collide. `/delivery:pr-review mine` builds or refreshes that project file from past review comments.
+The catalog is the list of concerns a reviewer checks: the starter files in the skill's `references/catalog-*.md` plus the project's own `.claude/shipyard/pr-review/concerns.md`, which wins when ids collide. `/shipyard-delivery:pr-review mine` builds or refreshes that project file from past review comments.
 
 Scope: `scope.sh` writes `full.diff` (the unified diff against the base, limited to the review paths) and `diff.txt` (added lines only, one per line as `path:line: code`). With no added lines it reports "No changes to review." and stops.
 
@@ -76,4 +76,4 @@ Validate: one `review-verifier` sees every surviving finding from every slice at
 
 Report: compiled by the script from confirmed findings only, bugs first, cut at the findings cap (default 10) with the cut stated. Bugs, Issues, and Nits each say `none` when empty. The summary line gives the counts, the advisory verdict, and a coverage line: slices, concerns read, concerns mapped, findings dropped, confirmed, rejected, unreviewed. A count nothing produced prints as `n/a`, never an estimate.
 
-With a workflow runner (Claude Code's Workflow tool), the skill runs `references/workflow.js`. Without one, the session starts the agents itself; without any subagent support, it runs the stages inline, one slice at a time, and says so in the report's `Pipeline:` line. Contracts, schemas, and the report template are in [stages.md](../plugins/delivery/skills/pr-review/references/stages.md).
+With a workflow runner (Claude Code's Workflow tool), the skill runs `references/workflow.js`. Without one, the session starts the agents itself; without any subagent support, it runs the stages inline, one slice at a time, and says so in the report's `Pipeline:` line. Contracts, schemas, and the report template are in [stages.md](../plugins/shipyard-delivery/skills/pr-review/references/stages.md).

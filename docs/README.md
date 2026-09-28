@@ -15,6 +15,6 @@ Outside this folder:
 - [examples/](../examples/): project settings for a NestJS + Prisma API, and an illustrative `ship` run
 - [CONTRIBUTING.md](../CONTRIBUTING.md): repo layout and the rules for changing a skill
 - [CHANGELOG.md](../CHANGELOG.md): what changed between versions
-- `plugins/delivery/docs/sources/<skill>.md`: where each skill's rules came from
+- `plugins/shipyard-delivery/docs/sources/<skill>.md`: where each skill's rules came from
 
 The pages under `skills/` are generated from each `SKILL.md` by `node scripts/gen-docs.mjs`; edit the skill and re-run the script rather than editing a page.

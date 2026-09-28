@@ -4,7 +4,7 @@
 # WSL-installed CLI. Native Windows has no sandbox backend, so any case that grants Bash is
 # refused there (score 0.00, $0.00, no agent started).
 #
-#   wsl bash scripts/run-evals.sh plugins/delivery --case boots-and-verifies --scaffold --allow-tools Bash Write
+#   wsl bash scripts/run-evals.sh plugins/shipyard-delivery --case boots-and-verifies --scaffold --allow-tools Bash Write
 #
 # Never run `claude install` or `claude update` inside WSL.
 #

@@ -1,11 +1,14 @@
 # Changelog
 
-Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. The version is the `delivery` plugin's, in `plugins/delivery/.claude-plugin/plugin.json`.
+Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. The version is the `shipyard-delivery` plugin's (named `delivery` through 0.1.0), in `plugins/shipyard-delivery/.claude-plugin/plugin.json`.
 
 ## [Unreleased]
 
 ### Added
 
+- `plugins/shipyard-delivery/README.md` and `LICENSE`, which Anthropic's plugin directory requires in the plugin folder.
+- A `relevance` block on the marketplace entry, so Claude Code can suggest the plugin after reading a `schema.prisma`, a Prisma migration, or a `package.json` that depends on `prisma` or `@prisma/client` (only where an admin allowlists the marketplace).
+- `homepage`, `author.url`, and more `keywords` in `plugin.json`.
 - Published as a public repo. Install tested in Claude Code (marketplace) and Codex (`npx skills add ... -g` plus the Codex agent files).
 - `concern-reviewer` agent: maps the review catalog onto one slice of the diff, then reviews each mapped concern.
 - `pr-review` ships `scope.sh`, which writes the diff and its added lines, and `references/workflow.js`, the runnable pipeline.
@@ -17,6 +20,9 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ### Changed
 
+- **The plugin is renamed from `delivery` to `shipyard-delivery`** (version 0.2.0), and its folder from `plugins/delivery` to `plugins/shipyard-delivery`. Commands are now `/shipyard-delivery:<skill>` and agents `shipyard-delivery:<agent>`. The marketplace keeps its name, `shipyard`, and its `renames` map moves existing installs on Claude Code v2.1.193 or later. To migrate by hand: `claude plugin uninstall delivery@shipyard`, then `claude plugin install shipyard-delivery@shipyard`.
+- The GitHub repo is moving from `lokeshrana9999/claude-skills-pack` to `lokeshrana9999/shipyard`; install commands and links use the new name (GitHub redirects the old one).
+- Skill descriptions lead with the words a user would say ("review my PR", "write the PR description", "plan a migration"); `prisma-workflow` now also matches questions about planning a migration.
 - `pr-review` runs as map and review per diff slice, a mechanical evidence check, then one `review-verifier` over every finding; the report is compiled from confirmed findings only. Slices are about 400 added lines, grouped by directory, with security-sensitive paths on their own, at most 6.
 - Every agent runs on the model of the session that started it (`model: inherit`); model tiers are gone.
 - `live-verify` reports every check on its own line when a run is blocked.
@@ -40,5 +46,7 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 - Example project settings for a NestJS + Prisma API.
 - A private `voice` plugin placeholder with no skills.
 
-[Unreleased]: https://github.com/lokeshrana9999/claude-skills-pack/compare/main...refactor/map-review-validate
-[0.1.0]: https://github.com/lokeshrana9999/claude-skills-pack/tree/main
+[Unreleased]: https://github.com/lokeshrana9999/shipyard/compare/main...refactor/map-review-validate
+[0.1.0]: https://github.com/lokeshrana9999/shipyard/tree/main
+
+<!-- TODO: add a skills.sh badge to the README once the repo has a page on skills.sh. -->

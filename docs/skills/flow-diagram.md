@@ -2,13 +2,13 @@
 
 # flow-diagram
 
-Draws technical diagrams (flowcharts, sequence and state diagrams, architecture and data-flow pictures) that read as one system, choosing Mermaid for pages that render it and hand-drawn ASCII for terminals, chat replies, and markdown read in an editor. Project-specific destinations, renderer limits, and size or width limits come from an optional settings file. Parses Mermaid before shipping when the environment has a parser or validator. Use when about to draw any diagram, flowchart, sequence diagram, or state diagram, or when another skill asks for one. For charts of data (bar, line, pie), use a charting skill instead.
+Draws a flowchart, sequence diagram, state diagram, or architecture or data-flow picture ("draw a diagram of this flow", "add a sequence diagram") that reads as one system, choosing Mermaid for pages that render it and hand-drawn ASCII for terminals, chat replies, and markdown read in an editor. Project-specific destinations, renderer limits, and size or width limits come from an optional settings file. Parses Mermaid before shipping when the environment has a parser or validator. Use when about to draw any diagram, flowchart, sequence diagram, or state diagram, or when another skill asks for one. For charts of data (bar, line, pie), use a charting skill instead.
 
 | | |
 |---|---|
-| Who starts it | You or the agent. You can ask for it by name (`/delivery:flow-diagram` in Claude Code); the agent also starts it when the request matches the description. |
+| Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:flow-diagram` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | none |
 | Project settings | `.claude/shipyard/flow-diagram.md` |
-| Settings fields | [overlay-example.md](../../plugins/delivery/skills/flow-diagram/references/overlay-example.md) |
+| Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/flow-diagram/references/overlay-example.md) |
 | Hands off to | nothing: this skill has no `next:` line |
-| Source | [SKILL.md](../../plugins/delivery/skills/flow-diagram/SKILL.md); where its rules came from: [docs/sources/flow-diagram.md](../../plugins/delivery/docs/sources/flow-diagram.md) |
+| Source | [SKILL.md](../../plugins/shipyard-delivery/skills/flow-diagram/SKILL.md); where its rules came from: [docs/sources/flow-diagram.md](../../plugins/shipyard-delivery/docs/sources/flow-diagram.md) |

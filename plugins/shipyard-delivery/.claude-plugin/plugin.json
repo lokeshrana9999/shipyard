@@ -1,0 +1,11 @@
+{
+  "name": "shipyard-delivery",
+  "displayName": "Shipyard Delivery Pipeline",
+  "version": "0.2.0",
+  "description": "Take a code change from question to pull request in eight stages: explain, plan, test design, implement, verify live, review, describe, demo. Ask \"ship this\" and the ship skill names where your branch is and the next stage. Includes a verified PR review, a PR description writer, a Prisma migration workflow, live checks in the running app, test design, diagrams, and a skill auditor.",
+  "author": { "name": "Lokesh Rana", "email": "lokeshrana9999@gmail.com", "url": "https://github.com/lokeshrana9999" },
+  "homepage": "https://github.com/lokeshrana9999/shipyard",
+  "repository": "https://github.com/lokeshrana9999/shipyard",
+  "license": "MIT",
+  "keywords": ["agent-skills", "skills", "pipeline", "delivery", "pr-review", "code-review", "pull-request", "pr-description", "prisma", "migrations", "test-design", "live-verify", "diagrams", "mermaid", "claude-code", "codex", "gemini-cli", "cursor"]
+}

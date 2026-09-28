@@ -2,13 +2,13 @@
 
 # live-verify
 
-Verifies a change in the running app instead of trusting tests alone. It boots the app and confirms it responds, mints a local test session, drives the changed flow over HTTP or in a real browser, checks the stored effect before and after, and reports each check as passed, failed, or not run, with the evidence it saw. Covers browser extensions too. Use when asked to verify a change live, check it actually works in the running app, smoke-test it in the browser, or prove it before merge. Not for writing or running unit or end-to-end test suites, or for just starting the app.
+Verifies a change in the running app ("check it actually works", "verify this live", "smoke-test it in the browser") instead of trusting tests alone. It boots the app and confirms it responds, mints a local test session, drives the changed flow over HTTP or in a real browser, checks the stored effect before and after, and reports each check as passed, failed, or not run, with the evidence it saw. Covers browser extensions too. Use when asked to verify a change live, check it actually works in the running app, smoke-test it in the browser, or prove it before merge. Not for writing or running unit or end-to-end test suites, or for just starting the app.
 
 | | |
 |---|---|
-| Who starts it | You or the agent. You can ask for it by name (`/delivery:live-verify` in Claude Code); the agent also starts it when the request matches the description. |
+| Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:live-verify` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | `[what to verify] [api \| browser]` |
 | Project settings | `.claude/shipyard/live-verify.md` |
-| Settings fields | [overlay-example.md](../../plugins/delivery/skills/live-verify/references/overlay-example.md) |
+| Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/live-verify/references/overlay-example.md) |
 | Hands off to | a pass goes to the review stage; a fail goes back to the implement stage with the report. |
-| Source | [SKILL.md](../../plugins/delivery/skills/live-verify/SKILL.md); where its rules came from: [docs/sources/live-verify.md](../../plugins/delivery/docs/sources/live-verify.md) |
+| Source | [SKILL.md](../../plugins/shipyard-delivery/skills/live-verify/SKILL.md); where its rules came from: [docs/sources/live-verify.md](../../plugins/shipyard-delivery/docs/sources/live-verify.md) |

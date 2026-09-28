@@ -2,13 +2,13 @@
 
 # pr-description
 
-Writes a pull request title and description from the branch's diff and history, shows the full draft for approval, then creates or updates the pull request on the project's code host and links any extended context. Use when a branch is ready to open or update a pull request or merge request, or when asked to write, draft, or publish a PR description.
+Writes the PR description ("write the PR description", "draft the PR", "open a PR for this branch") as a pull request title and body from the branch's diff and history, shows the full draft for approval, then creates or updates the pull request on the project's code host and links any extended context. Use when a branch is ready to open or update a pull request or merge request, or when asked to write, draft, or publish a PR description.
 
 | | |
 |---|---|
-| Who starts it | You, by name: `/delivery:pr-description` in Claude Code, or ask for it in other agents. The agent doesn't start it on its own. |
+| Who starts it | You, by name: `/shipyard-delivery:pr-description` in Claude Code, or ask for it in other agents. The agent doesn't start it on its own. |
 | Arguments | none |
 | Project settings | `.claude/shipyard/pr-description.md` |
-| Settings fields | [overlay-example.md](../../plugins/delivery/skills/pr-description/references/overlay-example.md) |
+| Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/pr-description/references/overlay-example.md) |
 | Hands off to | the pull request's human reviewers, with its link; the demo stage when the change is user-facing and the project has one. |
-| Source | [SKILL.md](../../plugins/delivery/skills/pr-description/SKILL.md); where its rules came from: [docs/sources/pr-description.md](../../plugins/delivery/docs/sources/pr-description.md) |
+| Source | [SKILL.md](../../plugins/shipyard-delivery/skills/pr-description/SKILL.md); where its rules came from: [docs/sources/pr-description.md](../../plugins/shipyard-delivery/docs/sources/pr-description.md) |

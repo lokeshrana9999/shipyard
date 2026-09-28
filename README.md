@@ -18,18 +18,18 @@ The skills use the open [Agent Skills](https://agentskills.io) format (a folder 
 ### Claude Code
 
 ```sh
-claude plugin marketplace add lokeshrana9999/claude-skills-pack
-claude plugin install delivery@shipyard
+claude plugin marketplace add lokeshrana9999/shipyard
+claude plugin install shipyard-delivery@shipyard
 ```
 
-The first command adds this repo as a marketplace named `shipyard`. The second installs the `delivery` plugin at user scope (add `-s project` to it for one project): the ten skills, four [helper agents](docs/helper-agents.md) that `pr-review` and `build-workflow` start as subagents, and the `signal` output style (answer first, one next step), which you pick in Claude Code's settings. Update with `claude plugin update delivery@shipyard`; remove with `claude plugin uninstall delivery@shipyard`.
+The first command adds this repo as a marketplace named `shipyard`. The second installs the `shipyard-delivery` plugin at user scope (add `-s project` to it for one project): the ten skills, four [helper agents](docs/helper-agents.md) that `pr-review` and `build-workflow` start as subagents, and the `signal` output style (answer first, one next step), which you pick in Claude Code's settings. Update with `claude plugin update shipyard-delivery@shipyard`; remove with `claude plugin uninstall shipyard-delivery@shipyard`. Before 0.2.0 the plugin was named `delivery`; if you installed it then, see the migration note in [CHANGELOG.md](CHANGELOG.md#unreleased).
 
 ### Codex, Gemini CLI, Cursor, GitHub Copilot, OpenCode, and others
 
 From your project root, with Node.js installed:
 
 ```sh
-npx skills add lokeshrana9999/claude-skills-pack --skill '*' --agent codex -y
+npx skills add lokeshrana9999/shipyard --skill '*' --agent codex -y
 ```
 
 Replace `codex` with your agent (`cursor`, `gemini-cli`, ...). This uses the [skills CLI](https://github.com/vercel-labs/skills) to copy all ten skills into `.agents/skills/`. Add `-g` to install for all your projects (into `~/.agents/skills/`) instead of one. Tested with `--agent codex -g`: all ten skills installed, and Codex listed them.
@@ -38,12 +38,12 @@ Then paste the short snippet from [docs/agents-install.md](docs/agents-install.m
 
 ### First run
 
-On the branch you're working on, run `/delivery:ship` in Claude Code, or say "ship this" in another agent. On a branch that adds a rate limiter and its tests to a small library, and ticks the only entry in its plan file `PLAN.md`, it prints:
+On the branch you're working on, run `/shipyard-delivery:ship` in Claude Code, or say "ship this" in another agent. On a branch that adds a rate limiter and its tests to a small library, and ticks the only entry in its plan file `PLAN.md`, it prints:
 
 ```
 Stage: 3 implement — src/rate-limit.ts and its tests in the diff; PLAN.md's one entry ticked
 Skipped: 4 verify live (a library, no app to boot)
-next: 5 review — /delivery:pr-review
+next: 5 review — /shipyard-delivery:pr-review
 Then: 6 describe, 7 demo
 ```
 
@@ -68,7 +68,7 @@ graph LR
 
 A rectangle is a stage you or the agent can start; a pill is one only you can start, by running its skill by name. Stage names are not skill names: explain runs `walkthrough`, describe runs `pr-description`, plan and implement happen in your agent's normal session (with `prisma-workflow` when a Prisma schema changes), and demo has no skill yet.
 
-`ship` only routes. It reads the branch with cheap read-only checks (changed files, tests, a plan file, an open pull request), runs no builds or tests, and reports the current stage, any skipped ones, and the next one. `/delivery:ship all` instead prints a `/delivery:build-workflow` command for you to run, which runs the remaining stages as one multi-agent run. When demo comes next, `ship` says it has no skill yet and stops.
+`ship` only routes. It reads the branch with cheap read-only checks (changed files, tests, a plan file, an open pull request), runs no builds or tests, and reports the current stage, any skipped ones, and the next one. `/shipyard-delivery:ship all` instead prints a `/shipyard-delivery:build-workflow` command for you to run, which runs the remaining stages as one multi-agent run. When demo comes next, `ship` says it has no skill yet and stops.
 
 The stage-to-skill table, the routing rules, each skill's handoff, and how `pr-review` works are in [docs/pipeline.md](docs/pipeline.md).
 
@@ -81,13 +81,13 @@ The stage-to-skill table, the routing rules, each skill's handoff, and how `pr-r
 | `design-tests` | 2 test design | Writes a test-design document from the spec and the real code; writes no test code | you or the agent |
 | `prisma-workflow` | 3 implement, when a Prisma schema changes | Makes a Prisma schema change with CLI-generated migrations, reviewed before they're applied | you or the agent |
 | `live-verify` | 4 verify live | Boots the app, drives the changed flow over HTTP or in a browser, and reports each check with evidence | you or the agent |
-| `pr-review` | 5 review | Reviews a branch against the project's recurring review concerns; `/delivery:pr-review mine` builds that list from past review comments | you only |
+| `pr-review` | 5 review | Reviews a branch against the project's recurring review concerns; `/shipyard-delivery:pr-review mine` builds that list from past review comments | you only |
 | `pr-description` | 6 describe | Drafts the PR title and body, shows it for approval, then creates or updates the PR | you only |
 | `build-workflow` | several at once | Runs several stages as one multi-agent run, with capped fix loops and a separate verifier | you only |
 | `flow-diagram` | any | Draws flowcharts, sequence, and state diagrams in the syntax the destination renders | you or the agent |
 | `skill-auditor` | any | Audits `SKILL.md` files and writes a scored report with fixes | you or the agent |
 
-"You only" means the skill sets `disable-model-invocation`, so Claude Code won't start it on its own; run it as `/delivery:<skill>`. In other agents, ask for it by name ("run pr-review against main"); Codex also takes `$<skill>` and Cursor `/<skill>`. Arguments for each skill are in [docs/skills/](docs/skills/README.md).
+"You only" means the skill sets `disable-model-invocation`, so Claude Code won't start it on its own; run it as `/shipyard-delivery:<skill>`. In other agents, ask for it by name ("run pr-review against main"); Codex also takes `$<skill>` and Cursor `/<skill>`. Arguments for each skill are in [docs/skills/](docs/skills/README.md).
 
 ## Configuration
 
@@ -99,7 +99,7 @@ Each skill reads an optional settings file at `.claude/shipyard/<skill>.md` in y
 |---|---|
 | [docs/pipeline.md](docs/pipeline.md) | you want the stages, how `ship` routes, each handoff, or how `pr-review` works |
 | [docs/agents-install.md](docs/agents-install.md) | you install in an agent other than Claude Code |
-| [docs/agents.md](docs/helper-agents.md) | you want to know what the four helper agents do |
+| [docs/helper-agents.md](docs/helper-agents.md) | you want to know what the four helper agents do |
 | [docs/skills/](docs/skills/README.md) | you need one skill's arguments, settings, or handoff |
 | [docs/evals.md](docs/evals.md) | you change a skill and need to run or write its evals |
 
@@ -107,4 +107,4 @@ Each skill reads an optional settings file at `.claude/shipyard/<skill>.md` in y
 
 [CONTRIBUTING.md](CONTRIBUTING.md) has the repo layout and the rules for changing a skill; [CHANGELOG.md](CHANGELOG.md) lists what changed between versions.
 
-MIT, see [LICENSE](LICENSE). The eval fixtures under `plugins/delivery/evals/pr-review-bench/` include diffs from other projects under their own licenses, listed in [its README](plugins/delivery/evals/pr-review-bench/README.md#license-and-attribution).
+MIT, see [LICENSE](LICENSE). The eval fixtures under `plugins/shipyard-delivery/evals/pr-review-bench/` include diffs from other projects under their own licenses, listed in [its README](plugins/shipyard-delivery/evals/pr-review-bench/README.md#license-and-attribution).

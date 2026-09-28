@@ -2,13 +2,13 @@
 
 # walkthrough
 
-Writes explanations and reader-facing documents point-first, with a lead line that answers, an optional ASCII diagram, a body shaped to the content (steps, prose, or table), and one next action. Use when asked to explain something, walk through it, or say how it works or why it broke, when giving a multi-step plan, or when writing a plan, handoff, spec, or report for someone to read and act on. For one-line answers and status replies, answer directly instead.
+Explains things and writes reader-facing documents point-first ("explain how this works", "walk me through this", "why did this break", "write up a handoff"), with a lead line that answers, an optional ASCII diagram, a body shaped to the content (steps, prose, or table), and one next action. Use when asked to explain something, walk through it, or say how it works or why it broke, when giving a multi-step plan, or when writing a plan, handoff, spec, or report for someone to read and act on. For one-line answers and status replies, answer directly instead.
 
 | | |
 |---|---|
-| Who starts it | You or the agent. You can ask for it by name (`/delivery:walkthrough` in Claude Code); the agent also starts it when the request matches the description. |
+| Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:walkthrough` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | none |
 | Project settings | `.claude/shipyard/walkthrough.md` |
-| Settings fields | [overlay-example.md](../../plugins/delivery/skills/walkthrough/references/overlay-example.md) |
+| Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/walkthrough/references/overlay-example.md) |
 | Hands off to | nothing: this skill has no `next:` line |
-| Source | [SKILL.md](../../plugins/delivery/skills/walkthrough/SKILL.md); where its rules came from: [docs/sources/walkthrough.md](../../plugins/delivery/docs/sources/walkthrough.md) |
+| Source | [SKILL.md](../../plugins/shipyard-delivery/skills/walkthrough/SKILL.md); where its rules came from: [docs/sources/walkthrough.md](../../plugins/shipyard-delivery/docs/sources/walkthrough.md) |

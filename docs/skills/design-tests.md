@@ -2,14 +2,14 @@
 
 # design-tests
 
-Designs the tests for a feature from its spec and its real implementation, and produces a test-design document (scenarios per acceptance criterion, an API test table, a coverage matrix, and spec-versus-code divergences) for an implementer to turn into test code. Use when asked to design tests, write a test plan, decide what to verify, or before tests are written for a change. It designs only; it doesn't write or run test code.
+Designs the tests for a feature ("design tests for this", "write a test plan", "what should we test?") from its spec and its real implementation, and produces a test-design document (scenarios per acceptance criterion, an API test table, a coverage matrix, and spec-versus-code divergences) for an implementer to turn into test code. Use when asked to design tests, write a test plan, decide what to verify, or before tests are written for a change. It designs only; it doesn't write or run test code.
 
 | | |
 |---|---|
-| Who starts it | You or the agent. You can ask for it by name (`/delivery:design-tests` in Claude Code); the agent also starts it when the request matches the description. |
+| Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:design-tests` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | none |
 | Allowed tools | Read, Grep, Glob |
 | Project settings | `.claude/shipyard/design-tests.md` |
-| Settings fields | [overlay-example.md](../../plugins/delivery/skills/design-tests/references/overlay-example.md) |
+| Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/design-tests/references/overlay-example.md) |
 | Hands off to | the implement stage, or whoever writes the tests. Whoever writes the tests follows the reference test named for each layer. A test is done when it passes against a correct implementation and fails when the behavior it names is broken. |
-| Source | [SKILL.md](../../plugins/delivery/skills/design-tests/SKILL.md); where its rules came from: [docs/sources/design-tests.md](../../plugins/delivery/docs/sources/design-tests.md) |
+| Source | [SKILL.md](../../plugins/shipyard-delivery/skills/design-tests/SKILL.md); where its rules came from: [docs/sources/design-tests.md](../../plugins/shipyard-delivery/docs/sources/design-tests.md) |

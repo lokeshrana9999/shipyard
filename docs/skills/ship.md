@@ -2,13 +2,13 @@
 
 # ship
 
-Routes work through the delivery pipeline (explain, plan, test design, implement, verify live, review, describe, demo). It checks where the current branch stands with cheap read-only checks, names the current stage and the one next stage with the skill or command that runs it, and asks before starting it; it can also jump to a named stage or hand the remaining stages to a multi-agent run. Use when the user says "ship this", "what's next in the pipeline", "where am I in the pipeline", "what's left before I open a PR", "take this to PR", or asks which delivery step or skill comes next. Not for "what's next" about code, a function, or a plan step; answer those directly.
+Answers "ship this", "what's next in the pipeline", "where am I in the pipeline", "what's left before I open a PR", and "take this to PR" by routing work through the delivery pipeline (explain, plan, test design, implement, verify live, review, describe, demo). It checks where the current branch stands with cheap read-only checks, names the current stage and the one next stage with the skill or command that runs it, and asks before starting it; it can also jump to a named stage or hand the remaining stages to a multi-agent run. Use when the user asks which delivery step or skill comes next. Not for "what's next" about code, a function, or a plan step; answer those directly.
 
 | | |
 |---|---|
-| Who starts it | You or the agent. You can ask for it by name (`/delivery:ship` in Claude Code); the agent also starts it when the request matches the description. |
+| Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:ship` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | `[stage \| all]` |
 | Project settings | `.claude/shipyard/ship.md` |
-| Settings fields | [overlay-example.md](../../plugins/delivery/skills/ship/references/overlay-example.md) |
+| Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/ship/references/overlay-example.md) |
 | Hands off to | the stage the user confirms, through its own skill; this skill hands off and ends. |
-| Source | [SKILL.md](../../plugins/delivery/skills/ship/SKILL.md); where its rules came from: [docs/sources/ship.md](../../plugins/delivery/docs/sources/ship.md) |
+| Source | [SKILL.md](../../plugins/shipyard-delivery/skills/ship/SKILL.md); where its rules came from: [docs/sources/ship.md](../../plugins/shipyard-delivery/docs/sources/ship.md) |
