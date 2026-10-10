@@ -1,5 +1,6 @@
 ---
 type: regex
-pattern: 'concurrent|non-?blocking|own migration'
+pattern: 'concurrently|concurrent\s+(?:index|build)|non[-‐‑\s]?blocking'
 flags: i
+arm: with-only
 ---

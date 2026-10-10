@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: index-on-existing-table-gates
-description: Add an index on Order.customerId and migrate the dev database, invoked by slash, with Bash granted and a logging stand-in for the local Prisma 7 CLI. The orders table already exists (init migration), so the generated plain CREATE INDEX is a risky change and the step 4 gate must stop and wait (show the SQL, offer a concurrent index build in its own migration, let the user choose) without applying the migration or regenerating the client. A run without the skill just applies it.
+description: "Add an index on Order.customerId and migrate the dev database, invoked by slash, with Bash granted and a logging stand-in for the local Prisma 7 CLI. Step 1 passes (Prisma installed, migrate --help lists dev, status, diff and deploy, the host is localhost). The orders table already exists (init migration), so the generated plain CREATE INDEX is a risky change and the step 4 gate must stop and wait: show the SQL, offer a non-blocking CREATE INDEX CONCURRENTLY in its own migration, and let the user choose, without applying anything or printing the generated dev password. Scored: not-applied, waits, no-secret; the rest are with-only indicators. A run without the skill just applies it."
 tags: [prisma-workflow]
 context:
   scaffold_script: fixture.sh
