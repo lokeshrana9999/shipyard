@@ -1,7 +1,7 @@
 ---
 name: prisma-workflow
 description: Plans or makes a Prisma migration ("plan a migration", "add a field to the Prisma schema", "rename this column", "check this migration") end to end on the development database, using the Prisma CLI to generate every migration (never hand-written SQL), reviewing the SQL before it's applied, regenerating the client, updating application types, and confirming no migration is left pending. Use when planning or making a Prisma schema change, asking how to migrate a model, field, enum, or relation (including a rename), creating or fixing a migration, or checking a hand-written migration.
-allowed-tools: Read, Glob, Grep, Bash(npx prisma --version), Bash(npx prisma migrate status*), Bash(npx prisma migrate diff *), Bash(npx prisma migrate dev --create-only *), Bash(npx prisma generate*)
+allowed-tools: Read, Glob, Grep, Bash(npx prisma --version), Bash(npx prisma migrate --help*), Bash(npx prisma migrate status*), Bash(npx prisma migrate diff *), Bash(npx prisma migrate dev --create-only *), Bash(npx prisma generate*)
 ---
 
 # Prisma workflow
@@ -10,7 +10,7 @@ Take a schema change from `schema.prisma` to a migrated development database and
 
 ## Project settings
 
-On every invocation, read `.claude/shipyard/prisma-workflow.md` in the project root if it exists; its settings win over what's discovered below. It can set the Prisma directory, the commands the project wraps the CLI in (for example `pnpm db:migrate:dev`), how environment variables are loaded, where application types live, and whether to lint migrations. Its shape is in [references/overlay-example.md](references/overlay-example.md). Without it, use the project's local Prisma CLI (`npx prisma`, `pnpm prisma`, or the package manager's equivalent) and discover the rest.
+On every invocation, read `.claude/shipyard/prisma-workflow.md` in the project root if it exists; its settings win over what's discovered below. It can set the Prisma directory, the commands the project wraps the CLI in (a package script, for example), how environment variables are loaded, where application types live, whether to lint migrations, and which database hosts besides local ones count as development (`allowed hosts`) or must never be written (`never-write hosts`). Its shape is in [references/overlay-example.md](references/overlay-example.md). Without it, use the project's local Prisma CLI (`npx prisma`, `pnpm prisma`, or the package manager's equivalent) and discover the rest.
 
 ## Output
 
@@ -21,17 +21,18 @@ On every invocation, read `.claude/shipyard/prisma-workflow.md` in the project r
 
 ## Rules
 
-- **Never create or hand-write a file in the migrations folder.** The generator always uses the physical names from `@@map` and `@map`; hand-written SQL tends to use the Prisma model name instead. For example (illustrative), an enum `OrderStatus` mapped to `order_status` written by hand as `CREATE TYPE "OrderStatus"` passes every test and then fails at runtime, because the client looks for `order_status`. Editing a *generated* migration is allowed only for the changes in [references/risky-changes.md](references/risky-changes.md), such as turning a drop-and-add into a rename.
-- **Development database only.** This skill applies migrations to the database in the project's local environment. Staging and production deploys belong to the project's release process.
-- **Never reset, and never use `db push`** in a project with a migrations folder. A reset deletes the data; `db push` skips migration history and leaves the database out of step with it. Prisma may block agents from destructive commands unless the user gives explicit consent; that consent is the user's to give, never set it yourself. If a reset seems needed, stop and explain why.
+- **Never create or hand-write a file in the migrations folder.** The generator always uses the physical names from `@@map` and `@map`; hand-written SQL tends to use the Prisma model name instead. For example (illustrative), an enum `OrderStatus` mapped to `order_status` written by hand as `CREATE TYPE "OrderStatus"` passes tests that mock the database, then fails against a real one, because the client looks for `order_status`. Editing a *generated* migration is allowed only for the changes in [references/risky-changes.md](references/risky-changes.md), such as turning a drop-and-add into a rename.
+- **Development database only.** A development database is one whose data can be lost without harming anyone; that role defines it, not where it runs. Step 1 checks every host the CLI will connect to before anything is generated, and a host the check doesn't accept ends the run. Never edit the settings file to get past that check. Staging and production deploys belong to the project's release process.
+- **Never reset, and never use `db push`** in a project with a migrations folder. A reset deletes the data; `db push` skips migration history and leaves the database out of step with it. If Prisma refuses and says a consent setting is needed, stop; only the user sets it, so never set it or suggest a command that does. If a reset seems needed, stop and explain why.
 - **Always pass `--name`.** Without a terminal, `migrate dev` can't prompt for a name and may create the migration unnamed. Names are descriptive snake_case: `add_status_to_order`.
 - **Stop on a refusal.** When `migrate dev` refuses to proceed non-interactively (drift, a reset proposal, or a data-loss warning), stop and report its full output to the user instead of retrying with other flags.
 - **Use the project's Prisma, never a bare `npx prisma@latest`**: the latest published release can be a different major version with different commands.
+- **Stop on an unknown command.** If Prisma reports a command as unknown, stop and tell the user; never swap in a similarly named command. A newer CLI can reuse a name such as `dev` or `deploy` for something that isn't a migration.
 
 ## Steps
 
 ```
-- [ ] 1 Check the version and find the files
+- [ ] 1 Check the CLI, find the files, check the host
 - [ ] 2 Edit the schema
 - [ ] 3 Generate the migration without applying it
 - [ ] 4 Review the SQL (gate for risky changes)
@@ -39,10 +40,14 @@ On every invocation, read `.claude/shipyard/prisma-workflow.md` in the project r
 - [ ] 6 Confirm nothing is pending
 ```
 
-1. **Check the version and find the files.** Read the installed Prisma major version from the lockfile or `prisma --version`, and check that its CLI has the commands this skill uses. If the project is on a release whose migration workflow differs, stop and tell the user this skill doesn't cover it. Then find the schema and migrations folder: the project's Prisma config file (`prisma.config.*`) if it sets them, else the `prisma` key in `package.json`, else `prisma/schema.prisma`. The schema can be one file or a folder of files.
+1. **Check the CLI, find the files, check the host.**
+   - Confirm Prisma is a dependency in `package.json` or the lockfile. If it isn't, stop: a bare `npx prisma` downloads whatever release is published as latest.
+   - Run `prisma migrate --help` and read stdout and stderr together. Continue only if it lists `dev`, `status`, `diff`, and `deploy` as subcommands of `migrate`. If it prints the CLI's top-level help instead, or reports `migrate` as unknown, stop and tell the user this skill doesn't cover that release.
+   - Find the schema and migrations folder: the project's Prisma config file (`prisma.config.*`) if it sets them, else the `prisma` key in `package.json`, else `prisma/schema.prisma`. The schema can be one file or a folder of files.
+   - Check the host of every database the CLI will connect to: the datasource, and the shadow database if the config sets one. Find which environment variable each reads, load it the way the project does, and print only its hostname, for example by parsing it as a URL in a one-line script. Never print the full connection string; it holds the password. Continue when the host is a loopback address (`localhost`, `127.0.0.1`, `::1`), a unix socket, or a local database file, or when the settings file lists it under `allowed hosts`. Any other host, and any host under `never-write hosts` even if it's also allowed, stops here, before step 3 generates anything: name the host and tell the user the skill only migrates a development database, which they can declare under `allowed hosts`.
 2. **Edit the schema** with the requested change, matching the file's existing naming, `@@map` style, and relation conventions.
 3. **Generate the migration without applying it:** `prisma migrate dev --create-only --name <snake_case>`. This needs a shadow database; if it fails because the database user can't create databases, tell the user that user needs permission to create databases, or the config needs a separate shadow database URL.
-4. **Review the SQL.** Show the generated file. Check every quoted identifier against the schema's `@@map`/`@map` names, and check for the risky changes in `references/risky-changes.md`. If a migration linter for the database is available, run it. `STOP — WAIT` when the SQL drops or renames a column or table, changes a column type, or adds a required column to a table that may have rows: show the SQL and the safer alternative, and let the user choose. Otherwise continue.
+4. **Review the SQL.** Show the generated file. Check every quoted identifier against the schema's `@@map`/`@map` names, and check for the risky changes in `references/risky-changes.md`. If a migration linter for the database is available, run it. `STOP — WAIT` when the SQL contains any change listed in `references/risky-changes.md`: show the SQL and the safer path, and let the user choose. Row counts can't be seen from here, so count every table that existed before this migration as large and full; only a table the same migration creates is exempt. Otherwise continue.
 5. **Apply, regenerate, update types.** Apply with `prisma migrate dev --name <same name>`, then always run `prisma generate` explicitly: some versions don't regenerate the client as part of migrate. Update application types, DTOs, and validation schemas that mirror the changed models, importing from the generator's `output` path when the schema sets one.
 6. **Confirm nothing is pending.** Run `prisma migrate status`. It exits non-zero both for pending, failed, or diverged migrations and for connection errors, so read the output rather than the exit code. If migrations are pending on the development database, apply them with `prisma migrate deploy` and run status again. Report the final status output verbatim; a migration left unapplied looks downstream like a missing feature.
 
