@@ -20,4 +20,4 @@ A project keeps this at `.claude/shipyard/prisma-workflow.md`. The values below 
 
 Project commands replace the plain `prisma …` commands step for step, so a wrapper script that adds flags or loads environment variables keeps working.
 
-Hosts are compared by hostname only, and the connection string is never printed. Loopback addresses, unix sockets, and local database files count as development without being listed.
+Hosts are compared by hostname only, and the connection string is never printed. Loopback addresses, unix sockets, and local database files count as development without being listed. Don't list a hostname that also serves staging or production databases, such as a hosted provider's shared endpoint or connection pooler: the hostname can't tell those databases apart.

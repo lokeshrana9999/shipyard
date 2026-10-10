@@ -36,9 +36,9 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ### Fixed
 
-- `prisma-workflow` stops for every change in `references/risky-changes.md`, including an index on an existing table and removing an enum value, and counts every existing table as large and full since it can't see row counts ([#17](https://github.com/lokeshrana9999/shipyard/issues/17)).
-- `prisma-workflow` checks in step 1 that every database the CLI will connect to is local or listed under the new `allowed hosts` setting, and always stops on a host under the new `never-write hosts` setting, before generating anything. It prints only the hostname, never the connection string.
-- `prisma-workflow` checks that Prisma is a project dependency and that `prisma migrate --help` lists the subcommands it uses, instead of reading a version it had nothing to compare with, and stops on an unknown command rather than running a similarly named one.
+- `prisma-workflow` stops for every change in `references/risky-changes.md`, including an index on an existing table, removing an enum value, and (a new row) making an existing column required. It counts every existing table as large and full, since production's row counts can't be seen ([#17](https://github.com/lokeshrana9999/shipyard/issues/17)).
+- `prisma-workflow` checks in step 1 that every database the CLI will connect to (datasource, direct URL, shadow database) is local or listed under the new `allowed hosts` setting, and always stops on a host under the new `never-write hosts` setting, before generating anything. It prints only the host, never the connection string.
+- `prisma-workflow` checks that Prisma is installed as a project dependency and that `prisma migrate --help` lists the subcommands it uses, instead of reading a version it had nothing to compare with, and stops on an unknown command rather than running a similarly named one. A plan-only request skips these commands and says they still have to pass.
 
 ## [0.1.0] - 2026-09-28
 

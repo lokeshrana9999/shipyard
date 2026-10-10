@@ -50,8 +50,16 @@ Measured for the step 1 CLI check, which replaced the version read (issue #17).
 - The reset consent setting is `PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION` (see above); the skill no longer names it.
 - `pnpm db:migrate:dev` was the skill's example of a wrapper command; it now lives only in `references/overlay-example.md` and `examples/nestjs-prisma/`.
 
+Measured on 2026-10-10 (Node 22.22.0, prisma 7.10.0) for the step 1 host and CLI checks:
+
+- With a `prisma.config.ts` that reads its datasource URL through `env()`, `prisma migrate --help` with that variable unset exits 1: `Failed to load config file … PrismaConfigEnvError: Cannot resolve environment variable: DATABASE_URL.` A project that loads its environment only through a wrapper script hits this, so step 1 treats a config or environment error as a loading problem, not an unsupported release.
+- In a project that declares `prisma` in `package.json` but hasn't installed it, `npx --yes prisma --version` downloads and runs 8.0.0-rc.22. That is why step 1 checks the CLI is installed, not only declared.
+- `new URL("sqlserver://db.example.com;password=hunter2").hostname` returns `db.example.com;password=hunter2`, and an uncaught parse failure prints the error's `input` field, which holds the whole string. That is why the host check uses a script that prints only the host or a fixed error word.
+
+Not measured, from the Prisma schema and Postgres connection-string references: Prisma 6 schemas can set `directUrl` (used by migrate instead of `url`) and `shadowDatabaseUrl` in the datasource block, and Prisma 7 moves the URLs to `prisma.config.*`. A Postgres connection string's `host` query parameter overrides the host before it, and a path there is a unix socket.
+
 ## Known gaps
 
-- The step 1 host check reads the hostname. A tunnel or proxy listening on a loopback address that forwards to staging or production passes it, and a `never-write hosts` entry can't see through it. A project using one should keep the tunnel's real target out of its development environment files.
+- The step 1 host check reads the hostname. A tunnel or proxy listening on a loopback address that forwards to staging or production passes it, and a `never-write hosts` entry can't see through it. Don't point a development environment file at such a tunnel; keep it in a separate file or wrapper the skill isn't told to load.
 - The host check needs a one-line script to parse the connection string (for example `node -e`), and loading the project's environment may need its wrapper command. Neither is in `allowed-tools`, since a pattern broad enough to cover them would pre-approve any script, so in default permission mode that step asks for permission.
 - The gate treats every table that existed before the migration as large and full, so it stops for most index and required-column changes on a seeded development database. The user answers at the stop when the table is small.
