@@ -22,7 +22,7 @@ claude plugin marketplace add lokeshrana9999/shipyard
 claude plugin install shipyard-delivery@shipyard
 ```
 
-The first command adds this repo as a marketplace named `shipyard`. The second installs the `shipyard-delivery` plugin at user scope (add `-s project` to it for one project): the ten skills, four [helper agents](docs/helper-agents.md) that `pr-review` and `build-workflow` start as subagents, and the `signal` output style (answer first, one next step), which you pick in Claude Code's settings. Update with `claude plugin update shipyard-delivery@shipyard`; remove with `claude plugin uninstall shipyard-delivery@shipyard`. Before 0.2.0 the plugin was named `delivery`; if you installed it then, see the migration note in [CHANGELOG.md](CHANGELOG.md#unreleased).
+The first command adds this repo as a marketplace named `shipyard`. The second installs the `shipyard-delivery` plugin at user scope (add `-s project` to it for one project): the ten skills, four [helper agents](docs/helper-agents.md) that `pr-review` and `build-workflow` start as subagents, and the `signal` output style (answer first, one next step), which you pick in Claude Code's settings. Update with `claude plugin update shipyard-delivery@shipyard`; remove with `claude plugin uninstall shipyard-delivery@shipyard`. Before 0.2.0 the plugin was named `delivery`; if you installed it then, see the migration note in [CHANGELOG.md](CHANGELOG.md#020---2026-09-28).
 
 ### Codex, Gemini CLI, Cursor, GitHub Copilot, OpenCode, and others
 

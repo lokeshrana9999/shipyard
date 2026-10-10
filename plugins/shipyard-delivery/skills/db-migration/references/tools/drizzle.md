@@ -1,7 +1,7 @@
 # Drizzle adapter: draft, not enabled
 
 enabled: no
-releases: drizzle-kit 0.31.11 with drizzle-orm 0.45.4 (npm `latest` on 2026-10-10), Postgres only, measured on PGlite 0.5.8 (in-process Postgres, no server). Not measured: MySQL, SQLite, Turso, SingleStore, Gel, and a Postgres server. The 1.0.0 release candidates differ; see the last section.
+releases: drizzle-kit 0.31.11 with drizzle-orm 0.45.4 (npm `latest` on 2026-10-10), Postgres only, measured on PGlite 0.5.8 (in-process Postgres, no server). Not measured: MySQL, SQLite, Turso, SingleStore, Gel, and a Postgres server. The 1.0.0 release candidates differ; see 1.0.0 release candidates.
 
 Detection skips this file. It stays a draft until it has its own evals and the gaps under "Why it isn't enabled" have an answer. Anything marked unverified wasn't run.
 
@@ -27,13 +27,13 @@ Contents
 - migration files: `**/drizzle/*.sql` (the default out folder; the config's out key changes it)
 - dependency: `drizzle-kit` (the CLI, usually in `devDependencies`) and `drizzle-orm` in `package.json`. Without `drizzle-orm`, `generate` prints `Please install latest version of drizzle-orm` and exits 1.
 - installed CLI: `node_modules/.bin/drizzle-kit`
-- version without a shell: `version` in `node_modules/drizzle-kit/package.json`, else the `drizzle-kit` entry in the lockfile.
+- version without a shell: `version` in `node_modules/drizzle-kit/package.json`, else the `drizzle-kit` entry in the lockfile, else the range declared for `drizzle-kit` in `package.json` (say it's a declared range, not the installed release).
 
 ## 2. Running
 
 - invoke: the package manager's runner for the installed CLI, written below as `npx drizzle-kit`. npm `latest` is 0.31.11, but the `rc` and `beta` tags are 1.0.0 builds with a different folder layout and output, so never `npx drizzle-kit@<version>`.
 - environment: 0.31.11 bundles dotenv and loads `./.env` from the working directory on its own, so the config needs no dotenv import. It doesn't read `.env.local`. `DOTENV_CONFIG_PATH` names another file, and a variable already set in the shell wins over `.env`.
-- CLI check: `npx drizzle-kit --version`, which loads no config and connects to nothing. Pass: `drizzle-kit: v0.31.<n>` on the first line and a `drizzle-orm:` version on the second (measured: `v0.31.11` and `v0.45.4`, exit 0). Fail: a 1.x version, such as `drizzle-kit: v1.0.0-rc.4` (different layout, see the last section), or an empty second line, which means `drizzle-orm` isn't installed. `--help` doesn't tell 0.31 from 1.0: both list `generate`, `migrate`, `push`, and `check`.
+- CLI check: `npx drizzle-kit --version`, which loads no config and connects to nothing. Pass: `drizzle-kit: v0.31.<n>` on the first line and a `drizzle-orm:` version on the second (measured: `v0.31.11` and `v0.45.4`, exit 0). Fail: a 1.x version, such as `drizzle-kit: v1.0.0-rc.4` (different layout, see 1.0.0 release candidates), or an empty second line, which means `drizzle-orm` isn't installed. `--help` doesn't tell 0.31 from 1.0: both list `generate`, `migrate`, `push`, and `check`.
 - unknown command: `Unknown command: '<name>'.` then `Type '--help' to get help on the cli.` on stderr, exit 1. An unknown flag prints `Unrecognized options for command '<command>': --<flag>`, exit 1.
 - environment error: `Error  Please provide required params for Postgres driver:` then `[x] url: undefined` on stdout, exit 1 (`[x] url: ''` when the variable is set but empty).
 
@@ -61,7 +61,7 @@ Contents
 
 ## 6. Commands
 
-- create without applying: `npx drizzle-kit generate --name <name>`. It never connects. Pass no `--out`, `--schema`, or `--dialect` with it: any of them makes `generate` ignore `drizzle.config.ts` and fail on the missing parameters. `generate --custom --name <name>` writes an empty SQL file (`-- Custom SQL migration file, put your code below! --`) with a snapshot and journal entry, for SQL the tool can't generate; it doesn't diff the schema.
+- create without applying: `npx drizzle-kit generate --name <name>`. It never connects, so it applies nothing that's pending. Pass no `--out`, `--schema`, or `--dialect` with it: any of them makes `generate` ignore `drizzle.config.ts` and fail on the missing parameters. `generate --custom --name <name>` writes an empty SQL file (`-- Custom SQL migration file, put your code below! --`) with a snapshot and journal entry, for SQL the tool can't generate; it doesn't diff the schema.
 - apply: `npx drizzle-kit migrate`. It takes no name and applies every pending migration, not only the new one.
 - regenerate client: none; there's no generated client.
 - status: none. `drizzle-kit status` is an unknown command, and `migrate` prints the same `migrations applied successfully!` whether it applied nothing or several migrations.
@@ -111,6 +111,7 @@ Contents
 - A failing `migrate` hides the database error, and a skipped out-of-order migration reports success.
 - The rename refusal exits 0, so only its text marks it.
 - A concurrent index can't run through `migrate`.
+- `migrate` applies every pending migration, and with no status command step 3 can't list them, so a migration already in the folder is applied without step 4's review.
 - No eval covers it.
 
 ## 1.0.0 release candidates

@@ -29,7 +29,7 @@ A schema file changed with no new migration for it means stage 3 isn't done: rou
 
 These are the files the db-migration skill works on. Find them by reading a few small text files; never run a migration tool to find them.
 
-- db-migration's settings first: `db-migration.md` in `.claude/shipyard/`, or, if it's missing, the older `prisma-workflow.md` there, which means `tool: prisma`. Its `schema path` is the schema file, or a folder whose files outside `migrations path` are the schema. Any new file under its `migrations path` is a new migration.
+- db-migration's settings first: `db-migration.md` in `.claude/shipyard/`, or, if it's missing, the older `prisma-workflow.md` there, which means `tool: prisma`. Its `schema path` is the schema file, or a folder whose files are the schema except migration files (those under `migrations path`, or, if that isn't set, those matching the adapters' `migration files`). Any new file under its `migrations path` is a new migration.
 - For whichever of those two paths the settings don't set, read the `enabled:`, `schema files:`, and `migration files:` lines of every adapter file in `../db-migration/references/tools/`, relative to this skill's folder (all but `format.md`). Use only adapters that say `enabled: yes`, narrowed to the settings' `tool` if it names one. Every backticked entry on those lines is a glob matched from the project root, outside dependency folders. A changed schema file needs a new migration file from the same adapter.
 - With no schema path and no enabled adapter's globs, say the schema check didn't run.
 

@@ -22,7 +22,7 @@ Contents
 - migration files: `**/migration.sql`
 - dependency: `prisma` in `dependencies` or `devDependencies` of the working directory's `package.json`, or the workspace root's. `@prisma/client` alone isn't enough: it doesn't carry the CLI.
 - installed CLI: `node_modules/.bin/prisma`, in the working directory or the workspace root.
-- version without a shell: `version` in `node_modules/prisma/package.json`, else the `prisma` entry in the lockfile.
+- version without a shell: `version` in `node_modules/prisma/package.json`, else the `prisma` entry in the lockfile, else the range declared for `prisma` in `package.json` (say it's a declared range, not the installed release).
 
 ## 2. Running
 
@@ -59,13 +59,13 @@ Contents
 
 ## 6. Commands
 
-- create without applying: `npx prisma migrate dev --create-only --name <name>`
+- create without applying: `npx prisma migrate dev --create-only --name <name>`. It first applies every migration already pending in the folder to the development database (6.19.3 and 7.10.0 call `applyMigrations` before `createMigration`), then writes the new one without applying it.
 - apply: `npx prisma migrate dev --name <name>`, with the same name. On Prisma 7 it no longer runs `generate`.
 - regenerate client: `npx prisma generate`. Run it after every apply.
 - status: `npx prisma migrate status`
 - status exit code: 1 both for pending, failed, or diverged migrations and for connection errors, so read the output. 0 with "Database schema is up to date!" means nothing is pending.
 - deploy pending: `npx prisma migrate deploy`
-- diff: on Prisma 7, `npx prisma migrate diff --from-migrations <migrations path> --to-schema <schema path> --script`, with the shadow database from `datasource.shadowDatabaseUrl` in the config (7.10.0 has no `--shadow-database-url` flag). On Prisma 6, `npx prisma migrate diff --from-migrations <migrations path> --to-schema-datamodel <schema path> --shadow-database-url "$<shadow variable>" --script`, with the variable loaded the way the project loads it, so the URL never appears in the command; 6.19.3 rejects `--to-schema` with `unknown or unexpected option: --to-schema` and exit 1. If the CLI rejects a flag, skip the diff and say so: the identifier check doesn't depend on it.
+- diff: on Prisma 7, `npx prisma migrate diff --from-migrations <migrations path> --to-schema <schema path> --script`, with the shadow database from `datasource.shadowDatabaseUrl` in the config (7.10.0 has no `--shadow-database-url` flag). On Prisma 6, `npx prisma migrate diff --from-migrations <migrations path> --to-schema-datamodel <schema path> --shadow-database-url "$<shadow variable>" --script`, with the variable loaded the way the project loads it, so the URL never appears in the command; 6.19.3 rejects `--to-schema` with `unknown or unexpected option: --to-schema` and exit 1. Run the Prisma 6 form only when the project declares its own shadow database URL (`shadowDatabaseUrl`), and never pass the main or direct URL's variable: Prisma's docs say it resets the shadow database at the start of `migrate dev`, deleting its data (unverified for `migrate diff`, so treat it the same). Without a separate shadow URL, skip the diff and say so. The shell expands `"$<shadow variable>"` before a wrapper such as `dotenv` loads it, so load the variable into the shell first or run the command inside the wrapper with `sh -c '…'`. If the CLI rejects a flag, skip the diff and say so: the identifier check doesn't depend on it.
 
 ## 7. Never run
 
@@ -84,7 +84,7 @@ Contents
 
 ## 9. Risky-change notes
 
-- Rename a column or table: renaming a field or model makes Prisma generate a drop and add, which loses the data; it never asks whether it's a rename. Two safer paths specific to Prisma: keep the old database name with `@map("old_name")` on the field (or `@@map` on the model), which needs no migration at all; or edit the generated file into `ALTER TABLE … RENAME COLUMN …` before applying.
+- Rename a column or table: renaming a field or model makes Prisma generate a drop and add, which loses the data; it never asks whether it's a rename. Two safer paths specific to Prisma: keep the old database name with `@map("old_name")` on the field (or `@@map` on the model), which needs no migration at all; or edit the generated file into `ALTER TABLE … RENAME COLUMN …` before applying. On a table with rows, `create without applying` stops on the drop's data-loss warning without a terminal and writes no file (section 8); then the `@map` path, or the user creating the migration in their own terminal, is the way through.
 - Add a required column to an existing table: as in the table.
 - Make a column of an existing table required: as in the table.
 - Change a column's type: as in the table.
@@ -96,17 +96,14 @@ After editing a generated file, it still has to use the `@@map` and `@map` names
 
 ## 10. Permissions
 
-- allowlist: for the project's `.claude/settings.json`. It covers the read-only commands and creating a migration without applying it; applying, deploying, and the host check still ask, so the user sees each write.
+- allowlist: for the project's `.claude/settings.json`. It covers only commands that change no database: the CLI check, `status`, and `regenerate client`. These rules apply in every session in the project, not only while this skill runs, so they also skip the skill's host check. Creating a migration (which applies pending migrations first), `diff` (which writes to the shadow database), applying, and deploying aren't listed and still ask.
 
   ```json
   {
     "permissions": {
       "allow": [
-        "Bash(npx prisma --version)",
         "Bash(npx prisma migrate --help*)",
         "Bash(npx prisma migrate status*)",
-        "Bash(npx prisma migrate diff *)",
-        "Bash(npx prisma migrate dev --create-only *)",
         "Bash(npx prisma generate*)"
       ]
     }

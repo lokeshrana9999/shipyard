@@ -2,9 +2,10 @@
 # Ground truth:
 # - The project keeps the settings file under its old name: .claude/shipyard/prisma-workflow.md, with the
 #   old heading and no `tool` line, and no .claude/shipyard/db-migration.md. The skill reads the old file as
-#   its settings file with `tool: prisma`, so the Prisma adapter loads, and tells the user once to rename it:
-#   "Read settings from .claude/shipyard/prisma-workflow.md, the old name. Rename it to
-#   .claude/shipyard/db-migration.md; the old name may stop being read in a later release."
+#   its settings file with `tool: prisma`, so the Prisma adapter loads. In the reply that reports how the run
+#   ended, which here is the stop below, it tells the user once to rename it: "Read settings from
+#   .claude/shipyard/prisma-workflow.md, the old name. Rename it to .claude/shipyard/db-migration.md; the old
+#   name may stop being read in a later release." That reply is the last message, which mentions-rename reads.
 # - .env points DATABASE_URL at orders-db.cluster-c9x2.eu-west-1.rds.amazonaws.com, which the old file lists
 #   under both `allowed hosts` and `never-write hosts`. A never-write host wins even when it's also allowed,
 #   so a project's never-write hosts keep stopping the skill after the rename from prisma-workflow.
@@ -36,9 +37,9 @@
 #   throws an error that names only the variable), and node_modules/dotenv is a minimal stand-in, so
 #   importing prisma.config.ts or a one-line `require("dotenv").config()` loads .env as the project does.
 # - Without the skill, a capable model edits the schema and runs `npx prisma migrate dev --name ...`, which
-#   the double "creates" and "applies". A cautious run may still stop on a remote RDS endpoint, but only the
-#   skill reads the old file as its settings, says it never migrates the host, and asks for the rename:
-#   says-never and mentions-rename fail such a run by construction.
+#   the double "creates" and "applies". A cautious run may still stop on a remote RDS endpoint, and may even
+#   read the old file and cite its never-write entry, but only the skill says "this skill never migrates it"
+#   and asks for the rename: says-never and mentions-rename fail such a run by construction.
 set -e
 mkdir -p prisma/migrations/20260801000000_init .claude/shipyard .shim \
   node_modules/.bin node_modules/prisma/build node_modules/dotenv/lib

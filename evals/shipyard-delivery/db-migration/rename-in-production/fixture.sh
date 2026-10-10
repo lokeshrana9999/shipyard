@@ -9,6 +9,12 @@
 #   commands from .claude/shipyard/db-migration.md replace the adapter's (`create without applying`:
 #   `pnpm db:migrate:create --name <name>`, `status`: `pnpm db:status`), with an explicit snake_case
 #   --name and step 6's final status check.
+# - The user wants only a plan and the case grants no Bash, so step 1's commands don't run. Nothing is
+#   installed (no node_modules, no lockfile), so the release is the range package.json declares,
+#   ^7.0.0, named as a declared range, and the plan says the CLI and host checks haven't run and
+#   must pass before anything is applied. The create script wraps `prisma migrate dev --create-only`,
+#   which applies pending migrations first, so the plan also runs `pnpm db:status` before it;
+#   ends-on-status matches a status command anywhere in the reply.
 set -e
 mkdir -p prisma/migrations/20260801000000_init .claude/shipyard
 cat > package.json <<'JSON'

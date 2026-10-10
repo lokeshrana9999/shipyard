@@ -3,6 +3,8 @@
 # OrderStatus enum and a status field to Order, a route and tests that use it, and no migration for the change.
 # There is no db-migration settings file, so ship takes the schema and migration globs from the enabled Prisma
 # adapter (`**/*.prisma`, `**/migration.sql`): the schema changed and no migration file was added.
+# A run that recognizes prisma/schema.prisma without reading the adapters passes the scored graders too, so
+# read-adapter, a with-only indicator, checks the trace for a read of db-migration's references/tools folder.
 set -e
 mkdir -p src prisma/migrations/20260801000000_init .claude/shipyard
 cat > .claude/shipyard/ship.md <<'MD'

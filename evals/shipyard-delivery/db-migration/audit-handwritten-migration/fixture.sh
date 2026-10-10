@@ -5,9 +5,12 @@
 # - Everything else in the SQL is correct and must not be flagged as a name mismatch:
 #   "orders" (@@map), "status" (no @map), the enum values and the PLACED default.
 # - Only the skill mandates it: the settings file's `tool` loads the Prisma adapter, which says
-#   `generates: yes`, so the fix is to remove the hand-written migration and create it again with
-#   step 3's `create without applying` command, the one .claude/shipyard/db-migration.md names:
-#   `pnpm db:migrate:create --name <name>` (package.json has the same scripts), name included.
+#   `generates: yes`. The migration is up for review before merge, so if it hasn't been applied to
+#   any database yet, the fix is to remove it and create it again with step 3's `create without
+#   applying` command, the one .claude/shipyard/db-migration.md names: `pnpm db:migrate:create
+#   --name <name>` (package.json has the same scripts), name included. If it has been applied
+#   somewhere, the fix is a new migration that corrects it, made with the same command;
+#   regenerate-with-cli passes either answer.
 set -e
 mkdir -p prisma/migrations/20260801000000_init prisma/migrations/20260901000000_add_order_status .claude/shipyard
 cat > package.json <<'JSON'
