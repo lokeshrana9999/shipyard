@@ -9,7 +9,7 @@ A change moves through eight stages, each run by one skill or by your agent's no
 | 0 | explain | `walkthrough` | | you or the agent |
 | 1 | plan | your agent's plan mode, or a plan written in chat | | you |
 | 2 | test design | `design-tests` | `test-designer` (in multi-agent runs) | you or the agent |
-| 3 | implement | you and your agent in the normal session; `prisma-workflow` when a Prisma schema changes | | you or the agent |
+| 3 | implement | you and your agent in the normal session; `db-migration` when a database schema changes | | you or the agent |
 | 4 | verify live | `live-verify` | `live-verifier` (in multi-agent runs) | you or the agent |
 | 5 | review | `pr-review` | `concern-reviewer`, `review-verifier` | you, `/shipyard-delivery:pr-review` |
 | 6 | describe | `pr-description`, drawing with `flow-diagram` | | you, `/shipyard-delivery:pr-description` |
@@ -21,11 +21,11 @@ Some stages need tools beyond the agent itself. `pr-review` reads pull requests 
 
 ## how ship places a branch
 
-`ship` only routes; it never does a stage's work. It reads the project's `.claude/shipyard/ship.md` if there is one, then looks at the branch with cheap read-only checks: the current branch, files changed against the merge base plus uncommitted ones, whether a pull request is open, a plan file, test files for the changed code, Prisma schema files and their migrations. It runs no builds and no tests; a test result is a claim from a commit message, you, or CI.
+`ship` only routes; it never does a stage's work. It reads the project's `.claude/shipyard/ship.md` if there is one, then looks at the branch with cheap read-only checks: the current branch, files changed against the merge base plus uncommitted ones, whether a pull request is open, a plan file, test files for the changed code, database schema files and their migrations. It runs no builds and no tests; a test result is a claim from a commit message, you, or CI. Which files count as schema and migrations comes from `db-migration`: the `schema path` and `migrations path` in its settings file, `.claude/shipyard/db-migration.md` (or the older `prisma-workflow.md`), or else the schema and migration globs in its enabled adapters (only the Prisma adapter is enabled). `ship` reads those small files and runs no migration tool.
 
-It walks the stage table top-down. The current stage is the last one done, or one left half-done; the next stage is the first whose work isn't done and isn't skipped. Evidence of a later stage (code in the diff, an open pull request) marks the stages before it done. A changed schema with no new migration means implement isn't done, so it routes to `prisma-workflow` first. Its report has four lines, `Stage:`, `Skipped:`, `next:`, and `Then:`, and it stops to ask before starting the next stage. [examples/ship-transcript.md](../examples/ship-transcript.md) shows one run.
+It walks the stage table top-down. The current stage is the last one done, or one left half-done; the next stage is the first whose work isn't done and isn't skipped. Evidence of a later stage (code in the diff, an open pull request) marks the stages before it done. A changed schema with no new migration means implement isn't done, so it routes to `db-migration` first. Its report has four lines, `Stage:`, `Skipped:`, `next:`, and `Then:`, and it stops to ask before starting the next stage. [examples/ship-transcript.md](../examples/ship-transcript.md) shows one run.
 
-On a yes, it starts the next skill itself when the agent may start it (walkthrough, design-tests, prisma-workflow, live-verify, flow-diagram). For `pr-review`, `pr-description`, and `build-workflow` it prints the exact command for you to run, because those skills set `disable-model-invocation` and Claude Code blocks the agent from starting them. Agents that ignore that field may start them unasked, which is why the [AGENTS.md snippet](agents-install.md#3-paste-the-agentsmd-snippet) says not to. Plan and implement belong to your agent: `ship` tells you to enter plan mode or to continue in the session.
+On a yes, it starts the next skill itself when the agent may start it (walkthrough, design-tests, db-migration, live-verify, flow-diagram). For `pr-review`, `pr-description`, and `build-workflow` it prints the exact command for you to run, because those skills set `disable-model-invocation` and Claude Code blocks the agent from starting them. Agents that ignore that field may start them unasked, which is why the [AGENTS.md snippet](agents-install.md#3-paste-the-agentsmd-snippet) says not to. Plan and implement belong to your agent: `ship` tells you to enter plan mode or to continue in the session.
 
 Arguments: a stage (number, name, or skill name) jumps to it, asking first if its entry condition isn't met. `all` prints a `/shipyard-delivery:build-workflow <plan file> <remaining stages>` command, which runs the remaining stages as one multi-agent run; it shows its own run plan and waits for a go. When demo comes next, `ship` says it has no skill yet and stops.
 
@@ -34,7 +34,7 @@ Arguments: a stage (number, name, or skill name) jumps to it, asking first if it
 | Skill | `next:` |
 |---|---|
 | `design-tests` | the implement stage, or whoever writes the tests |
-| `prisma-workflow` | back to implement, with the migration name and the final `migrate status` output |
+| `db-migration` | back to implement, with the migration name and the final status output from the migration tool |
 | `live-verify` | a pass goes to review; a fail goes back to implement with the report |
 | `pr-review` | fixes go back to implement; a clean review goes to describe |
 | `pr-description` | the pull request's human reviewers, with its link; demo when the change is user-facing and the project has one |

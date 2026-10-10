@@ -13,3 +13,6 @@
 - Renaming touches ship's routing, the README, pipeline docs, the eval folder, and needs a CHANGELOG migration note like the 0.2.0 one.
 - In default permission mode, every migration CLI call prompts unless the project pastes the adapter's allowlist.
 - ship reads schema and migration globs from the migration skill's settings or adapters, so adding a tool never edits ship.
+- While `.claude/shipyard/db-migration.md` is missing, the skill reads the old `.claude/shipyard/prisma-workflow.md` as its settings file with `tool: prisma` and asks once for the rename, so the hosts a project listed under `never-write hosts` stay protected after the upgrade.
+- `/shipyard-delivery:prisma-workflow` is removed with no stub skill in its place; the CHANGELOG's migration note points to `/shipyard-delivery:db-migration`.
+- `SKILL.md` names no tool, command, version, env var, or error string; those live in the adapters, and `docs/sources/db-migration.md` records where each came from. The one exception is the `description`, which names the enabled adapters' tools so prompts that name a tool still trigger the skill. `CONTRIBUTING.md`'s rule on specifics says the same for any skill with adapters.

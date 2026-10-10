@@ -47,7 +47,7 @@ Add this to the project's `AGENTS.md` (`GEMINI.md` for Gemini CLI) so the agent 
 
 The ship skill says where the current work stands and which stage comes next.
 Work moves through these stages: explain (walkthrough), plan (plan mode or a plan in chat),
-test design (design-tests), implement (prisma-workflow when the database schema changes),
+test design (design-tests), implement (db-migration when the database schema changes),
 verify live (live-verify), review (pr-review: map and review per slice, validate), describe (pr-description),
 demo (not built yet). Each stage skill ends with a `next:` line naming the following stage;
 flow-diagram (diagrams, used by describe) and skill-auditor are cross-cutting and have none.

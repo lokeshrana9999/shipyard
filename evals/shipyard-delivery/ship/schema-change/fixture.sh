@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # An Express + Prisma API. main has an Order model and its initial migration. The feature branch adds an
 # OrderStatus enum and a status field to Order, a route and tests that use it, and no migration for the change.
+# There is no db-migration settings file, so ship takes the schema and migration globs from the enabled Prisma
+# adapter (`**/*.prisma`, `**/migration.sql`): the schema changed and no migration file was added.
 set -e
 mkdir -p src prisma/migrations/20260801000000_init .claude/shipyard
 cat > .claude/shipyard/ship.md <<'MD'

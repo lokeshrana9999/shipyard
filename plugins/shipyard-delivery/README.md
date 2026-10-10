@@ -9,7 +9,7 @@
 | `ship` | Places the branch in the pipeline and names the next stage and the command that runs it. |
 | `walkthrough` | Explains code or writes a plan, handoff, or report answer-first, with one next action. |
 | `design-tests` | Writes a test-design document from the spec and the real code; it writes no test code. |
-| `prisma-workflow` | Plans and makes a Prisma schema change with CLI-generated migrations, reviewing the SQL before it's applied. |
+| `db-migration` | Plans and makes a database migration through the project's migration tool, reviewing the SQL before it's applied. Ships with a Prisma adapter. |
 | `live-verify` | Boots the app, drives the changed flow over HTTP or in a browser, and reports each check with evidence. |
 | `pr-review` | Reviews a branch against the project's recurring review concerns and validates every finding with a second agent. You start it. |
 | `pr-description` | Drafts the PR title and body, shows it for approval, then creates or updates the pull request. You start it. |
@@ -34,7 +34,7 @@ If you installed the plugin under its old name, `delivery`, the marketplace's `r
 
 ## What it runs
 
-The plugin has no hooks and no MCP servers, and it sends nothing anywhere on its own. Its skills tell the agent to run commands in your project with your usual permission prompts: `git` to read the branch, your code host's CLI (such as `gh`) to read pull requests and, in `pr-description` after you approve the draft, to create or update one, your project's Prisma CLI against the development database (plus a one-line script that prints only the database's hostname, to check it's a development database), and your app's own start command plus local HTTP requests or a browser in `live-verify`. `pr-review` includes `scope.sh`, a shell script that writes the diff to a scratch folder.
+The plugin has no hooks and no MCP servers, and it sends nothing anywhere on its own. Its skills tell the agent to run commands in your project with your usual permission prompts: `git` to read the branch; your code host's CLI (such as `gh`) to read pull requests and, in `pr-description` after you approve the draft, to create or update one; in `db-migration`, your project's migration tool (the Prisma CLI, through the Prisma adapter) against the development database, plus a one-line script that prints only the database's hostname, to check it's a development database; and in `live-verify`, your app's own start command plus local HTTP requests or a browser. `db-migration` pre-approves none of its commands; the Prisma adapter lists permission rules you can add to your project's settings instead. `pr-review` includes `scope.sh`, a shell script that writes the diff to a scratch folder.
 
 ## More
 

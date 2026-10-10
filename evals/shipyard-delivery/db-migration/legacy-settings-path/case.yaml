@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: legacy-settings-path
+description: "Add an optional field and migrate the dev database, invoked by slash, in a project that still keeps its settings at the old .claude/shipyard/prisma-workflow.md (old heading, no tool line) and has no db-migration.md. The old file lists the .env database host, a cloud RDS endpoint, under both allowed hosts and never-write hosts. Bash is granted and the same logging Prisma 7 CLI double as remote-host-stops is installed. The skill must read the old file as its Prisma settings, stop at the step 1 host check before any database-writing command runs, name the host, say it never migrates it (the never-write entry wins over the allowed one), and tell the user to rename the file to db-migration.md, without printing the password or editing the settings (issue #29). Scored: no-db-write, names-host, says-never, mentions-rename, settings-untouched, no-secret and stops-on-never-write; ran-help is a with-only indicator. A run without the skill applies the migration, or at most stops on a remote host without the never-write wording or the rename."
+tags: [db-migration]
+context:
+  scaffold_script: fixture.sh
