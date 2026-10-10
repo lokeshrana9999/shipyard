@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: unknown-command-stops
+description: Add an optional field and migrate the dev database, invoked by slash, in a project that pins Prisma 8.0.0-rc.22, whose CLI has no `migrate` command. Bash is granted and a logging stand-in for that CLI is installed (modelled on the real release); `migrate --help` prints the top-level help to stderr and `migrate dev` fails with CLI.UNKNOWN_COMMAND ("did you mean `migration`?"), while the top-level `dev`, `deploy`, `migration` and `db` commands succeed. The skill must stop at the step 1 CLI check before `migrate dev` runs, tell the user it doesn't cover this release, and never run or recommend a similarly named command (GitHub issue 17). A run without the skill tries `migrate dev`, then follows the hint.
+tags: [prisma-workflow]
+context:
+  scaffold_script: fixture.sh
