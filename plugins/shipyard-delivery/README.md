@@ -34,7 +34,7 @@ If you installed the plugin under its old name, `delivery`, the marketplace's `r
 
 ## What it runs
 
-The plugin has no hooks and no MCP servers, and it sends nothing anywhere on its own. Its skills tell the agent to run commands in your project with your usual permission prompts: `git` to read the branch, your code host's CLI (such as `gh`) to read pull requests and, in `pr-description` after you approve the draft, to create or update one, your project's Prisma CLI against the development database, and your app's own start command plus local HTTP requests or a browser in `live-verify`. `pr-review` includes `scope.sh`, a shell script that writes the diff to a scratch folder.
+The plugin has no hooks and no MCP servers, and it sends nothing anywhere on its own. Its skills tell the agent to run commands in your project with your usual permission prompts: `git` to read the branch, your code host's CLI (such as `gh`) to read pull requests and, in `pr-description` after you approve the draft, to create or update one, your project's Prisma CLI against the development database (plus a one-line script that prints only the database's hostname, to check it's a development database), and your app's own start command plus local HTTP requests or a browser in `live-verify`. `pr-review` includes `scope.sh`, a shell script that writes the diff to a scratch folder.
 
 ## More
 
