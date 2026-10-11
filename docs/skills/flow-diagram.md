@@ -2,7 +2,7 @@
 
 # flow-diagram
 
-Draws a flowchart, sequence diagram, state diagram, or architecture or data-flow picture ("draw a diagram of this flow", "add a sequence diagram") that reads as one system, choosing Mermaid for pages that render it and hand-drawn ASCII for terminals, chat replies, and markdown read in an editor. Project-specific destinations, renderer limits, and size or width limits come from an optional settings file. Parses Mermaid before shipping when the environment has a parser or validator. Use when about to draw any diagram, flowchart, sequence diagram, or state diagram, or when another skill asks for one. For charts of data (bar, line, pie), use a charting skill instead.
+Draws flowcharts, sequence and state diagrams, and architecture or data-flow pictures, in Mermaid where the page renders it and ASCII elsewhere. Use when asked to "draw a diagram of this flow" or "add a sequence diagram", when about to draw any diagram, or when another skill asks for one. For charts of data (bar, line, pie), use a charting skill instead.
 
 | | |
 |---|---|

@@ -2,7 +2,7 @@
 
 # db-migration
 
-Plans or makes a database migration ("plan a migration", "add a field to the Prisma schema", "rename this column", "check this migration") end to end on the development database, through an adapter for the project's migration tool (shipped for Prisma), so the tool generates each migration instead of hand-written SQL, every risky change waits for the user before it's applied, the client is regenerated, application types are updated, and no migration is left pending. Use when planning or making a database or Prisma schema change, asking how to migrate a model, field, enum, or relation (including a rename), creating or fixing a migration, or checking a hand-written migration. Not for general questions about ORMs or comparing tools.
+Plans and makes database migrations through the project's migration tool (shipped for Prisma). Use when asked to "plan a migration", "add a field to the Prisma schema", "rename this column", or "check this migration", when changing a database schema, migrating a model, field, enum, or relation, or creating, fixing, or auditing a migration. Not for general questions about ORMs or comparing tools.
 
 | | |
 |---|---|

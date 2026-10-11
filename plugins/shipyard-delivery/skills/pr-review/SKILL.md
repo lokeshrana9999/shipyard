@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: Reviews a pull request or the current branch before merge ("review my PR", "review this branch", "is this ready to merge?") against a catalog of review concerns (a built-in starter set plus the project's own, mined from its past reviews) in two agent stages, map-and-review per slice of the diff and a separate validation, and reports only validated bugs, issues, and nits, each quoting its added line, with an advisory ship verdict. Also builds or refreshes the project's concern catalog from past review comments. Unlike a general code review, it checks the project's own recurring concerns and prints how much of the catalog it covered. Use when asked to review, audit, or check a branch or pull request for correctness or readiness to merge, or to build a review catalog.
+description: Reviews the current branch or a pull request in two agent stages and reports only validated findings, with an advisory ship verdict. Unlike a general code review, it checks the project's own recurring concerns and prints how much of its catalog it covered. Takes a base branch or pull request; `mine` builds the catalog from past review comments. Run only when the user asks for it.
 argument-hint: "[base-branch | pull-request] | mine"
 disable-model-invocation: true
 ---

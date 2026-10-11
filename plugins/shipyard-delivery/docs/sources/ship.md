@@ -4,7 +4,7 @@ Provenance for `skills/ship/`. Kept outside the skill folder so it never loads i
 
 `ship` is new in the port; there is no archived original. It is the router the pack was planned around (superpowers-style: a router states the stage order, each stage skill ends with `next:`), built last so it names skills that exist.
 
-## Model invocation of user-only skills (checked 2026-09-28)
+## Model invocation of user-started skills (checked 2026-09-28)
 
 Question: can the model invoke a skill that sets `disable-model-invocation: true` through the Skill tool?
 

@@ -30,6 +30,7 @@ Portability (the open Agent Skills spec and other surfaces enforce these; Claude
 Quality:
 - The description says **what** and **when**, in third person ("Audits…", not "I can…" / "You can…"), with words a user would actually type. It describes when to trigger, not a summary of the body.
 - Recommend plain "Use when…" descriptions with concrete trigger phrases, and settle close calls with should/shouldn't-trigger evals. Some authoring guides suggest "pushy" descriptions to fight undertriggering, but aggressive trigger language ("CRITICAL: You MUST use this when…") makes current models overtrigger.
+- A skill with `disable-model-invocation: true` is started only by the user. Where the platform leaves its description out of the model's context (Claude Code does), grade the description as a `/` menu line: what the skill does and what its argument takes, ending with a sentence that it runs only when the user asks, for agents that ignore the flag. Don't ask it for trigger phrases or a `Use when` clause.
 - It separates this skill from near-miss neighbours (sibling skills, built-in commands) when confusion is plausible.
 - Skills with side effects (deploy, push, commit, send, publish, delete) set `disable-model-invocation: true`, so Claude doesn't decide to run them because the code "looks ready". The flag can also hide the skill from other places that rely on model invocation; check the platform docs for which. Editing a local project file behind an approval gate (a changelog, a config) doesn't count: it's reversible and the gate already covers it.
 - Background knowledge that users never invoke directly sets `user-invocable: false`.
@@ -39,7 +40,7 @@ Quality:
 - `argument-hint` is present when the body reads `$ARGUMENTS` / `$N`. An empty-argument check tests `$ARGUMENTS`, which expands to an empty string; an unmatched `$0` stays as the literal text `$0`.
 - Plugin skills run as `/<plugin>:<skill>`; references to them in either form are fine.
 
-Severity: unparseable frontmatter, multi-line description, missing description, reserved name, side-effecting skill without `disable-model-invocation` = **high**. Portability violations in a skill published beyond Claude Code (the overlay or README says so) = **high**, otherwise **medium**; Claude Code-only fields in a Claude Code-only skill = no finding. Vague description with no trigger words, key triggers past the listing cut, unknown key, `context: fork` with no task = **medium**. Background skill missing `user-invocable: false`, file-scoped skill missing `paths`, missing `argument-hint`, other missing optional fields that would help = **low**.
+Severity: unparseable frontmatter, multi-line description, missing description, reserved name, side-effecting skill without `disable-model-invocation` = **high**. Portability violations in a skill published beyond Claude Code (the overlay or README says so) = **high**, otherwise **medium**; Claude Code-only fields in a Claude Code-only skill = no finding. Vague description with no trigger words (except a user-started skill's menu line), key triggers past the listing cut, unknown key, `context: fork` with no task = **medium**. Background skill missing `user-invocable: false`, file-scoped skill missing `paths`, missing `argument-hint`, other missing optional fields that would help = **low**.
 
 ## 2. Body structure
 
