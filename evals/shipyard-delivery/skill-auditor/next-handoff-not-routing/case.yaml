@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: next-handoff-not-routing
+description: Fixture stage skill ends with a pass/fail next: handoff; the audit must not grade it as routing.
+tags: [skill-auditor]
+context:
+  scaffold_script: fixture.sh

@@ -39,18 +39,18 @@ Quality:
 - `hooks:` in frontmatter registers hooks that stay active for the rest of the session once the skill runs. That is a side effect; treat it like one for `disable-model-invocation`.
 - `argument-hint` is present when the body reads `$ARGUMENTS` / `$N`. An empty-argument check tests `$ARGUMENTS`, which expands to an empty string; an unmatched `$0` stays as the literal text `$0`.
 - Plugin skills run as `/<plugin>:<skill>`; references to them in either form are fine.
-- `description` on one line. Older Claude Code versions were reported to miss multi-line descriptions (a wrapped plain scalar, or a `|` / `>` block), and current validators pass them, so note one at low severity as a `(prediction)` and suggest confirming the skill appears in the `/` menu.
+- `description` on one line. Some Claude Code versions were reported to miss multi-line descriptions (a wrapped plain scalar, or a `|` / `>` block), and validators don't flag them, so note one at low severity as a `(prediction)` and suggest confirming the skill appears in the `/` menu.
 
 | Severity | When |
 |---|---|
-| high | frontmatter that doesn't parse; missing `description`; reserved `name`; side-effecting skill without `disable-model-invocation`; portability violation in a skill published beyond Claude Code (its settings file or README says so) |
+| high | frontmatter that doesn't parse; missing `description`; reserved `name`; side-effecting skill without `disable-model-invocation`; portability violation in a skill published beyond Claude Code (skill-auditor's settings file sets `published beyond Claude Code: yes`, or the README says so) |
 | medium | portability violation in a skill not published beyond Claude Code; vague description with no trigger words (except a user-started skill's menu line); key trigger phrases past the listing cut; unknown key; `context: fork` with no task |
 | low | multi-line description, as a `(prediction)`; background skill missing `user-invocable: false`; file-scoped skill missing `paths`; missing `argument-hint`; other missing optional fields that would help |
 | no finding | Claude Code-only fields in a Claude Code-only skill |
 
 ## 2. Body structure
 
-- The body has a recognizable shape: inputs → output → rules → steps → gates. The shipyard default names are `Inputs`, `Output`, `Rules`, `Steps`, plus inline gate markers; the settings file may set others. Names can vary if the shape is there.
+- The body has a recognizable shape: inputs → output → rules → steps → gates. The shipyard default names are `Inputs`, `Output`, `Rules`, `Steps`, plus inline gate markers; skill-auditor's settings file may set others. Names can vary if the shape is there.
 - Multi-step skills give a copyable `- [ ]` progress checklist, so the model can track its position across compaction.
 - Destructive or batch work follows plan → validate → execute, and quality-sensitive output has a validate → fix → repeat loop.
 - The same concept is named the same way throughout ("report", not "report" / "audit doc" / "output file").
@@ -79,7 +79,7 @@ Quality:
 ## 4. Approval gates
 
 - Every irreversible or outward-facing operation (commit, push, publish, send, delete, network write, package install, overwriting a user file) has an explicit gate before it.
-- Gates use one marker vocabulary. Shipyard default: `STOP — WAIT` (approval needed), `HUMAN TRIGGER` (the user does work), `NO STOP — Agent-owned` (proceeds; may be left implicit if the skill says unmarked steps are agent-owned). The settings file may define another; what matters is that one is used consistently within a skill, and across skills (checked in the cross-skill step).
+- Gates use one marker vocabulary. Shipyard default: `STOP — WAIT` (approval needed), `HUMAN TRIGGER` (the user does work), `NO STOP — Agent-owned` (proceeds; may be left implicit if the skill says unmarked steps are agent-owned). Skill-auditor's settings file may define another; what matters is that one is used consistently within a skill, and across skills (checked in the cross-skill step).
 - A gate says what the user is approving (branch, title, target, file) so approval is informed, not a bare "continue?".
 - Gates are reachable: none inside a `context: fork` skill or a step handed to a subagent. Subagents can't ask the user a question; a fork can end with a question but can't wait for the answer, so a `STOP — WAIT` inside one is unreachable.
 - Side-effecting skills also set `disable-model-invocation: true` (dimension 1). A gate inside a skill Claude can auto-invoke is a second line of defence, not the first.
@@ -156,7 +156,7 @@ List every negative-phrasing rule found in the per-skill detail's `Negative-phra
 | Dispatches sibling skills / routes failures | Orchestrator step; artifacts are the seams between skills |
 | Methodology > 50% of body | Process doc, linked from the skill |
 
-Routing means a skill starting the next skill itself, or choosing which skill runs after a failure. A handoff isn't routing: a one-line `next:` that names the following stage and leaves starting it to the user or the session. Neither is a skill whose whole job is routing, such as a pipeline router.
+Routing means a skill starting or dispatching another skill itself, including re-running a stage after a failure. A handoff isn't routing: a one-line `next:` that names the following stage, or one stage per outcome (a pass to review, a fail back to implement), and leaves starting it to the user or the session. Neither is a skill whose whole job is routing, such as a pipeline router.
 
 - Verdict: **Bullseye** / **Acceptable** / **Misfit**.
 - Recommendation: Keep / Refine boundary / Split / Demote to doc / Promote to orchestrator step / Move to other surface.

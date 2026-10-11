@@ -25,7 +25,7 @@ Provenance for the rules in `skills/skill-auditor/` (references/dimensions.md). 
 - Description optimizer: skill-creator's description optimization. skill-creator also suggests "pushy" descriptions; Anthropic guidance says aggressive trigger language overtriggers on Claude Opus 4.5 and later.
 - Usage report: `/skill-doctor` (listing cost, usage, never-invoked skills; Claude Code v2.1.252 or later): https://code.claude.com/docs/en/skills, "Find unused skills" (checked 2026-10-11).
 - Step 2 ran `claude plugin validate` "if the `claude` CLI is available"; the report header read `Schema check: <claude plugin validate: ...>`.
-- The claim that multi-line descriptions made skills undiscoverable, with its two issue links (listed above).
+- The claim that multi-line descriptions made skills undiscoverable, with its two issue links (listed above). Restored in 0.3.2 (#18): the #9817 link is back in dimensions.md "Citable in findings", as the source for the low multi-line note.
 - Listing truncation: `description` + `when_to_use` truncated at 1,536 characters.
 - Reserved names: `synced`, `anthropic-skills…`. The skills docs say a skill folder named `synced` is skipped in the enterprise, personal, and project locations, and that outside a plugin a skill named `anthropic-skills` or starting with `anthropic-skills:` doesn't load: https://code.claude.com/docs/en/skills, "Choose where skills load" (checked 2026-10-11).
 - Known frontmatter keys: `name`, `description`, `when_to_use`, `argument-hint`, `arguments`, `disable-model-invocation`, `user-invocable`, `allowed-tools`, `disallowed-tools`, `model`, `effort`, `context`, `agent`, `background`, `hooks`, `paths`, `shell`, `license`, `compatibility`, `metadata`.
@@ -36,7 +36,7 @@ Provenance for the rules in `skills/skill-auditor/` (references/dimensions.md). 
 - Subagents don't get the `AskUserQuestion` tool.
 - Dynamic context (`` !`cmd` ``) commands time out after 2 minutes; `shell: bash` is the default and fails on Windows without Git Bash.
 - The distractor finding's citation of *Context Rot* (listed above).
-- The "Citable in findings" list: the Agent Skills specification, the multi-line description issue, and the prompting best practices (all listed above).
+- The "Citable in findings" list: the Agent Skills specification, the multi-line description issue, and the prompting best practices (all listed above). Restored in 0.3.2 (#18), with the Claude Code skills docs added as the platform docs link.
 - The report template's example finding cited the multi-line description issue.
 
 ## Defaults (as of 2026-10-11)

@@ -9,7 +9,7 @@ One step of the delivery pipeline (explain, plan, test design, implement, verify
 _Avoid_: step, phase
 
 **Handoff**:
-The line that ends a stage skill by naming the stage that comes next; it names that stage, it never starts it.
+The line that ends a stage skill by naming the stage that comes next, or one stage per outcome; it names stages, it never starts them.
 _Avoid_: routing, next step
 
 **User-started skill**:
