@@ -4,6 +4,31 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-10
+
+### Added
+
+- `db-migration`'s adapter format, `references/tools/format.md`: the fields a tool's adapter fills in, the step that reads each one, and what an adapter needs before it's enabled (every field measured on a real release, or taken from the tool's docs or source where measuring it needs a database server, and evals for the host check, the risky-change gate, and an unknown command).
+- The Prisma adapter, `references/tools/prisma.md`, holding the commands, release notes, and error messages that were in `prisma-workflow`'s `SKILL.md`, plus a permission allowlist to paste into the project's `.claude/settings.json`.
+- A draft Drizzle adapter, `references/tools/drizzle.md`, measured on drizzle-kit 0.31.11 against PGlite (an in-process Postgres; no Postgres server was run). It isn't enabled: detection skips it, and the skill uses it only when the settings file or the user names `drizzle` and the user agrees for that run, after seeing why it isn't enabled.
+- A `legacy-settings-path` eval case: with only the old `.claude/shipyard/prisma-workflow.md` in the project, the skill stops on a host listed under its `never-write hosts` and asks for the rename.
+
+### Changed
+
+- **`prisma-workflow` is replaced by `db-migration`** (version 0.3.0, [#29](https://github.com/lokeshrana9999/shipyard/issues/29)): one skill holds the rules for every migration tool, and one adapter per tool, `references/tools/<tool>.md`, holds that tool's commands. Prisma is the only enabled adapter. The command is now `/shipyard-delivery:db-migration`; `/shipyard-delivery:prisma-workflow` is removed, with no stub left in its place. The settings file is now `.claude/shipyard/db-migration.md`. While that file is missing, the skill reads `.claude/shipyard/prisma-workflow.md` as Prisma settings, its `allowed hosts` and `never-write hosts` included, and asks once for the rename; the old name may stop being read in a later release. If both files exist, it reads `db-migration.md`, still stops on every host the old file lists under `never-write hosts`, and asks for the old file to be merged into the new one and deleted. To migrate: rename the file, add `tool: prisma`, and rename the keys as the skill's `references/overlay-example.md` lists (`prisma directory` becomes `schema path` and `migrations path`, its `(run commands from <dir>)` note becomes `working directory`, `create migration` becomes `create without applying`, `apply migration` becomes `apply`, `generate client` becomes `regenerate client`). If you installed with `npx skills add` or by copying, delete the old `prisma-workflow/` folder from each skills folder you copied the pack into (`.agents/skills/` by default, `~/.agents/skills/` with `-g`, or an agent's own folder such as `.gemini/skills/` or `~/.gemini/skills/`; `docs/agents-install.md` lists them), or the agent keeps loading it beside `db-migration`. If you pasted the snippet from `docs/agents-install.md` into `AGENTS.md` or `GEMINI.md`, change `prisma-workflow` to `db-migration` in it. The skill pre-approves no commands, so in Claude Code each Prisma command asks for permission. The Prisma adapter's `allowlist`, pasted into the project's `.claude/settings.json`, approves only commands that change no database: the CLI check, `status`, and regenerating the client. Creating a migration, `diff`, applying, and deploying still ask.
+- `ship` finds schema and migration files through `db-migration`: the `schema path` and `migrations path` in its settings file, else the schema and migration globs of its enabled adapters. It runs no migration tool to find them.
+
+### Fixed
+
+- Creating a migration no longer applies other pending migrations unreviewed. Prisma's `migrate dev --create-only` first applies every migration already pending in the folder, so `db-migration` runs `status` before it and takes each pending migration through the step 4 gate first. After the command it checks the output for a refusal whatever the exit code, and stops if no new migration file was written.
+- A host under `never-write hosts` stops the run even when it's a loopback address or also listed under `allowed hosts`.
+- The hand-written migration audit's `diff` command works on Prisma 6. `prisma-workflow` gave only the Prisma 7 form, `migrate diff --to-schema`, which 6.19.3 rejects with `unknown or unexpected option: --to-schema`; the Prisma adapter gives Prisma 6 its own form, with `--to-schema-datamodel` and `--shadow-database-url`, and runs it only when the project sets its own shadow database URL, since Prisma resets the shadow database it's given.
+- `prisma-workflow` (now `db-migration`) stops for every change in `references/risky-changes.md`, including an index on an existing table, removing an enum value, and (a new row) making an existing column required. It counts every existing table as large and full, since production's row counts can't be seen ([#17](https://github.com/lokeshrana9999/shipyard/issues/17)).
+- `prisma-workflow` (now `db-migration`) checks in step 1 that every database the CLI will connect to (datasource, direct URL, shadow database) is local or listed under the new `allowed hosts` setting, and always stops on a host under the new `never-write hosts` setting, before generating anything. It prints only the host, never the connection string.
+- `prisma-workflow` (now `db-migration`) checks that Prisma is installed as a project dependency and that `prisma migrate --help` lists the subcommands it uses, instead of reading a version it had nothing to compare with, and stops on an unknown command rather than running a similarly named one. A plan-only request skips these commands and says they still have to pass.
+
+## [0.2.0] - 2026-09-29
+
 ### Added
 
 - `plugins/shipyard-delivery/README.md` and `LICENSE`, which Anthropic's plugin directory requires in the plugin folder.
@@ -34,12 +59,6 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 - `review-scorer` agent and `pr-review`'s prefilter, selection, and size-tier funnel (`references/pipeline.md`).
 - The `voice` plugin.
 
-### Fixed
-
-- `prisma-workflow` stops for every change in `references/risky-changes.md`, including an index on an existing table, removing an enum value, and (a new row) making an existing column required. It counts every existing table as large and full, since production's row counts can't be seen ([#17](https://github.com/lokeshrana9999/shipyard/issues/17)).
-- `prisma-workflow` checks in step 1 that every database the CLI will connect to (datasource, direct URL, shadow database) is local or listed under the new `allowed hosts` setting, and always stops on a host under the new `never-write hosts` setting, before generating anything. It prints only the host, never the connection string.
-- `prisma-workflow` checks that Prisma is installed as a project dependency and that `prisma migrate --help` lists the subcommands it uses, instead of reading a version it had nothing to compare with, and stops on an unknown command rather than running a similarly named one. A plan-only request skips these commands and says they still have to pass.
-
 ## [0.1.0] - 2026-09-28
 
 ### Added
@@ -52,7 +71,9 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 - Example project settings for a NestJS + Prisma API.
 - A private `voice` plugin placeholder with no skills.
 
-[Unreleased]: https://github.com/lokeshrana9999/shipyard/compare/main...refactor/map-review-validate
+[Unreleased]: https://github.com/lokeshrana9999/shipyard/commits/main
+[0.3.0]: https://github.com/lokeshrana9999/shipyard/compare/95352af...main
+[0.2.0]: https://github.com/lokeshrana9999/shipyard/tree/95352af
 [0.1.0]: https://github.com/lokeshrana9999/shipyard/tree/main
 
 <!-- TODO: add a skills.sh badge to the README once the repo has a page on skills.sh. -->

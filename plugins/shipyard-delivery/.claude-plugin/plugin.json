@@ -1,8 +1,8 @@
 {
   "name": "shipyard-delivery",
   "displayName": "Shipyard Delivery Pipeline",
-  "version": "0.2.0",
-  "description": "Take a code change from question to pull request in eight stages: explain, plan, test design, implement, verify live, review, describe, demo. Ask \"ship this\" and the ship skill names where your branch is and the next stage. Includes a verified PR review, a PR description writer, a Prisma migration workflow, live checks in the running app, test design, diagrams, and a skill auditor.",
+  "version": "0.3.0",
+  "description": "Take a code change from question to pull request in eight stages: explain, plan, test design, implement, verify live, review, describe, demo. Ask \"ship this\" and the ship skill names where your branch is and the next stage. Includes a verified PR review, a PR description writer, a database migration workflow (Prisma), live checks in the running app, test design, diagrams, and a skill auditor.",
   "author": {
     "name": "Lokesh Rana",
     "email": "lokeshrana9999@gmail.com",
@@ -25,6 +25,7 @@
     "pr-description",
     "prisma",
     "migrations",
+    "database-migrations",
     "test-design",
     "live-verify",
     "diagrams",

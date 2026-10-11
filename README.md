@@ -22,7 +22,7 @@ claude plugin marketplace add lokeshrana9999/shipyard
 claude plugin install shipyard-delivery@shipyard
 ```
 
-The first command adds this repo as a marketplace named `shipyard`. The second installs the `shipyard-delivery` plugin at user scope (add `-s project` to it for one project): the ten skills, four [helper agents](docs/helper-agents.md) that `pr-review` and `build-workflow` start as subagents, and the `signal` output style (answer first, one next step), which you pick in Claude Code's settings. Update with `claude plugin update shipyard-delivery@shipyard`; remove with `claude plugin uninstall shipyard-delivery@shipyard`. Before 0.2.0 the plugin was named `delivery`; if you installed it then, see the migration note in [CHANGELOG.md](CHANGELOG.md#unreleased).
+The first command adds this repo as a marketplace named `shipyard`. The second installs the `shipyard-delivery` plugin at user scope (add `-s project` to it for one project): the ten skills, four [helper agents](docs/helper-agents.md) that `pr-review` and `build-workflow` start as subagents, and the `signal` output style (answer first, one next step), which you pick in Claude Code's settings. Update with `claude plugin update shipyard-delivery@shipyard`; remove with `claude plugin uninstall shipyard-delivery@shipyard`. Before 0.2.0 the plugin was named `delivery`; if you installed it then, see the migration note in [CHANGELOG.md](CHANGELOG.md#020---2026-09-28).
 
 ### Codex, Gemini CLI, Cursor, GitHub Copilot, OpenCode, and others
 
@@ -66,7 +66,7 @@ graph LR
     classDef ui    fill:#0072B2,color:#fff,stroke:#888,stroke-width:1.5px
 ```
 
-A rectangle is a stage you or the agent can start; a pill is one only you can start, by running its skill by name. Stage names are not skill names: explain runs `walkthrough`, describe runs `pr-description`, plan and implement happen in your agent's normal session (with `prisma-workflow` when a Prisma schema changes), and demo has no skill yet.
+A rectangle is a stage you or the agent can start; a pill is one only you can start, by running its skill by name. Stage names are not skill names: explain runs `walkthrough`, describe runs `pr-description`, plan and implement happen in your agent's normal session (with `db-migration` when a database schema changes), and demo has no skill yet.
 
 `ship` only routes. It reads the branch with cheap read-only checks (changed files, tests, a plan file, an open pull request), runs no builds or tests, and reports the current stage, any skipped ones, and the next one. `/shipyard-delivery:ship all` instead prints a `/shipyard-delivery:build-workflow` command for you to run, which runs the remaining stages as one multi-agent run. When demo comes next, `ship` says it has no skill yet and stops.
 
@@ -79,7 +79,7 @@ The stage-to-skill table, the routing rules, each skill's handoff, and how `pr-r
 | `ship` | any | Places the branch in the pipeline and names the next stage | you or the agent |
 | `walkthrough` | 0 explain | Writes explanations and documents answer-first, with one next action | you or the agent |
 | `design-tests` | 2 test design | Writes a test-design document from the spec and the real code; writes no test code | you or the agent |
-| `prisma-workflow` | 3 implement, when a Prisma schema changes | Makes a Prisma schema change with CLI-generated migrations, reviewed before they're applied | you or the agent |
+| `db-migration` | 3 implement, when a database schema changes | Makes a database schema change through the project's migration tool, with generated migrations reviewed before they're applied; ships with a Prisma adapter | you or the agent |
 | `live-verify` | 4 verify live | Boots the app, drives the changed flow over HTTP or in a browser, and reports each check with evidence | you or the agent |
 | `pr-review` | 5 review | Reviews a branch against the project's recurring review concerns; `/shipyard-delivery:pr-review mine` builds that list from past review comments | you only |
 | `pr-description` | 6 describe | Drafts the PR title and body, shows it for approval, then creates or updates the PR | you only |

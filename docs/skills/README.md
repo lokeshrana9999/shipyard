@@ -7,12 +7,12 @@ One page per skill, generated from its `SKILL.md`.
 | Skill | Who starts it | Arguments |
 |---|---|---|
 | [build-workflow](build-workflow.md) | you | `[goal \| plan file] [stages to run] [go]` |
+| [db-migration](db-migration.md) | you or the agent |  |
 | [design-tests](design-tests.md) | you or the agent |  |
 | [flow-diagram](flow-diagram.md) | you or the agent |  |
 | [live-verify](live-verify.md) | you or the agent | `[what to verify] [api \| browser]` |
 | [pr-description](pr-description.md) | you |  |
 | [pr-review](pr-review.md) | you | `[base-branch \| pull-request] \| mine` |
-| [prisma-workflow](prisma-workflow.md) | you or the agent |  |
 | [ship](ship.md) | you or the agent | `[stage \| all]` |
 | [skill-auditor](skill-auditor.md) | you or the agent | `[skill-file-or-dir] [report-path]` |
 | [walkthrough](walkthrough.md) | you or the agent |  |
