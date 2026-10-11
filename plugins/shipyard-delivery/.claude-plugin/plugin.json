@@ -1,7 +1,7 @@
 {
   "name": "shipyard-delivery",
   "displayName": "Shipyard Delivery Pipeline",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Take a code change from question to pull request in eight stages: explain, plan, test design, implement, verify live, review, describe, demo. Ask \"ship this\" and the ship skill names where your branch is and the next stage. Includes a verified PR review, a PR description writer, a database migration workflow (Prisma), live checks in the running app, test design, diagrams, and a skill auditor.",
   "author": {
     "name": "Lokesh Rana",

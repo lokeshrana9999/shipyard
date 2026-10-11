@@ -4,6 +4,12 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-10-11
+
+### Fixed
+
+- flow-diagram's defaults follow its own rules, and its text claims only what its files and sources hold ([#26](https://github.com/lokeshrana9999/shipyard/issues/26)). The palette rule now says the hues stay distinct under the common color-vision deficiencies instead of claiming a lightness difference two pairs don't have; the palette itself is unchanged. The ASCII template's boxes, and the example diagram in walkthrough, are n+2 dashes wide, where n is the widest label in the box's column. The settings example drops `validate mermaid`, which nothing read. The pointer to `references/examples.md` names what it holds (Mermaid flowchart and sequence examples), and the Mermaid reference says "some renderers" where only Azure DevOps was checked. `docs/sources/flow-diagram.md` records the palette measurement, and gives each default and each layout rule its basis, all of them "house default".
+
 ## [0.3.2] - 2026-10-11
 
 ### Changed
@@ -85,7 +91,8 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 - A private `voice` plugin placeholder with no skills.
 
 [Unreleased]: https://github.com/lokeshrana9999/shipyard/commits/main
-[0.3.2]: https://github.com/lokeshrana9999/shipyard/compare/438a36a...main
+[0.3.3]: https://github.com/lokeshrana9999/shipyard/compare/627de36...main
+[0.3.2]: https://github.com/lokeshrana9999/shipyard/compare/438a36a...627de36
 [0.3.1]: https://github.com/lokeshrana9999/shipyard/compare/f951a4d...438a36a
 [0.3.0]: https://github.com/lokeshrana9999/shipyard/compare/95352af...f951a4d
 [0.2.0]: https://github.com/lokeshrana9999/shipyard/tree/95352af

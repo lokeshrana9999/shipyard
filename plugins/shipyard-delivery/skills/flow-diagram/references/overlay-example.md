@@ -15,8 +15,7 @@ A project keeps this at `.claude/shipyard/flow-diagram.md`. Every setting is opt
   - no `<br/>` or other HTML in labels
 - ascii max width: 72
 - max size: mermaid 12 nodes, ascii 8 edges
-- validate mermaid: yes (when a parser or validator is available)
 - palette: default
 ```
 
-A "renderer limits" entry adds to the portable rules in `references/mermaid-syntax.md`; it can also relax one when the project's renderer is known to support more (for example newer node-shape syntax). A custom palette replaces the default `classDef` block and must still meet the palette rules in SKILL.md: lightness as well as hue differences, accessible text contrast on every fill, and a stroke visible on light and dark pages.
+A "renderer limits" entry adds to the portable rules in `references/mermaid-syntax.md`; it can also relax one when the project's renderer is known to support more (for example newer node-shape syntax). A custom palette replaces the default `classDef` block and must still meet the palette rules in SKILL.md: hues that stay distinct under the common color-vision deficiencies, accessible text contrast on every fill, and a stroke visible on light and dark pages.

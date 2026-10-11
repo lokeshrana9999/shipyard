@@ -21,7 +21,7 @@ Choose the syntax by where the diagram will be read.
 | A markdown file in the repo: plan, handoff, spec, report | editor or terminal | ASCII, per [references/ascii-diagrams.md](references/ascii-diagrams.md) |
 | Chat reply | terminal | ASCII |
 
-- Markdown in a repo is mostly read in an editor, where Mermaid shows as source instead of a figure, so it gets ASCII by default. The project settings can say the team reads it rendered.
+- Default: ASCII for markdown in the repo, because it reads the same in an editor, a terminal, and a rendered page, while Mermaid shows as source anywhere it isn't rendered. The project settings can say the team reads it rendered.
 - One artifact, one syntax.
 - If the destination is unknown, ask before drawing; guessing costs a full redraw.
 
@@ -41,7 +41,7 @@ One diagram answers one question. If you can't name the question, you don't yet 
 
 Each role has one shape and one color, used the same way in every diagram so the reader learns it once. Whatever palette is in use, it follows four rules:
 
-- The colors differ in lightness as well as hue, so color-blind readers can still separate them.
+- The hues stay distinct under the common color-vision deficiencies, so color-blind readers can still separate them.
 - Text on every fill meets accessibility contrast for normal text.
 - A neutral mid-tone stroke on every node keeps it visible on both light and dark pages.
 - Color never carries meaning alone; shape or label carries it too.
@@ -84,4 +84,4 @@ For Mermaid:
 
 For ASCII, use the checklist in `references/ascii-diagrams.md`.
 
-For worked before-and-after examples of every rule above, read [references/examples.md](references/examples.md) when a diagram isn't coming together.
+For before-and-after Mermaid examples (a flowchart and a sequence diagram) of the shape, class, and layout rules, read [references/examples.md](references/examples.md) when a diagram isn't coming together.

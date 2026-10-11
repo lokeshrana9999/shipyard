@@ -73,16 +73,16 @@ Illustrative, not a real bug. A "why is this failing" question mixes explanation
 ```
 The login test fails because the retry reuses an expired token.
 
-+------------+     +-------------+     +---------------+
-| login test | --> | first call  | --> | token valid?  |
-+------------+     +-------------+     +---------------+
-                                          |         |
-                                         yes        no
-                                          |         |
-                                          v         v
-                                     +--------+   X 401, test fails
-                                     | 200 ok |
-                                     +--------+
++------------+     +------------+     +--------------+
+| login test | --> | first call | --> | token valid? |
++------------+     +------------+     +--------------+
+                                         |         |
+                                        yes        no
+                                         |         |
+                                         v         v
+                                    +--------+     X 401, test fails
+                                    | 200 ok |
+                                    +--------+
 
 The test config issues tokens that live 1 s (auth.test.ts:12). The
 first call is slow, so the retry fires after the 2 s backoff, token
