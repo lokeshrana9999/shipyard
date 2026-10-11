@@ -66,7 +66,7 @@ Example of a finding at the right level of detail:
 
 | Location | Severity | Finding | Fix |
 |---|---|---|---|
-| `SKILL.md:3` | high | "Deploys the current branch to production.": a production deploy with no `disable-model-invocation: true`, so Claude can start it on its own when the code looks ready | Add `disable-model-invocation: true` to the frontmatter |
+| `SKILL.md:27` | high | "Run `/home/alice/tools/lint.sh`": a machine-specific path in a shared skill, so the step fails on every other machine | Bundle the script with the skill and resolve its path at run time (in Claude Code, `${CLAUDE_SKILL_DIR}/scripts/lint.sh`) |
 
 And one too vague to act on:
 
