@@ -19,6 +19,16 @@ Provenance for the rules in `skills/walkthrough/` (SKILL.md and references/writi
 - blader/humanizer (pattern groupings): https://github.com/blader/humanizer
 - Expertise reversal meta-analysis, 2025 (withheld guidance hurts novices more than redundant guidance hurts experts; basis for the reader-level setting): https://www.sciencedirect.com/science/article/pii/S0959475225000660
 
+## Defaults (as of 2026-10-11)
+
+All house defaults; none was measured.
+
+- About 40 lines per reply, roughly one terminal screen (SKILL.md "Length").
+- Lists grouped into five or fewer chunks (SKILL.md "Length").
+- More than seven steps split into named phases of at most five steps (SKILL.md "Length").
+- A closing action the reader can start in under two minutes (SKILL.md "Shape").
+- Ideas connected with `also`, `then`, and `ie` (SKILL.md "Wording"): a style choice, not a readability finding.
+
 ## Specifics removed from the skill (as of 2026-09-27)
 
 - SKILL.md, Documents: "A wiki page or PR body renders Mermaid." The skill now says to use diagram code where the page renders it.

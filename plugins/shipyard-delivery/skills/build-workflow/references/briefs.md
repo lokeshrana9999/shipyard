@@ -4,7 +4,7 @@ Contents: how to brief · status mapping · the shared prefix · the no-cleanup 
 
 ## How to brief
 
-- **Give each agent the text itself**: the plan entry, the orientation, the findings. Agents that re-derive context spend most of their calls before the first useful one. Large files (the spec, a long plan) go by path.
+- **Give each agent the text itself**: the plan entry, the orientation, the findings. Agents handed only paths spend many calls re-deriving context before their first useful one. Large files (the spec, a long plan) go by path.
 - **A byte-stable prefix, then a divider, then the per-item facts.** The prefix is identical for every agent of a stage, so it's cached; anything that varies goes after the divider.
 - **Short output.** Ask for the return shape and nothing else; cap free text to a few sentences.
 - **Name the one rule a stage needs** rather than pasting the project's whole instructions file; subagents usually load that file already.
