@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: Reviews the current branch or a pull request in two agent stages and reports only validated findings, with an advisory ship verdict. Unlike a general code review, it checks the project's own recurring concerns and prints how much of its catalog it covered. Takes a base branch or pull request; mine builds the catalog from past review comments. Run only when the user asks for it.
+description: Reviews the current branch or a pull request in two agent stages and reports only validated findings, with an advisory ship verdict. Unlike a general code review, it checks the project's own recurring concerns and prints how much of its catalog it covered. Takes a base branch or pull request; `mine` builds the catalog from past review comments. Run only when the user asks for it.
 argument-hint: "[base-branch | pull-request] | mine"
 disable-model-invocation: true
 ---

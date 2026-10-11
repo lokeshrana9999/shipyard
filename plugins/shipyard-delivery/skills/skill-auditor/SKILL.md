@@ -1,6 +1,6 @@
 ---
 name: skill-auditor
-description: Audits SKILL.md files ("audit this skill", "review my skills", "score this SKILL.md") and writes a scored report with concrete fixes. Use when asked to review, audit, critique, grade, lint, or score a skill or a folder of skills, or before publishing or porting a skill into a plugin. For creating or rewriting a skill, or for skill usage and context cost, use the platform's skill-authoring and usage tools instead.
+description: Audits SKILL.md files and writes a scored report with concrete fixes. Use when asked to "audit this skill", "review my skills", or "score this SKILL.md", to critique, grade, or lint a skill or a folder of skills, or before publishing or porting one into a plugin. Not for creating or rewriting a skill, or for skill usage and context cost.
 argument-hint: "[skill-file-or-dir] [report-path]"
 ---
 

@@ -2,7 +2,7 @@
 
 # pr-description
 
-Drafts the pull request title and body from the branch's diff and history, shows it for approval, then creates or updates the pull request on the project's code host. Run when the user asks to write, draft, or publish the PR description.
+Drafts the pull request title and body from the branch's diff and history, shows it for approval, then creates or updates the pull request on the project's code host. Run only when the user asks to write, draft, or publish the PR description.
 
 | | |
 |---|---|

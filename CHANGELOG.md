@@ -8,7 +8,7 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ### Changed
 
-- Skill descriptions are about half as long ([#27](https://github.com/lokeshrana9999/shipyard/issues/27)). Each one the agent reads is now one sentence on what the skill does, one `Use when` clause naming every phrase it answers to once, and its boundary; the steps its body already holds are gone. The six that changed fall from 3,812 to 2,175 characters, all of them loaded into every session, and no trigger phrase was dropped. The three user-started skills (`build-workflow`, `pr-review`, `pr-description`), whose descriptions Claude Code doesn't show the model, now have a `/` menu line with no trigger phrases, ending with a sentence that they run only when the user asks, for agents that read it as trigger text. `CONTRIBUTING.md` states the shape.
+- Skill descriptions are about half as long ([#27](https://github.com/lokeshrana9999/shipyard/issues/27)). Each one the agent reads is now one sentence on what the skill does, one `Use when` clause naming every phrase it answers to once, and its boundary; the steps its body already holds are gone. Together the seven fall from 4,228 to 2,514 characters, all of them loaded into every session, and no quoted trigger phrase was dropped. The three user-started skills (`build-workflow`, `pr-review`, `pr-description`), whose descriptions Claude Code doesn't show the model, now have a `/` menu line with no trigger phrases, ending with a sentence that they run only when the user asks, for agents that read it as trigger text. `CONTRIBUTING.md` states the shape.
 
 ## [0.3.0] - 2026-10-10
 

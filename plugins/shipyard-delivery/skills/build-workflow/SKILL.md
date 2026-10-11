@@ -1,6 +1,6 @@
 ---
 name: build-workflow
-description: Runs a plan, the remaining delivery stages, or another multi-step job as one multi-agent run, after deciding whether one agent is enough, with capped fix loops and a separate verifier. Takes a goal or plan file, the stages to run, and go. Run only when the user asks for it.
+description: Runs a plan, the remaining delivery stages, or another multi-step job as one multi-agent run, after deciding whether one agent is enough, with capped fix loops and a separate verifier. Takes a goal or plan file, the stages to run, and `go` to skip the run-plan approval. Run only when the user asks for it.
 argument-hint: "[goal | plan file] [stages to run] [go]"
 disable-model-invocation: true
 ---
