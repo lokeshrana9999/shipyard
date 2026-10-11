@@ -11,8 +11,8 @@ Provenance for the rules in `skills/skill-auditor/` (references/dimensions.md). 
 - skill-creator (ALL-CAPS ALWAYS/NEVER is a yellow flag, explain why over MUSTs, "pushy" descriptions, description optimization): https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md
 - Lessons from building Claude Code: How we use skills (gotchas, description is for triggering): https://claude.dev/blog/lessons-from-building-claude-code-how-we-use-skills/
 - Chroma, *Context Rot* (2025): https://www.trychroma.com/research/context-rot
-- Multi-line description made skill undiscoverable: https://github.com/anthropics/claude-code/issues/9817 and https://github.com/anthropics/claude-code/issues/12971
-- Invalid frontmatter YAML: dimensions.md "1. Frontmatter and triggering" says it "fails silently; the skill just doesn't load". Contradicted 2026-10-11: the skills docs say the skill "still loads with no fields set" (https://code.claude.com/docs/en/skills, frontmatter reference), and `claude plugin validate` on Claude Code 2.1.296 reports it as an error (`success: false`, exit 1). The skill-side fix belongs to #18.
+- Multi-line description made skill undiscoverable: https://github.com/anthropics/claude-code/issues/9817 and https://github.com/anthropics/claude-code/issues/12971. Downgraded in 0.3.2 (#18) to a low `(prediction)` note: the reports predate current Claude Code, `claude plugin validate` on 2.1.296 passes wrapped descriptions (observed 2026-10-11), and the skills docs don't mention them. No live listing check was run.
+- Invalid frontmatter YAML: dimensions.md "1. Frontmatter and triggering" says it "fails silently; the skill just doesn't load". Contradicted 2026-10-11: the skills docs say the skill "still loads with no fields set" (https://code.claude.com/docs/en/skills, frontmatter reference), and `claude plugin validate` on Claude Code 2.1.296 reports it as an error (`success: false`, exit 1). Fixed in 0.3.2 (#18): dimensions.md now says the skill loads with no frontmatter fields.
 - Claude Code plugin evals (`claude plugin eval` case format): https://code.claude.com/docs/en/plugin-evals
 - Public validators: skills-ref (https://github.com/agentskills/agentskills/tree/main/skills-ref), skill-validator (https://github.com/agent-ecosystem/skill-validator)
 
@@ -43,4 +43,6 @@ Provenance for the rules in `skills/skill-auditor/` (references/dimensions.md). 
 
 - A skill earns its place above about 15 substantive lines; below that an inline prompt or a CLAUDE.md line does the same job (dimensions.md "3. Length and progressive disclosure"). House default.
 - Methodology over half the body moves to a process doc linked from the skill (dimensions.md "7. Abstraction fit"). House default.
+- Flag trigger phrases past 1,024 characters unless the platform docs give a lower cut (dimensions.md "1. Frontmatter and triggering"). From the Agent Skills spec's `description` limit (https://agentskills.io/specification), which is below Claude Code's 1,536-character cap per entry (https://code.claude.com/docs/en/skills, "Skill descriptions are cut short", checked 2026-10-11), so one number covers both.
+- Top 5 fixes ranked by highest severity first, then by the number of skills affected (SKILL.md "Steps"). House default.
 - With more than 5 skills, one subagent grades each (SKILL.md "Steps"). House default: the reason the skill gives, that past a handful the early skills crowd the later ones out of attention, wasn't measured.

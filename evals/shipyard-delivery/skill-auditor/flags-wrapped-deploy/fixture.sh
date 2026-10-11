@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Writes the fixture skill into the run's empty workspace.
-# Ground truth (high): folded multi-line description; production deploy and channel post with no
-# approval gate; side-effecting skill without disable-model-invocation. Also: <15 substantive lines
-# (medium); abstraction fit is a three-line procedure (script or inline prompt).
+# Ground truth (high): production deploy and channel post with no approval gate; side-effecting
+# skill without disable-model-invocation. Also: <15 substantive lines (medium); folded multi-line
+# description (low, prediction); abstraction fit is a three-line procedure (script or inline prompt).
 set -e
 mkdir -p skills/deploy-helper
 cat > skills/deploy-helper/SKILL.md <<'FIXTURE'

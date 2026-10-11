@@ -4,8 +4,11 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-10-11
+
 ### Changed
 
+- skill-auditor's rubric matches current Claude Code and this repo ([#18](https://github.com/lokeshrana9999/shipyard/issues/18)). Invalid frontmatter YAML is graded as what it does now: the skill loads with no fields, so its description can't trigger it and `disable-model-invocation` is dropped. A multi-line description drops from high to a low `(prediction)` note, and the listing-cut check names one default, 1,024 characters. The audit finds evals in a repo-level `evals/<plugin>/<skill>/` folder, labels `${CLAUDE_*}` remedies as Claude Code only, and no longer reports a stage skill's `next:` handoff as routing. Severities are tables, report findings are tables, and the settings file is no longer called an overlay. `GLOSSARY.md` adds **Handoff**.
 - The `docs/sources` notes no longer describe retired designs, and the numbers #25 listed for build-workflow, pr-description, skill-auditor, and walkthrough now record their basis: a link, an observation with its date, or "house default" ([#25](https://github.com/lokeshrana9999/shipyard/issues/25)). Two skill sentences claim less: build-workflow's brief says agents handed only paths spend "many" calls re-deriving context, not "most", and db-migration says hand-written SQL "can" use the schema's own name, not "tends to". `CONTRIBUTING.md` asks for the basis of each default value.
 
 ## [0.3.1] - 2026-10-11
@@ -82,7 +85,8 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 - A private `voice` plugin placeholder with no skills.
 
 [Unreleased]: https://github.com/lokeshrana9999/shipyard/commits/main
-[0.3.1]: https://github.com/lokeshrana9999/shipyard/compare/f951a4d...main
+[0.3.2]: https://github.com/lokeshrana9999/shipyard/compare/438a36a...main
+[0.3.1]: https://github.com/lokeshrana9999/shipyard/compare/f951a4d...438a36a
 [0.3.0]: https://github.com/lokeshrana9999/shipyard/compare/95352af...f951a4d
 [0.2.0]: https://github.com/lokeshrana9999/shipyard/tree/95352af
 [0.1.0]: https://github.com/lokeshrana9999/shipyard/tree/main
