@@ -30,7 +30,7 @@ scripts/                          run-evals.sh, eval-stats.py,
 - Don't depend on one agent. Where a skill uses a feature only some agents have (subagents, plan mode, slash-command arguments), say what to do without it.
 - End each stage skill with a `next:` line naming the following stage. `gen-docs.mjs` reads that line into the skill's reference page.
 - Give each skill a settings file: read `.claude/shipyard/<skill>.md` on every invocation, and document its fields in `references/overlay-example.md`. Project-specific values go in an example under `examples/`, not in the skill.
-- Record where a rule came from, and any specifics removed from the skill, in `plugins/shipyard-delivery/docs/sources/<skill>.md`. That folder sits outside `skills/`, so it never loads into an agent's context.
+- Record where each rule came from, the basis for each default value (a link, an observation with its date, or "house default"), and any specifics removed from the skill, in `plugins/shipyard-delivery/docs/sources/<skill>.md`. That folder sits outside `skills/`, so it never loads into an agent's context.
 
 ## before merging
 

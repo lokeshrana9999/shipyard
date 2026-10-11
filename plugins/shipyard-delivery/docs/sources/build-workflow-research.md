@@ -1,6 +1,6 @@
-# Research notes: build-workflow (deferred)
+# Research notes: build-workflow
 
-Gathered 2026-09-27, before the port was deferred until the generic agents exist. Use these when porting `build-workflow`; re-verify version-bound facts then.
+Gathered 2026-09-27 for the port, which shipped in 0.1.0; [build-workflow.md](build-workflow.md) notes where the port diverged. Re-verify version-bound facts before relying on them.
 
 Superseded (2026-09-28): the model-routing suggestions below (a stronger reviewer, "escalate model", a stronger-model decision) are history. The skill runs every agent on the invoking session's model; independence comes from a separate verifier that doesn't see the fixer's reasoning.
 
@@ -8,11 +8,11 @@ Superseded (2026-09-28): the model-routing suggestions below (a stronger reviewe
 
 - Generally available on paid plans; a built-in workflow-authoring skill covers script syntax, API, schema patterns, examples, and gotchas (no dynamic import, no mid-run user input, no filesystem access from the script, `Date.now()`/`Math.random()` throw). The port should defer API syntax to it and keep only design principles.
 - API: `agent(prompt, {schema, label, model, phase})` returns null if stopped; structured output validated with retries; `parallel()` for concurrent agents; `pipeline()` per item; `phase()` titles must match `meta.phases`; `log()`; `args` global.
-- No per-agent worktree isolation field; parallel writers are the script's problem, so "serialize writers of exclusive resources" is still needed.
+- No per-agent worktree isolation field; parallel writers are the script's problem, so "serialize writers of exclusive resources" is still needed. (Contradicted 2026-09-28: the workflow-authoring reference documents a per-call worktree option; see build-workflow.md.)
 - Progress: a `/workflows` view shows phases, agent counts, tokens, elapsed time, but there's no status file or notification primitive, so the STATUS.md beacon principle still adds value.
 - Resume replays cached agents in order until the first changed prompt; same session only.
 - No hard cost cap; a large-workflow advisory only. Model precedence: per-call, then script, then env default, then session.
-- Official guidance does not cover: blocker-gated loops, capped adaptive rounds, honest-failure schemas with branches on every field, blocked-twice escalation, verify-after-land, pre-flight health checks, restart-own-process rule. These are the skill's genuine additions.
+- The Workflow tool docs don't cover: blocker-gated loops, capped adaptive rounds, honest-failure schemas with branches on every field, blocked-twice escalation, verify-after-land, pre-flight health checks, restart-own-process rule.
 
 ## Multi-agent orchestration research
 
@@ -32,7 +32,7 @@ Superseded (2026-09-28): the model-routing suggestions below (a stronger reviewe
 
 ## Implementer briefing (from the dropped plan-commit-implementer agent, 2026-09-28)
 
-The archived per-commit implementer agent was dropped: built-ins (`/batch`, plan mode, `isolation: worktree`) and superpowers' plain-subagent-per-task cover it, and its commit mechanics only worked around a since-dropped deny rule. Its archive audit found 91 spawns re-deriving context (median 19 tool calls before the first write). What survives is how the caller briefs an implement step:
+The archived per-commit implementer agent was dropped: built-ins (`/batch`, plan mode, `isolation: worktree`) and superpowers' plain-subagent-per-task cover it, and its commit mechanics only worked around a since-dropped deny rule. Its archive audit found 91 spawns re-deriving context (median 19 tool calls before the first write); the audit isn't published, so these figures can't be checked. What survives is how the caller briefs an implement step:
 - One plan entry per agent call; paste the entry text, the HEAD commit, and summaries of prior commits into the prompt, never a path to re-read.
 - Keep a byte-stable prefix and put per-commit facts after a divider, for prompt caching.
 - The agent checks two cheap facts (HEAD commit, the named paths exist) before trusting the handed context.

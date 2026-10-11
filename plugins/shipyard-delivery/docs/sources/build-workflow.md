@@ -12,7 +12,7 @@ The archived original was a checklist for writing one workflow script that harde
 - Pre-flight before expensive agents, an honest `blocked` short-circuit, reuse of a warm stack.
 - Cheap by default: no agent that doesn't change what the run branches on. (The original's per-stage model routing is superseded; see Port decisions.)
 - Honesty schemas: every field has an `if` that reads it; stuck routes to a decision agent with `{action, rationale}`.
-- A lane blocked twice stops the run ("deferred once, never twice").
+- A lane blocked in two runs stops the run ("deferred once, never twice"). The port first allows the decision agent one `fix` or `rescope` for that lane (loops.md "Blocked twice").
 - Verify live only after all commits land.
 - Fold overlapping stages (a test-first implementer makes a separate test-design pass redundant).
 - The `STATUS.md` beacon: append-only, one line per transition answering what's running, what landed, what's next; it can't fail the run. Demoted in the port to plain appends by the orchestrator in modes 2 and 3, and in mode 1 only when the settings name a status path, since the runner's phases and log already show progress.
@@ -32,7 +32,7 @@ The archived original was a checklist for writing one workflow script that harde
 
 ## From research
 
-See [build-workflow-research.md](build-workflow-research.md) for the Workflow tool notes, the multi-agent research with links, and the implementer briefing rules. What it added: the decision whether to run multi-agent at all and effort scaling; the three runtime modes; first-class `blocked` exits; read-only tests for fixers; verifying the original goal; a separate skeptical verifier that didn't write the fix and doesn't see its reasoning; a 2-to-3 round cap; rescope or abort on no progress; health checks at agent start; worktree isolation with declared scope and a merge-time verify; the implement brief.
+See [build-workflow-research.md](build-workflow-research.md) for the Workflow tool notes, the multi-agent research with links, and the implementer briefing rules. What it added: the decision whether to run multi-agent at all and effort scaling; first-class `blocked` exits; read-only tests for fixers; verifying the original goal; a separate skeptical verifier that didn't write the fix and doesn't see its reasoning; a 2-to-3 round cap; rescope or abort on no progress; health checks at agent start; worktree isolation with declared scope and a merge-time verify; the implement brief.
 
 One conflict with the research notes: they say the workflow runner has no per-agent worktree isolation, while the workflow-authoring reference loaded during the port documents a per-call worktree option and an agent-type option. The skill defers exact syntax to that reference and says "where the runner offers it".
 
@@ -45,16 +45,22 @@ One tension with the research: context-engineering guidance says to pass referen
 - Agent caps exclude the review stage, which keeps pr-review's caps; a cap never weakens a check, and a run that would need it to is split instead.
 - A mode 1 script can't run git, so the test-file check (a diff against the pre-fix sha, which catches committed changes a working-tree diff misses) is part of the goal verifier, and worktree merges go to a merge agent.
 - Every agent runs on the model of the session that invoked the skill (`model: inherit` for the named agents); the skill names no models or tiers. The only allowed exceptions, stated once in loops.md: fan-out agents that only read and summarize files, and bringing up the stack before `live-verifier` runs, may use a smaller, faster model. This supersedes the original's model routing and the port's earlier four-tier scheme (cheapest, mid, stronger, strongest), including "verifier one tier above the fixer" and "escalate one tier on no progress".
-- The review stage follows pr-review's rebuild: `review-mapper` maps concerns to added lines, general-purpose reviewers check them in parallel, and `review-verifier` validates every finding, all as siblings under the orchestrator; the report is compiled mechanically. `review-scorer` no longer exists.
+- The review stage follows pr-review: one `concern-reviewer` per diff slice maps and reviews concerns, a mechanical evidence check runs, then one `review-verifier` validates every finding, all as siblings under the orchestrator; the report is compiled mechanically. `review-scorer` no longer exists.
+- The three runtime modes (workflow script, subagents, flat spawn) and the no-subagents path exist because the platforms differ in subagent support: some have a workflow runner, some allow one level of subagents, some none (runtime.md "Choosing a mode").
 - A `go` argument skips the plan approval stop, for headless runs; the stop stays by default.
 - Choosing one agent ends with `next:` naming the matching stage skill rather than a bare stop.
+
+## Defaults (as of 2026-10-11)
+
+- Agent caps: about 6 for a small run, about 15 for a medium one, and the settings' cap (default 30) for a large one (loops.md "Sizing and models"). House default: no measurement behind the numbers; they keep a small run cheap and make a large one split into several runs, each result read before the next starts.
+- A subsystem map of 30 to 60 lines in the orientation (briefs.md "Pre-flight"). House default: long enough to name each file that matters, short enough to paste into every brief.
+- Pipeline by default, with a barrier only when the next stage needs every result (runtime.md "Mode 1: workflow script"). Taken from the workflow-authoring reference the port deferred to: it says "DEFAULT TO pipeline()" and names the same two barrier cases, dedup across all results and an early exit when there are none (re-read 2026-10-11).
 
 ## Dropped as project-specific
 
 - The original's stage list (plan attack, slice smoke, API tests, browser story, triage, CI parity, publish) is replaced by the pack's six stages.
 - Hardcoded worktree and plan paths, architecture invariants, and decision records pasted into prompts; invariants became a settings entry.
 - A per-commit implementer agent and a commit-method skill, both dropped from the pack earlier.
-- Pinned model names per stage (superseded history; the skill now runs every agent on the invoking model, see Port decisions).
 - Publishing the pull request from inside the run; the port stops at a drafted description (HUMAN TRIGGER).
 - Notes on invoking scripts by path because of one repository's excluded workflow folder.
 

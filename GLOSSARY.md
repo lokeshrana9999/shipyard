@@ -16,6 +16,10 @@ _Avoid_: user-invoked, user-only, manual skill
 A project's `.claude/shipyard/<skill>.md`, whose values win over a skill's defaults.
 _Avoid_: overlay, config
 
+**House default**:
+A default value or rule the maintainers chose by judgment, with no source or measurement behind it.
+_Avoid_: guess, arbitrary default, unsourced default
+
 **Adapter**:
 The tool-specific part of the migration skill: which tool a project uses, how it is detected, and the commands that create, apply, and check migrations. Shipped per tool, overridden by the settings file.
 _Avoid_: driver, provider, backend

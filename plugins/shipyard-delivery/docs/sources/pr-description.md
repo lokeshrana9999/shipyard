@@ -13,8 +13,17 @@ Provenance for the rules in `skills/pr-description/`. Kept outside the skill fol
 - Template adoption and burden (IST 2021): https://www.sciencedirect.com/science/article/abs/pii/S0950584921002354
 - Change size and review (Sadowski et al., ICSE-SEIP 2018): https://sback.it/publications/icse2018seip.pdf ; untangling changes (Di Biase et al., PeerJ CS 2019): https://peerj.com/articles/cs-193/
 
+## Defaults (as of 2026-10-11)
+
+- A reviewer understands the pull request in under a minute (SKILL.md, opening). House default: a target for the reader, not a measurement.
+- One approval gate, before the first live write (SKILL.md "Rules"). House default: one approval covers everything that will be published, and nothing reaches the code host before it.
+- Degrade, don't abort, when an extended-context publish fails (SKILL.md "Rules"). House default: a failed side publish shouldn't cost the user the pull request.
+- A title of about 70 characters at most, so it isn't truncated in lists (body-template.md "Title"). House default: where a list cuts a title depends on the host and the window, and no host's cut was measured.
+- Three to five grouped bullets at most under Changes (body-template.md "Writing rules"). House default.
+- One diagram of about 5 to 9 nodes (body-template.md "Reviewer diagram"). House default.
+
 ## Specifics removed from the skill (as of 2026-09-27)
 
 - The original project's code-host specifics: organization, project, repository and wiki names and ids; MCP tool names; its description length limit; an attachment upload recipe; personal access token lookup from `.env.local`; a JSON-RPC stdio fallback to the MCP server; a CLI to avoid for description text (Windows console codepage corruption). A placeholder version now lives in `examples/nestjs-prisma/.claude/shipyard/pr-description.md`.
-- Host body limits seen in 2026: GitHub 65,536 characters; Azure DevOps 4,000 UTF-16 units; GitLab and Bitbucket unverified.
+- Host body limits seen in 2026, method not recorded; checked 2026-10-11: GitHub 65,536 characters, which GitHub doesn't document but its API reports as the validation error "Body is too long (maximum is 65536 characters)" (https://bugs.webkit.org/show_bug.cgi?id=243625, https://github.com/w3c/webref/pull/245); Azure DevOps 4,000 UTF-16 units, unverified: no Microsoft documentation found, and the one report found is third-party and says 4,000 characters (https://feedback.gearset.com/forums/283474-help-us-improve-gearset/suggestions/47072533-remove-limitation-of-number-of-prs-to-be-added-to); GitLab and Bitbucket unverified.
 - Gitmoji tag set as the default; emoji now only when the repo uses them.

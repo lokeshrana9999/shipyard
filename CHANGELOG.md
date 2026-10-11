@@ -4,6 +4,10 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+### Changed
+
+- The `docs/sources` notes no longer describe retired designs, and the numbers #25 listed for build-workflow, pr-description, skill-auditor, and walkthrough now record their basis: a link, an observation with its date, or "house default" ([#25](https://github.com/lokeshrana9999/shipyard/issues/25)). Two skill sentences claim less: build-workflow's brief says agents handed only paths spend "many" calls re-deriving context, not "most", and db-migration says hand-written SQL "can" use the schema's own name, not "tends to". `CONTRIBUTING.md` asks for the basis of each default value.
+
 ## [0.3.1] - 2026-10-11
 
 ### Changed
