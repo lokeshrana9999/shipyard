@@ -4,7 +4,7 @@ Provenance for the rules in `skills/skill-auditor/` (references/dimensions.md). 
 
 - Skill authoring best practices (at least three evaluation scenarios per skill): https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
 - Agent Skills specification: https://agentskills.io/specification
-- Claude Code skills (frontmatter, substitutions, listing budget, compaction): https://code.claude.com/docs/en/skills
+- Claude Code skills (frontmatter, substitutions, listing budget, compaction, a `disable-model-invocation` skill's description left out of the model's context): https://code.claude.com/docs/en/skills
 - Claude Code subagents (subagents don't get `AskUserQuestion`): https://code.claude.com/docs/en/sub-agents
 - Claude Code best practices (`disable-model-invocation` for side effects, emphasis, CLAUDE.md vs skills): https://code.claude.com/docs/en/best-practices
 - Prompting best practices (tell Claude what to do instead of what not to do for output formatting; aggressive trigger language overtriggers on Claude Opus 4.5 and later): https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices

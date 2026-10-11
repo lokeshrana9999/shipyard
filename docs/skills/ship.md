@@ -2,7 +2,7 @@
 
 # ship
 
-Places the current branch in the delivery pipeline and names the one stage that comes next. Use when asked "ship this", "what's next in the pipeline", "where am I in the pipeline", "what's left before I open a PR", or "take this to PR", or which delivery step or skill comes next. Not for "what's next" about code, a function, or a plan step; answer those directly.
+Places the current branch in the delivery pipeline and names the next stage, or hands the rest to a multi-agent run. Use when asked "ship this", "what's next in the pipeline", "where am I in the pipeline", "what's left before I open a PR", or "take this to PR", or which delivery step or skill comes next. Not for "what's next" about code, a function, or a plan step; answer those directly.
 
 | | |
 |---|---|

@@ -9,7 +9,7 @@ One step of the delivery pipeline (explain, plan, test design, implement, verify
 _Avoid_: step, phase
 
 **User-started skill**:
-A skill the agent never starts on its own; only the user starts it, with its command.
+A skill the agent never starts on its own; only the user starts it, with its command in Claude Code or by asking for it by name in other agents.
 _Avoid_: user-invoked, user-only, manual skill
 
 **Settings file**:
