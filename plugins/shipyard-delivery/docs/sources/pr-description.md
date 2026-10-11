@@ -16,8 +16,8 @@ Provenance for the rules in `skills/pr-description/`. Kept outside the skill fol
 ## Defaults (as of 2026-10-11)
 
 - A reviewer understands the pull request in under a minute (SKILL.md, opening). House default: a target for the reader, not a measurement.
-- One approval gate, before the first live write (SKILL.md "Rules"). No outside source: one approval covers everything that will be published, and nothing reaches the code host before it.
-- Degrade, don't abort, when an extended-context publish fails (SKILL.md "Rules"). No outside source: a failed side publish shouldn't cost the user the pull request.
+- One approval gate, before the first live write (SKILL.md "Rules"). House default: one approval covers everything that will be published, and nothing reaches the code host before it.
+- Degrade, don't abort, when an extended-context publish fails (SKILL.md "Rules"). House default: a failed side publish shouldn't cost the user the pull request.
 - A title of about 70 characters at most, so it isn't truncated in lists (body-template.md "Title"). House default: where a list cuts a title depends on the host and the window, and no host's cut was measured.
 - Three to five grouped bullets at most under Changes (body-template.md "Writing rules"). House default.
 - One diagram of about 5 to 9 nodes (body-template.md "Reviewer diagram"). House default.

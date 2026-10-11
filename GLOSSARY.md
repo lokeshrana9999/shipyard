@@ -17,7 +17,7 @@ A project's `.claude/shipyard/<skill>.md`, whose values win over a skill's defau
 _Avoid_: overlay, config
 
 **House default**:
-A default value the maintainers chose by judgment, with no source or measurement behind it.
+A default value or rule the maintainers chose by judgment, with no source or measurement behind it.
 _Avoid_: guess, arbitrary default, unsourced default
 
 **Adapter**:

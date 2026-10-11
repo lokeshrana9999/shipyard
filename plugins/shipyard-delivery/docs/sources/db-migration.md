@@ -250,7 +250,7 @@ A failing `migrate` prints the database error (`[✗] Error during migration:` /
 
 ## Claims (as of 2026-10-11)
 
-- Hand-written SQL can use the schema's own name instead of the mapped database name (SKILL.md "Rules"). House claim: the enum example and its runtime error (Prisma, above) show the failure, but no count of how often it happens was recorded, so the skill says "can" where it said "tends to" before 2026-10-11.
+- Hand-written SQL can use the schema's own name instead of the mapped database name (SKILL.md "Rules"). The enum example and its runtime error (Prisma, above) show the failure, but no count of how often it happens was recorded, so the skill says "can" where it said "tends to" through 0.3.1.
 - A migration linter "flags most of these" (references/risky-changes.md, last paragraph). Checked 2026-10-11 against squawk's rule list (https://squawkhq.com/docs/rules): it has a rule for the SQL each of the seven rows generates. Drop and add for a rename: `ban-drop-column`; a required column: `adding-required-field`; `SET NOT NULL`: `adding-not-nullable-field`; a type change: `changing-column-type`; a drop: `ban-drop-column`, `ban-drop-table`; a plain index: `require-concurrent-index-creation`; an enum recreated: `ban-drop-type`. Only `adding-not-nullable-field`'s page was read (https://squawkhq.com/docs/adding-not-nullable-field); the rest are matched by rule name.
 
 ## Decisions (as of 2026-10-10)
