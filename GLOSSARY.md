@@ -8,6 +8,10 @@ Agent Skills that take a code change through a delivery pipeline. These terms ar
 One step of the delivery pipeline (explain, plan, test design, implement, verify live, review, describe, demo), run by one skill or by the agent's normal session.
 _Avoid_: step, phase
 
+**Handoff**:
+The line that ends a stage skill by naming the stage that comes next, or one stage per outcome; it names stages, it never starts them.
+_Avoid_: routing, next step
+
 **User-started skill**:
 A skill the agent never starts on its own; only the user starts it, with its command in Claude Code or by asking for it by name in other agents.
 _Avoid_: user-invoked, user-only, manual skill

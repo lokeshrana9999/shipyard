@@ -6,7 +6,7 @@ Fill this shape. Sections appear in this order; drop "Cross-cutting issues" in s
 # Skills Audit
 
 Run: <YYYY-MM-DD>. Scope: <single skill <path> | N skills under <path>>.
-Conventions: <overlay .claude/shipyard/skill-auditor.md | inferred from audited set: <what was inferred>>.
+Conventions: <settings file .claude/shipyard/skill-auditor.md | inferred from audited set: <what was inferred>>.
 Schema check: <validator used: pass / N errors / not run (reason)>.
 
 ## Scorecard
@@ -19,42 +19,57 @@ Schema check: <validator used: pass / N errors / not run (reason)>.
 
 ## Cross-cutting issues
 
-- **<pattern>** — <skills affected>. <why it matters, what to change>.
+| Pattern | Skills affected | Why it matters and what to change |
+|---|---|---|
+| <pattern> | <skills> | <why it matters>. <what to change> |
 
-Common ones: fossilized paths, inconsistent gate markers, missing inputs/output contracts, orchestrator routing inside stage skills. Also report combined listing weight (total description + when_to_use characters, longest three).
+Examples: fossilized paths, inconsistent gate markers, missing inputs/output contracts, orchestrator routing inside stage skills. Also report combined listing weight (total description + when_to_use characters, longest three).
 
 ## Top 5 fixes
 
-1. **<what>** in <where>. <why it ranks #1: severity × skills affected>.
+Ranked by highest severity first, then by the number of skills affected.
+
+| # | Fix | Where | Severity | Skills affected |
+|---|---|---|---|---|
+| 1 | <what to change> | <where> | <highest severity it clears> | <N> |
 
 ## What's well-designed
 
-- **<pattern>** (<skill>) — <why it works; keep it>.
+- <pattern> (<skill>): <why it works; keep it>.
 
 ## Per-skill detail
 
 ### <skill-name>
 
-**Frontmatter (⚠)**
-- *(medium)* `SKILL.md:3` "<quote>" — <finding>. → <remediation>.
-- *(medium, prediction)* `SKILL.md:3` — <runtime claim>. Settle with: <eval / check>.
+#### Frontmatter (⚠)
+
+| Location | Severity | Finding | Fix |
+|---|---|---|---|
+| `SKILL.md:3` | medium | "<quote>": <finding> | <remediation> |
+| `SKILL.md:3` | medium, prediction | <runtime claim> | Settle with: <eval / check> |
 
 <repeat per dimension; write "No findings." for a clean dimension so it reads as checked>
 
-**Abstraction fit: <verdict>** — <reasoning>. → <recommendation>.
+#### Abstraction fit: <verdict>
+
+<reasoning>. Recommendation: <recommendation>.
 
 #### Negative-phrasing rules
 
-| # | Location | Quoted rule | Positive rewrite, or "keep — genuine prohibition" |
+| # | Location | Quoted rule | Positive rewrite, or "keep: genuine prohibition" |
 |---|---|---|---|
 | 1 | `SKILL.md:40` | "Don't paraphrase bullets" | "Quote bullets verbatim." |
-| 2 | `SKILL.md:52` | "Never push to main without approval" | keep — genuine prohibition, rationale stated |
+| 2 | `SKILL.md:52` | "Never push to main without approval" | keep: genuine prohibition, rationale stated |
 ````
 
 Example of a finding at the right level of detail:
 
-> *(high)* `SKILL.md:2` `description: >` folded over three lines — multi-line descriptions have been reported to make skills silently undiscoverable. → Put the description on one line.
+| Location | Severity | Finding | Fix |
+|---|---|---|---|
+| `SKILL.md:27` | high | "Run `/home/alice/tools/lint.sh`": a machine-specific path in a shared skill, so the step fails on every other machine | Bundle the script with the skill and resolve its path at run time (in Claude Code, `${CLAUDE_SKILL_DIR}/scripts/lint.sh`) |
 
 And one too vague to act on:
 
-> *(medium)* Description could be better.
+| Location | Severity | Finding | Fix |
+|---|---|---|---|
+| | medium | Description could be better. | |

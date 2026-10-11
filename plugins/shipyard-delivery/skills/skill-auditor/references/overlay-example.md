@@ -1,9 +1,9 @@
-# Overlay example
+# Project settings example
 
 The consuming project keeps this at `.claude/shipyard/skill-auditor.md`. Every key is optional; a missing key falls back to the default in SKILL.md (scan roots, report path) or `dimensions.md` (gate markers, section names).
 
 ```markdown
-# skill-auditor overlay
+# skill-auditor settings
 
 - scan roots: .claude/skills/, tools/agents/skills/
 - report path: docs/audits/SKILLS-AUDIT.md
