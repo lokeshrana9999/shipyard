@@ -37,7 +37,7 @@ An upload with validation:
 ## Before sending
 
 1. Every row fits the width limit (default 72 columns). Count the longest row.
-2. Every box's top and bottom borders are the same length, and its side bars line up in the same columns on every row. Count the characters; don't judge by eye.
+2. Every box's top and bottom borders are n+2 dashes, n the widest label in its column, and its side bars line up in the same columns on every row. Count the characters; don't judge by eye.
 3. Every vertical arrow stays in one column from start to end.
 4. One reading direction, at most one back-edge, and it's labelled.
 5. Only branch and feedback edges carry labels.
