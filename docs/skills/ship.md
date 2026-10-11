@@ -2,7 +2,7 @@
 
 # ship
 
-Answers "ship this", "what's next in the pipeline", "where am I in the pipeline", "what's left before I open a PR", and "take this to PR" by routing work through the delivery pipeline (explain, plan, test design, implement, verify live, review, describe, demo). It checks where the current branch stands with cheap read-only checks, names the current stage and the one next stage with the skill or command that runs it, and asks before starting it; it can also jump to a named stage or hand the remaining stages to a multi-agent run. Use when the user asks which delivery step or skill comes next. Not for "what's next" about code, a function, or a plan step; answer those directly.
+Places the current branch in the delivery pipeline and names the one stage that comes next. Use when asked "ship this", "what's next in the pipeline", "where am I in the pipeline", "what's left before I open a PR", or "take this to PR", or which delivery step or skill comes next. Not for "what's next" about code, a function, or a plan step; answer those directly.
 
 | | |
 |---|---|

@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Answers "ship this", "what's next in the pipeline", "where am I in the pipeline", "what's left before I open a PR", and "take this to PR" by routing work through the delivery pipeline (explain, plan, test design, implement, verify live, review, describe, demo). It checks where the current branch stands with cheap read-only checks, names the current stage and the one next stage with the skill or command that runs it, and asks before starting it; it can also jump to a named stage or hand the remaining stages to a multi-agent run. Use when the user asks which delivery step or skill comes next. Not for "what's next" about code, a function, or a plan step; answer those directly.
+description: Places the current branch in the delivery pipeline and names the one stage that comes next. Use when asked "ship this", "what's next in the pipeline", "where am I in the pipeline", "what's left before I open a PR", or "take this to PR", or which delivery step or skill comes next. Not for "what's next" about code, a function, or a plan step; answer those directly.
 argument-hint: "[stage | all]"
 ---
 
@@ -58,7 +58,7 @@ Steps are agent-owned unless marked.
    ```
 
    Then **STOP — WAIT**: ask whether to start the next stage. `next:` names one stage; `Then:` is orientation, not a queue.
-5. **Start on a yes.** A skill the model may invoke (walkthrough, design-tests, db-migration, live-verify, flow-diagram): invoke it. pr-review, pr-description, and build-workflow are user-invoked only; the platform blocks the model from invoking them, so print the exact command (`/shipyard-delivery:pr-review`) for the user to run, and don't reproduce their steps by hand. Plan and implement are the platform's own: tell the user to enter plan mode, or continue in this session.
+5. **Start on a yes.** A skill the model may invoke (walkthrough, design-tests, db-migration, live-verify, flow-diagram): invoke it. pr-review, pr-description, and build-workflow are user-started skills; the platform blocks the model from invoking them, so print the exact command (`/shipyard-delivery:pr-review`) for the user to run, and don't reproduce their steps by hand. Plan and implement are the platform's own: tell the user to enter plan mode, or continue in this session.
 
 ## Arguments
 

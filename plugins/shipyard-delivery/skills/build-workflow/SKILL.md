@@ -1,6 +1,6 @@
 ---
 name: build-workflow
-description: Runs a plan or the delivery stages as one multi-agent run ("run this plan with agents", "run the pipeline end to end", "build a workflow for this"), across pre-flight and orientation, test design, implement, verify live, review, and describe, or any multi-step job the user describes, cheaply and honestly. It first decides whether one agent is enough, then runs the stages as a workflow script, as subagents, or as agents the session spawns directly, depending on what the platform supports, with capped fix loops, a separate skeptical verifier, and an honest blocked exit. Use when asked to build, design, or run a workflow, orchestrate subagents, run the delivery pipeline end to end, implement a plan with agents, or make a multi-agent run cheaper or more reliable.
+description: Runs a plan, the remaining delivery stages, or another multi-step job as one multi-agent run, after deciding whether one agent is enough, with capped fix loops and a separate verifier. Takes a goal or plan file, the stages to run, and go. Run only when the user asks for it.
 argument-hint: "[goal | plan file] [stages to run] [go]"
 disable-model-invocation: true
 ---

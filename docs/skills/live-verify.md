@@ -2,7 +2,7 @@
 
 # live-verify
 
-Verifies a change in the running app ("check it actually works", "verify this live", "smoke-test it in the browser") instead of trusting tests alone. It boots the app and confirms it responds, mints a local test session, drives the changed flow over HTTP or in a real browser, checks the stored effect before and after, and reports each check as passed, failed, or not run, with the evidence it saw. Covers browser extensions too. Use when asked to verify a change live, check it actually works in the running app, smoke-test it in the browser, or prove it before merge. Not for writing or running unit or end-to-end test suites, or for just starting the app.
+Verifies a change in the running app, over HTTP or in a browser (browser extensions included), and reports each check with its evidence. Use when asked to "check it actually works", "verify this live", or "smoke-test it in the browser", or to prove a change before merge. Not for writing or running unit or end-to-end test suites, or for just starting the app.
 
 | | |
 |---|---|

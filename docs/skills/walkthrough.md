@@ -2,7 +2,7 @@
 
 # walkthrough
 
-Explains things and writes reader-facing documents point-first ("explain how this works", "walk me through this", "why did this break", "write up a handoff"), with a lead line that answers, an optional ASCII diagram, a body shaped to the content (steps, prose, or table), and one next action. Use when asked to explain something, walk through it, or say how it works or why it broke, when giving a multi-step plan, or when writing a plan, handoff, spec, or report for someone to read and act on. For one-line answers and status replies, answer directly instead.
+Explains things and writes reader-facing documents answer-first, ending with one next action. Use when asked "explain how this works", "walk me through this", "why did this break", or "write up a handoff", when giving a multi-step plan, or when writing a plan, spec, or report for someone to act on. For one-line answers and status replies, answer directly instead.
 
 | | |
 |---|---|

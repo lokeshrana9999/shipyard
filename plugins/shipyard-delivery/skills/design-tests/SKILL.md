@@ -1,6 +1,6 @@
 ---
 name: design-tests
-description: Designs the tests for a feature ("design tests for this", "write a test plan", "what should we test?") from its spec and its real implementation, and produces a test-design document (scenarios per acceptance criterion, an API test table, a coverage matrix, and spec-versus-code divergences) for an implementer to turn into test code. Use when asked to design tests, write a test plan, decide what to verify, or before tests are written for a change. It designs only; it doesn't write or run test code.
+description: Designs the tests for a feature from its spec and its real code, as a test-design document an implementer turns into tests. Use when asked "design tests for this", "write a test plan", or "what should we test?", to decide what to verify, or before tests are written for a change. It designs only; it doesn't write or run test code.
 allowed-tools: Read, Grep, Glob
 ---
 
