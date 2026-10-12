@@ -43,6 +43,7 @@ All house defaults. The studies above back the direction of the size defaults, n
 - One reading direction, with at most one back-edge (SKILL.md "Layout"). House default: a search on 2026-10-11 found no comprehension study of flow direction or back-edges; Burattin et al. 2016 (https://arxiv.org/abs/1602.02992) measures how people perceive flow consistency, not whether it aids understanding.
 - Label only branch and feedback edges (SKILL.md "Layout"). House default.
 - Node labels are noun phrases (SKILL.md "Layout"). House default; the shape already gives the kind of thing, so the label names it.
+- Subgraphs only for a real boundary, with more than one node each (SKILL.md "Layout"). House default.
 - One arrow per relationship (SKILL.md "Layout"). House default.
 
 ## Specifics removed from the skill (as of 2026-09-27)
