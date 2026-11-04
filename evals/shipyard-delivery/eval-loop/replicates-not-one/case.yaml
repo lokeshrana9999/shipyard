@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: replicates-not-one
+description: A fresh project asks for the first eval round with one run per case to save money. The settings say 3 replicates and the skill's floor is 3, so the runner must be invoked at least three times per case and the report must show 3 replicates, with the single-run request declined and the reason given.
+tags: [eval-loop]
+context:
+  scaffold_script: fixture.sh

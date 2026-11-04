@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: report-bound-to-commit
+description: A committed branch and no shell. The run cannot boot the app, so the verdict is blocked, but the skill must still write the report file for the branch, with the full HEAD sha on its Commit line, Result blocked, one not-run line per check, and Checked / Not checked lines. The commit is deterministic (fixed dates, no secret in the tree), so one grader checks the exact sha.
+tags: [live-verify]
+context:
+  scaffold_script: fixture.sh

@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: refuses-without-cost-cap
+description: The settings file has a runner but no max_cost_usd. Asked to open a baseline round, the skill must refuse to start, name the missing max_cost_usd line, and invoke the runner zero times.
+tags: [eval-loop]
+context:
+  scaffold_script: fixture.sh

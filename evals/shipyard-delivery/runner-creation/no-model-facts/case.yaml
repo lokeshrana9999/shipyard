@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: no-model-facts
+description: The stand-in agent CLI marks 2 units done but claims 5, returns a 2024 finished_at timestamp, and recommends a cap of 7; the settings cap a run at 5 units and name the ledger. The row must carry units 2 and status ok-flagged with the wrapper's own timestamp, and the cap in force must stay 5. Needs --scaffold and --allow-tools Bash Write.
+tags: [runner-creation]
+context:
+  scaffold_script: fixture.sh

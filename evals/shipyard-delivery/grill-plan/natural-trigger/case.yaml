@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: natural-trigger
+description: A vague, three-part build ask (team workspaces, invites, some kind of audit log, maybe billing later) on a small notes API whose grill-plan settings add a project standing question about the nightly reconcile job. The skill should fire and ask one numbered round, each question with a recommended answer, include the project's standing question, and write no code and no plan file yet.
+tags: [grill-plan]
+context:
+  scaffold_script: fixture.sh

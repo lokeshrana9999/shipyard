@@ -4,11 +4,7 @@ Contents: sizing and models · the stage contract · what drives a loop · the p
 
 ## Sizing and models
 
-Scale the run to the work. Agent caps count every agent except the review stage, which carries pr-review's own caps.
-
-- small (one slice, a few plan entries): at most about 6 agents, no parallel writers;
-- medium: at most about 15, test design per slice in parallel;
-- large: at most the settings' cap (default 30); split into several runs and read each result before starting the next.
+Scale the run to the work: a small change (one slice, a few plan entries) needs no parallel writers; a medium one gets test design per slice in parallel; a large one splits into several runs, each result read before the next starts. There is no default cap on agents: the run plan states the count and the expected cost in one line and proceeds once approved, because the constraints that matter are correctness ones (one child per shared resource, below), not volume. A project's settings can set a cap; it counts every agent except the review stage, which carries pr-review's own caps, and a plan that exceeds it splits into runs.
 
 Caps never weaken a check. If a cap would drop a verifier, a fix round, or a review agent, split the run instead.
 
@@ -71,7 +67,7 @@ A stage makes no progress when it hits the same blocker twice, a verifier reject
 
 ## Exclusive resources
 
-A browser, a fixed port, a shared database, and one worktree's git index take one agent at a time, worktrees or not. The agent holding one is told it's the only user (briefs.md).
+A browser profile, a fixed port, a shared database, a deploy target, a shared checkout (one worktree's git index), and an eval runner over one case set take one agent at a time, worktrees or not. Exactly one active child holds each; the brief names the resource and tells the child it's the only user (briefs.md), and the run plan's `Shared resources:` line says who. Two children on one of these produce wrong results, not slow ones: a fetch race in a shared checkout, two runners in one browser profile, a duplicate writer after an interrupted run. Children that write in parallel own disjoint file lists and their own worktrees; a shared checkout is never a parallel writer's workspace. None of this limits how many children run.
 
 ## Merging parallel work
 

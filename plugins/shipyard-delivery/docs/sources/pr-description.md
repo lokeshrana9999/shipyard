@@ -22,6 +22,12 @@ Provenance for the rules in `skills/pr-description/`. Kept outside the skill fol
 - Three to five grouped bullets at most under Changes (body-template.md "Writing rules"). House default.
 - One diagram of about 5 to 9 nodes (body-template.md "Reviewer diagram"). House default.
 
+## Factory v3 changes (retro 2026-10-22 to 11-04, plan items P2 and A1; as of 2026-11-05)
+
+- **Reads the plan file and the verify report** (Inputs, steps 1 to 3). The plan stage (grill-plan) now writes `.claude/shipyard/plans/<branch>.md` with the decisions, acceptance checks, and flow diagram the user confirmed, and live-verify writes a commit-bound report. A description that re-derives the why from the diff loses the confirmed intent (intent rework was the retro's largest hidden-factory class), and a testing section written from memory was how 5 green pull requests reached a first live crash (b12). The acceptance checks appear ticked only when the report's `Checked:` names them; a report for another commit is quoted as stale, matching `ship`'s rule.
+- **One diagram per flow** (rule, step 3, body-template "Reviewer diagram"). Owner decision no. 6 (2026-11-04): later artifacts reuse or update the plan's diagram when it is the same flow. The update goes into the description plus a `## deviations` line in the plan, never into the plan's `## flow`, because grill-plan's approval hash covers everything above `## approval`.
+- `<branch>` in both paths is the branch name with `/` replaced by `-`, the integrator's contract for every stage file.
+
 ## Specifics removed from the skill (as of 2026-09-27)
 
 - The original project's code-host specifics: organization, project, repository and wiki names and ids; MCP tool names; its description length limit; an attachment upload recipe; personal access token lookup from `.env.local`; a JSON-RPC stdio fallback to the MCP server; a CLI to avoid for description text (Windows console codepage corruption). A placeholder version now lives in `examples/nestjs-prisma/.claude/shipyard/pr-description.md`.

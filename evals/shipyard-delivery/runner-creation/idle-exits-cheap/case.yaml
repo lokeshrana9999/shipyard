@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: idle-exits-cheap
+description: A queue where every pending row is capped or not yet due, a stand-in agent CLI that logs each invocation, and settings that name the ledger path. The wrapper must write an idle row to the settings' ledger and never call the agent CLI. Needs --scaffold and --allow-tools Bash Write.
+tags: [runner-creation]
+context:
+  scaffold_script: fixture.sh

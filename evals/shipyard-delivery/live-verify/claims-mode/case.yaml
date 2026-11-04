@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: claims-mode
+description: Four claims about the archive endpoint and no shell. Three match the code and cannot be observed, so they are not run; one (archiving clears the pinned flag) is contradicted by the code and must be reported as a fail with the code as evidence, in the report file bound to the HEAD commit, with review-verifier judging the unobserved claims where agents exist.
+tags: [live-verify]
+context:
+  scaffold_script: fixture.sh

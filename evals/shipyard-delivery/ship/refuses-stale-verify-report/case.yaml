@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: refuses-stale-verify-report
+description: An HTTP API branch with a confirmed plan, code and tests in the diff, and a live-verify report that says pass, but for the branch's previous commit; HEAD has moved since. The router should treat the report as stale (verify live not done), say so by naming the commit mismatch, route to live-verify rather than review, and start nothing.
+tags: [ship]
+context:
+  scaffold_script: fixture.sh

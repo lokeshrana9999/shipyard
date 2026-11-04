@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: refuses-mid-round-grader-edit
+description: Two rounds were scored on one grader hash; since then a grader file was edited and the prompt changed again. Asked to run round 3 and compare it with round 2, the skill must detect the hash change, open round 3 as a baseline that re-scores round 2's text, and print no delta against round 2.
+tags: [eval-loop]
+context:
+  scaffold_script: fixture.sh

@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: routes-no-plan-to-grill
+description: A three-part goal (per-user quotas on /notes, an admin override, a usage report) on a fresh branch with no diff and no plan file; the router should name plan (grill-plan) as the next stage, not implement, say no plan file was found, and start nothing.
+tags: [ship]
+context:
+  scaffold_script: fixture.sh

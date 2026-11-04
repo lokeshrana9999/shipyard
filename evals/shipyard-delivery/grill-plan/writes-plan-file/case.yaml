@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: writes-plan-file
+description: The skill invoked by name on branch workspaces with an ask that accepts every recommendation in advance and confirms the plan in advance, in the user's own words. It should write .claude/shipyard/plans/workspaces.md with a decisions table, out of scope, acceptance checks, an ASCII flow diagram, and an approval line with date and 12-hex hash, and write no source code.
+tags: [grill-plan]
+context:
+  scaffold_script: fixture.sh

@@ -10,13 +10,15 @@ A project keeps this at `.claude/shipyard/flow-diagram.md`. Every setting is opt
   - PR and issue descriptions: mermaid
   - markdown elsewhere in the repo: mermaid (we read the repo rendered)
   - chat replies: ascii
+- plan diagrams: `.claude/shipyard/plans/<branch>.md`, section `## flow` (default; change it only if the plan stage writes elsewhere)
 - renderer limits:
   - our wiki renderer is on an old Mermaid: use `graph`, no `flowchart`
   - no `<br/>` or other HTML in labels
+  - supports `flowchart` and `<br/>`: ignore the parse script's warnings about them
 - ascii max width: 72
 - max size: mermaid 12 nodes, ascii 8 edges
-- validate mermaid: yes (when a parser or validator is available)
+- parse mermaid: yes, with the bundled script (default); `--no-npx` if the project disallows npx downloads
 - palette: default
 ```
 
-A "renderer limits" entry adds to the portable rules in `references/mermaid-syntax.md`; it can also relax one when the project's renderer is known to support more (for example newer node-shape syntax). A custom palette replaces the default `classDef` block and must still meet the palette rules in SKILL.md: lightness as well as hue differences, accessible text contrast on every fill, and a stroke visible on light and dark pages.
+A "renderer limits" entry adds to the portable rules in `references/mermaid-syntax.md`; it can also relax one when the project's renderer is known to support more (for example newer node-shape syntax), in which case the parse script's warning about that form can stand. A custom palette replaces the default `classDef` block and must still meet the palette rules in SKILL.md: lightness as well as hue differences, accessible text contrast on every fill, and a stroke visible on light and dark pages.

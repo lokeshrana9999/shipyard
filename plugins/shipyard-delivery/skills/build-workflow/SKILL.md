@@ -1,7 +1,7 @@
 ---
 name: build-workflow
-description: Runs a plan, the remaining delivery stages, or another multi-step job as one multi-agent run, after deciding whether one agent is enough, with capped fix loops and a separate verifier. Takes a goal or plan file, the stages to run, and `go` to skip the run-plan approval. Run only when the user asks for it.
-argument-hint: "[goal | plan file] [stages to run] [go]"
+description: Runs a plan, the remaining delivery stages, or another multi-step job as one multi-agent run, after deciding whether one agent is enough, with capped fix loops and a separate verifier; or writes one agent or sub-session brief from its template. Takes a goal or plan file, the stages to run, `go` to skip the run-plan approval, or `brief <entry>`. Run only when the user asks for it.
+argument-hint: "[goal | plan file] [stages to run] [go | brief <entry>]"
 disable-model-invocation: true
 ---
 
@@ -36,6 +36,9 @@ The orientation is written by an agent, not the walkthrough skill, because its r
 - **Blocked is a correct result.** A pass the stage didn't observe is the only wrong answer.
 - **Check the goal, not the tests.** The verifier checks the result against the plan entry or spec, not only that tests pass.
 - **Every agent runs on the model of the session that invoked the skill.** The run plan doesn't pick models per stage. A fix is checked by a separate agent that didn't write it and doesn't see its reasoning (loops.md).
+- **Every brief comes from the template** in [references/brief-template.md](references/brief-template.md): background, task, interfaces and call order, files owned, constraints (no new caps, defaults, or facts: they go in as questions), autonomy with the always-ask list, model per role, and the report file the parent checks for. A brief typed from memory is where invented caps and unverifiable "done" messages come from.
+- **One child per shared resource.** A browser profile, a shared checkout, a deploy target, a database, an eval runner over one case set: exactly one active child holds each at a time, and its brief says so. Children that write in parallel own disjoint files and their own worktrees, never a shared checkout. These are correctness rules, not a cap: two writers on one resource produce wrong results at any volume, so the number of children is unlimited and the number touching one thing is one.
+- **A child that hasn't started isn't running.** Within 2 minutes (default) of starting a child, confirm its first move. One that hasn't moved is blocked on something only a person can do; batch those into one user step (H8) instead of waiting on it (brief-template.md).
 
 Tests read-only to fixers, the skeptic verifier, loop caps, and exclusive resources are in loops.md; cheap fact checks and never cleaning up are in briefs.md.
 
@@ -61,16 +64,21 @@ Tests read-only to fixers, the skeptic verifier, loop caps, and exclusive resour
    - <Stage>: <agent name> x<count>, <parallel | serial | worktree>
    - <Stage>: held (<why: settings, user, or no input>)
    Agents: <total> of a cap of <cap>   (review's own agents counted separately)
+   Shared resources: <resource>: <the one agent that holds it>, ...
    Loop caps: <n> fix rounds per entry, <n> review fix rounds
    Reply `go` to start, or name stages to drop.
    ```
 
-   Name each agent (`test-designer`, `review-verifier`, a general-purpose implementer); a held stage gets its stage name only. If the plan won't fit the cap, say how it splits into runs. If step 2 already chose one agent, don't show a run plan.
+   Name each agent (`test-designer`, `review-verifier`, a general-purpose implementer); a held stage gets its stage name only. With no cap in the settings, the `Agents:` line reads `Agents: <total>, no cap; expected cost: <one line>` instead, and the run proceeds at that size. If the plan won't fit a set cap, say how it splits into runs. If step 2 already chose one agent, don't show a run plan.
 5. **Pre-flight**, before any expensive agent: the tree and HEAD are what the plan assumes, the plan isn't landed or closed, stage commands and tools exist, and the orientation is written. A failure ends the run as `blocked` with its reason.
-6. **Run the stages** with [references/briefs.md](references/briefs.md) and loops.md. Verify live runs once, after every commit lands. In modes 2 and 3, append one line to `STATUS.md` at each stage transition (briefs.md); in mode 1, only when the settings name a status path.
+6. **Run the stages** with [references/briefs.md](references/briefs.md) and loops.md, every brief in the template's shape. After starting each child, run the start check; record each child in flight in the status file. Verify live runs once, after every commit lands. In modes 2 and 3, append one line to `STATUS.md` at each stage transition (briefs.md); in mode 1, only when the settings name a status path.
 7. **Report**: one line per stage with its status, commits landed, open gaps, blocked lanes, stages held or not run, and the agent count. Pushing, merging, and opening a pull request are **HUMAN TRIGGER**: the run drafts the description and stops.
 
 Steps are agent-owned unless marked.
+
+## Brief only
+
+`brief <entry>` (a plan entry, or a goal in the user's words) writes one brief from [references/brief-template.md](references/brief-template.md) and stops: no run plan, no agents. Read the settings and the plan as in step 1, fill every section, put each cap, default, or fact the plan doesn't give under the report's questions, and write the brief where the user says (default: `briefs/<entry>.md` next to the plan). The user starts the child, so the start check and the report check are theirs; say so in one line.
 
 ## Handoff
 

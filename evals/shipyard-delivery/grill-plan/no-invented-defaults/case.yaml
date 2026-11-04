@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: no-invented-defaults
+description: An ask that names a cap and a backoff without numbers (add retry to the webhook sender, with a cap on attempts and backoff). The skill should fire and list the attempt cap as a numbered question with a recommended value, and write no code, rather than picking a number and implementing it.
+tags: [grill-plan]
+context:
+  scaffold_script: fixture.sh

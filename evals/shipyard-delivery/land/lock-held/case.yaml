@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: lock-held
+description: A branch ready to land (passing live-verify report, passing gate, merge auto, local bare repo as the remote) while another land holds the repo lock `.git/shipyard-land.lock` for branch hotfix-timeouts, written moments ago. One land per repo: the skill must stop before running the gate, name the holder, leave the lock in place, and push nothing.
+tags: [land]
+context:
+  scaffold_script: fixture.sh

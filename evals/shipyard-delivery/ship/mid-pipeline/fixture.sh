@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # A small TypeScript library (no server, no start script). main holds a slugify helper; the feature branch adds a
-# token-bucket rate limiter with tests, and the plan's one entry is ticked. No remote, so no pull request.
+# token-bucket rate limiter with tests, and a confirmed grill-plan file (Approved line) whose one build step is ticked.
+# No remote, so no pull request; no verify report, which is fine here since a library has no app to boot.
+# Branch name encoding: feature/rate-limiter -> plans/feature-rate-limiter.md.
 set -e
 mkdir -p src
 cat > package.json <<'JSON'
@@ -24,11 +26,46 @@ git -c core.autocrlf=false add -A
 git -c user.name=fixture -c user.email=fixture@example.invalid commit -q -m "Initial utils"
 
 git checkout -q -b feature/rate-limiter
-cat > PLAN.md <<'MD'
-# Plan: rate limiter
+mkdir -p .claude/shipyard/plans
+cat > .claude/shipyard/plans/feature-rate-limiter.md <<'MD'
+# Plan: token-bucket rate limiter for tiny-utils
 
-- [x] 1. Add `createLimiter({ capacity, refillPerSec, now })` in `src/rate-limit.ts`: a token bucket; `take()` returns true and spends a token when one is available, false otherwise. Export it from `src/index.ts`. Tests cover refill, capacity cap, and exhaustion.
+Add `createLimiter({ capacity, refillPerSec, now })` to the library so callers can throttle without a dependency.
+
+## decisions
+
+| Decision | Choice |
+|---|---|
+| Algorithm | token bucket, refill computed lazily on `take()` |
+| Clock | injectable `now` for tests, `Date.now` by default |
+| Bad options | `RangeError` on non-positive capacity or refill |
+
+## out of scope
+
+- a sliding-window limiter
+- persistence across processes
+
+## build steps
+
+- [x] 1. `src/rate-limit.ts`: `createLimiter`; `take()` returns true and spends a token when one is available, false otherwise. Verify: tests cover refill, capacity cap, exhaustion, bad options. Export from `src/index.ts`.
+
+## acceptance checks
+
+- `take()` is false once capacity is spent and true again after refill time passes
+- the library has no runtime dependency added
+
+## open questions
+
+none
+
 MD
+# The approval hash covers the bytes above the `## approval` heading (first 12 hex of their sha256).
+PLAN=.claude/shipyard/plans/feature-rate-limiter.md
+HASH=$( { sha256sum "$PLAN" 2>/dev/null || shasum -a 256 "$PLAN"; } | cut -c1-12 )
+printf '## approval
+
+Approved: 2026-11-03 plan-hash %s
+' "$HASH" >> "$PLAN"
 cat > src/rate-limit.ts <<'TS'
 export interface LimiterOptions { capacity: number; refillPerSec: number; now?: () => number }
 

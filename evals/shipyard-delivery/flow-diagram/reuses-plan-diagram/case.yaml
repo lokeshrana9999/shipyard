@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: reuses-plan-diagram
+description: The branch has a confirmed plan file whose flow section already draws the change (ASCII). Asked for a PR-description diagram of the same flow, the skill must read the plan and reuse its nodes in Mermaid, including the inventory service and the reserve step the prompt leaves out, instead of drawing a conflicting diagram from the prompt alone.
+tags: [flow-diagram]
+context:
+  scaffold_script: fixture.sh

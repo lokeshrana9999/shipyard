@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: headless-profile-clean
+description: Old runner notes document a compound, quoted status command that a deny-by-default profile rejects; a committed one-op helper does the same job. The prompt file and allow list must pass the agent CLI's dry run with 0 denials and at least one command checked, without an allow-everything rule. Needs --scaffold and --allow-tools Bash Write.
+tags: [runner-creation]
+context:
+  scaffold_script: fixture.sh

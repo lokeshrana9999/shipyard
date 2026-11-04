@@ -4,7 +4,7 @@ These pages cover how the pipeline runs, how to install it outside Claude Code, 
 
 | Page | Read it when |
 |---|---|
-| [pipeline.md](pipeline.md) | you want the stages, how `ship` picks the next one, each skill's handoff, or how `pr-review` reviews a diff |
+| [pipeline.md](pipeline.md) | you want the nine stages and what each writes, how `ship` picks the next one from the evidence files, where a person is needed (H1 to H10), the caps, the one-page factory diagram, each skill's handoff, or how `pr-review` reviews a diff |
 | [agents-install.md](agents-install.md) | you use Codex, Gemini CLI, Cursor, GitHub Copilot, OpenCode, or another agent instead of Claude Code |
 | [agents.md](helper-agents.md) | you want to know what the four helper agents do and which skill starts each |
 | [skills/](skills/README.md) | you need one skill's arguments, who starts it, its settings file, or its handoff |

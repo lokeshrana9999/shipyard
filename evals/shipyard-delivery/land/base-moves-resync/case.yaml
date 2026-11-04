@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: base-moves-resync
+description: A branch ready to land (passing live-verify report, merge auto, probe live at once, local bare repo as the remote) whose gate script lands someone else's commit on main during its first run. The skill must notice the base moved after the gate, re-sync, rerun the gate, then merge; the report says landed with one re-sync and quotes the read-back, and the gate log shows two runs.
+tags: [land]
+context:
+  scaffold_script: fixture.sh

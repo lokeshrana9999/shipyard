@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: dies-visibly
+description: The stand-in agent CLI prints a usage-limit error and exits 1 when AGENT_CLI_SIMULATE=limit is set. The wrapper must record a limit row in the settings' ledger and send a fail ping after its start ping, so the death is visible without reading a transcript. Needs --scaffold and --allow-tools Bash Write.
+tags: [runner-creation]
+context:
+  scaffold_script: fixture.sh

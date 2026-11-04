@@ -35,7 +35,12 @@ Use the repo's template when there is one, mapping these sections onto its headi
 
 ## Testing
 
-<Results from real evidence, or a placeholder for the author to fill in.>
+<Live verification: `<pass | fail | blocked>` for `<short sha>` (`.claude/shipyard/reports/live-verify-<branch>.md`); "stale: verified <sha>, HEAD is <sha>" when they differ; "not run" when there is no report.>
+
+- [x] <acceptance check from the plan that the report lists under Checked:, with its evidence in a few words>
+- [ ] <acceptance check the report lists under Not checked:, with the report's reason>
+
+<Other real evidence (test runs, screenshots, commands and output), or a placeholder for the author to fill in.>
 ```
 
 ## Writing rules
@@ -47,6 +52,7 @@ Use the repo's template when there is one, mapping these sections onto its headi
 - **Unrelated changes** are edits a reviewer would ask about: drive-by reformatting, config for another feature, stray files. Tests and docs that support the change aren't unrelated. Leave the section out when there are none.
 - **Every line leads with its point**: one sentence per bullet, specific paths and versions, and no qualifiers that don't change meaning ("carefully", "robustly", "comprehensive").
 - **Short.** A reviewer should get the point from the summary alone. Put detail in extended context, not the description.
+- **The plan is the source for why and for what was promised.** With a plan file, the summary's problem and outcome come from its lead line and decisions, not re-derived from the diff; the testing section lists every acceptance check from its `## acceptance checks`, ticked only when the verify report's `Checked:` names it. A check the diff dropped or changed is said so under Changes, since it is a deviation the reviewer must see.
 
 ## Reviewer diagram
 
@@ -57,6 +63,8 @@ Before drawing, answer three questions; if you can't, don't draw yet.
 3. **Does it pass the insight test?** A diagram that redraws the file list as boxes adds nothing. Each node is part of the change or the context that makes it legible.
 
 By kind of change: a bug fix shows the broken causal chain and where the fix sits; a new flow shows its lifecycle, boundaries only; new branching logic shows the decision and its outcomes. Default to one diagram of about 5 to 9 nodes; add a second only when the change spans two separate concerns. Put it in the description when the host renders it, or link it from extended context.
+
+When the plan file's `## flow` already answers the reviewer's question, the three questions are answered: reuse that diagram, keeping its nodes, labels, and branches and translating its ASCII into the host's Mermaid. If the implementation diverged from the plan's flow, draw the flow as built, and append one `<date> describe: flow changed: <what>` line to the plan's `## deviations`; the plan's own `## flow` stays as written, because the approval hash covers it.
 
 ## Trimming to the length limit
 
