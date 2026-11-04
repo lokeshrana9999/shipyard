@@ -2,12 +2,12 @@
 
 # build-workflow
 
-Runs a plan, the remaining delivery stages, or another multi-step job as one multi-agent run, after deciding whether one agent is enough, with capped fix loops and a separate verifier. Takes a goal or plan file, the stages to run, and `go` to skip the run-plan approval. Run only when the user asks for it.
+Runs a plan, the remaining delivery stages, or another multi-step job as one multi-agent run, after deciding whether one agent is enough, with capped fix loops and a separate verifier; or writes one agent or sub-session brief from its template. Takes a goal or plan file, the stages to run, `go` to skip the run-plan approval, or `brief <entry>`. Run only when the user asks for it.
 
 | | |
 |---|---|
 | Who starts it | You, by name: `/shipyard-delivery:build-workflow` in Claude Code, or ask for it in other agents. The agent doesn't start it on its own. |
-| Arguments | `[goal \| plan file] [stages to run] [go]` |
+| Arguments | `[goal \| plan file] [stages to run] [go \| brief <entry>]` |
 | Project settings | `.claude/shipyard/build-workflow.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/build-workflow/references/overlay-example.md) |
 | Hands off to | a clean run goes to the describe stage (pr-description) if it didn't run; a blocked or halted run goes back to the user with the blocker and the run's trail. |

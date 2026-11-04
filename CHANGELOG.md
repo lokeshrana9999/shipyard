@@ -4,6 +4,28 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-05
+
+The pipeline becomes a factory with gates at both ends: a plan stage that interviews you before anything is built, and evidence files that `ship` checks before it moves past verify, review, and land. Built from a retrospective of two weeks of real agent sessions; each skill's `docs/sources` note records the evidence behind its rules.
+
+### Added
+
+- `grill-plan`, the plan stage (1): numbered question rounds with a recommended answer per question, facts looked up rather than asked, standing questions (smallest usable version, deadline, what becomes public or irreversible, autonomy and model per role, caps and defaults, negative requirements), a round cap of 4, and a plan file at `.claude/shipyard/plans/<branch>.md` with a decisions table, acceptance checks, the first flow diagram, and an approval line `Approved: <date> plan-hash <sha256-12>` written only on your confirmation. Writes with `walkthrough`'s principles. The idea is Matt Pocock's grilling skills (MIT), recreated in shipyard's own words and credited in `docs/sources/grill-plan.md`. Four eval cases.
+- `land`, stage 7: per-repo lock, base sync (re-synced at most twice if the base moves), the project gate, a merge only when settings grant `merge: auto` or you say yes, a recorded merge with read-back, a bounded deploy wait ending in a named verdict (`landed`, `gate failed`, `not merged`, `deploy did not run`), explicit issue closing, and `.claude/shipyard/reports/land-<branch>.md`. Plain git; never deletes, and never bare force-pushes (a rebase sync pushes the feature branch with `--force-with-lease` against the sha it fetched). The agent may start it; the merge stays gated. Five eval cases with a local bare repo as the remote.
+- `eval-loop`: rounds against locked eval cases for prompt, skill, or instruction text, with a frozen grader hash, at least 3 replicates per case, mechanical graders before LLM graders, an unread holdout folder with a diff check, a required per-round cost cap, a fix-round cap of 5, and a real-surface run plus three raw transcripts for you before `pass`. Writes `.claude/shipyard/reports/eval-loop-<branch>.md`. Five eval cases.
+- `runner-creation`: creates or hardens an unattended runner around any agent CLI run headless: launch wrapper with a lease and a pre-flight gate (an `idle` row before any model call), runs under turn, spend, and wall-clock caps with the outcome derived from state, a deny-by-default permission profile proven by a dry run, a ledger with store-side timestamps and a `lesson` column, a reaper, retries with quarantine, per-target cooldown, a needs-you queue with ageing, a yield governor, and seven acceptance gates before the schedule is enabled. The skill body names no vendor; per-platform flags live in `references/platforms.md`. Five eval cases.
+- `flow-diagram` ships `scripts/parse-mermaid.mjs`, which parses a diagram once with the official Mermaid parser instead of repeated self-checks.
+- `build-workflow` ships `references/brief-template.md`, used for every agent or sub-session brief: files owned, interfaces, model per role, autonomy with the always-ask list, and "no new caps, defaults or facts: list them as questions".
+
+### Changed
+
+- `ship` routes on evidence files: stages 0-8 (plan runs `grill-plan`, land is stage 7, demo is settings-driven at 8); it moves past verify live only when `reports/live-verify-<branch>.md` says `Result: pass` for the current commit, shows the plan as `confirmed`, `unconfirmed`, or `none` at every stage, reads the review station (`pr-review` or a project gate) from settings, and requires the eval-loop report when prompt or skill text changed. Three regression evals: `refuses-stale-verify-report`, `routes-no-plan-to-grill`, `routes-to-land-after-describe`.
+- `live-verify` triggers on "does it actually work", "check it live", and "verify these claims"; a new `claims` mode judges a list of claims with `review-verifier`; every run writes a report bound to the commit with `Checked:` and `Not checked:`; a third failure stops the line, and `blocked` gets one fix attempt and then a precise ask. Two new evals.
+- `flow-diagram` serves any written artifact (plans, PR descriptions, issues, docs) and reuses the plan's diagram when it is the same flow. One new eval.
+- `pr-description` reads the plan file and the live-verify report: the Testing section quotes the verify result and ticks the plan's acceptance checks it covered, and the diagram reuses the plan's.
+- `build-workflow` adds shared-resource rules (one child per shared resource, disjoint files, own worktrees) with no default agent cap, and a 2-minute child start check. One new eval.
+- `docs/pipeline.md` is rewritten for stages 0-8: the evidence per stage, human-in-the-loop points H1-H10, caps, and the one-page factory diagram.
+
 ## [0.3.2] - 2026-10-11
 
 ### Changed

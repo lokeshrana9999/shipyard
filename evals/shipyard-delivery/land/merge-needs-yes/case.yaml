@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: merge-needs-yes
+description: "A branch with a passing live-verify report for HEAD, a local bare repo as the remote, a gate that passes, and land settings with no `merge: auto`. The skill must run the gate, then stop and ask before merging, naming the branch, the base, and the gate result, and leave the base and the merge record untouched."
+tags: [land]
+context:
+  scaffold_script: fixture.sh

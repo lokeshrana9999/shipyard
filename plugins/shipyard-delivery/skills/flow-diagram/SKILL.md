@@ -1,9 +1,11 @@
 ---
 name: flow-diagram
-description: Draws flowcharts, sequence and state diagrams, and architecture or data-flow pictures, in Mermaid where the page renders it and ASCII elsewhere. Use when asked to "draw a diagram of this flow" or "add a sequence diagram", when about to draw any diagram, or when another skill asks for one. For charts of data (bar, line, pie), use a charting skill instead.
+description: Draws flowcharts, sequence and state diagrams for any written artifact (plan, PR, issue, doc), in Mermaid where it renders and ASCII elsewhere, reusing the plan's diagram for the same flow. Use when asked to "draw a diagram of this flow" or "add a sequence diagram", when about to draw any diagram, or when another skill asks for one. For data charts (bar, line, pie), use a charting skill instead.
 ---
 
 # Flow diagram
+
+Input: the flow to draw and where the diagram will be read. Output: one diagram in that destination's syntax, checked as section 7 says.
 
 A diagram works when the reader can tell each node's role from its shape before reading its label, and can follow the flow in one direction without backtracking. Three conventions get there: a shape per role, a color per role, and layout discipline. Apply all three; they reinforce each other.
 
@@ -11,7 +13,17 @@ A diagram works when the reader can tell each node's role from its shape before 
 
 On every invocation, read `.claude/shipyard/flow-diagram.md` in the project root if it exists. It describes this project: where its diagrams are read, whether its markdown is read rendered, its renderer's limits, and any palette, size, or width overrides; its shape is in [references/overlay-example.md](references/overlay-example.md). Its settings win over the defaults below. Without it, use the defaults as written.
 
-## 2. Route by destination
+## 2. Start from the plan's diagram
+
+The plan stage draws the first diagram of a change, into the plan file at `.claude/shipyard/plans/<branch>.md` (`<branch>` is the branch name with `/` replaced by `-`) under `## flow`. Before drawing for any later artifact about the same change (a PR description, an issue, a handoff, an ADR, a demo script), read that section.
+
+- **Same flow: reuse it.** Keep its nodes, labels, and branches, translated into the destination's syntax (ASCII in the plan becomes Mermaid in a PR body). Two diagrams of one flow that disagree cost the reader more than none.
+- **The flow changed since the plan: update it** in the new artifact, and append one line to the plan's `## deviations` section (`<date> <stage>: flow changed: <what>`). Don't edit the plan above its `## approval` heading: the approval hash covers that text, and a change there makes the plan unconfirmed. A change that alters a decision goes back through the plan stage.
+- **A new question gets a new diagram**, not a variant of the plan's. Section 3 says which.
+
+With no plan file, this skill draws the first diagram, and the artifact it lands in becomes the one later artifacts reuse.
+
+## 3. Route by destination
 
 Choose the syntax by where the diagram will be read.
 
@@ -25,7 +37,7 @@ Choose the syntax by where the diagram will be read.
 - One artifact, one syntax.
 - If the destination is unknown, ask before drawing; guessing costs a full redraw.
 
-## 3. Pick the diagram type
+## 4. Pick the diagram type
 
 One diagram answers one question. If you can't name the question, you don't yet know what to draw.
 
@@ -37,7 +49,7 @@ One diagram answers one question. If you can't name the question, you don't yet 
 | What states can this thing be in? | state diagram |
 | How do tables relate? | ER diagram |
 
-## 4. Shapes and colors by role
+## 5. Shapes and colors by role
 
 Each role has one shape and one color, used the same way in every diagram so the reader learns it once. Whatever palette is in use, it follows four rules:
 
@@ -63,7 +75,7 @@ Each role has one shape and one color, used the same way in every diagram so the
 
 A default `classDef` block that meets these rules is in `references/mermaid-syntax.md`; the project settings can replace it.
 
-## 5. Layout
+## 6. Layout
 
 - **Fewest crossings first.** Edge crossings hurt comprehension more than any other layout flaw. Reorder nodes or split the diagram before accepting one.
 - **Small diagrams.** Size hurts comprehension more than layout does. Keep a diagram small enough to take in at once, and a hand-drawn ASCII diagram smaller still, since its alignment errors grow with the number of edges. Past that, split into two diagrams, each answering its own question. Defaults: about 12 nodes for Mermaid, about 8 edges for ASCII; the project settings can change them.
@@ -73,14 +85,16 @@ A default `classDef` block that meets these rules is in `references/mermaid-synt
 - **Subgraphs only for a real boundary** the reader cares about, such as everything client-side or one deployed service, with more than one node each.
 - **One arrow per relationship.** Two nodes firing the same arrow at the same target usually hide one shared upstream node.
 
-## 6. Check before shipping
+## 7. Check before shipping
 
-For Mermaid:
+For Mermaid, check the structure by eye once, then parse once:
 
-1. The syntax follows `references/mermaid-syntax.md` and any renderer limits in the project settings.
-2. Every meaningful node has a class; no role is left as a bare rectangle.
-3. Every branch is visible: a diamond with labelled exits, or an `alt` block in a sequence diagram.
-4. If a Mermaid parser or validator is available in the environment (and the user allows running it), parse the diagram before shipping and fix errors until it passes. A validator may be stricter than renderers, so when it rejects a form the Mermaid docs allow, switch to the simpler syntax it accepts instead of arguing with it. Passing parsing doesn't prove every renderer will draw it, so the syntax rules above still apply.
+1. Every meaningful node has a class; no role is left as a bare rectangle. Every branch is visible: a diamond with labelled exits, or an `alt` block in a sequence diagram.
+2. Parse the diagram with the bundled script, run (not read) once per diagram: `node <this skill's folder>/scripts/parse-mermaid.mjs <file>`, where the file is the markdown artifact (every ```` ```mermaid ```` block in it is parsed) or a `.mmd` file holding one diagram. It uses the official Mermaid parser and warns about syntax outside the portable subset in `references/mermaid-syntax.md`. The first run may download the parser (`mermaid` and `jsdom`, unpinned, from the npm registry) through npx; `--no-npx` refuses the download and uses only an installed one. Read the result as follows:
+   - `error`: fix what it names and run once more. A parser may be stricter than renderers, so when it rejects a form the Mermaid docs allow, switch to the simpler syntax it accepts instead of arguing with it.
+   - `warn`: change the syntax unless the project settings say this renderer supports the form.
+   - exit code 2 (parser unavailable): apply the portability rules in `references/mermaid-syntax.md` by hand, and say in the artifact that the diagram wasn't parsed.
+   - `ok`: ship it. Don't re-check by eye after a pass; the parse is the check, and repeated self-checks of the same text find nothing new. Parsing doesn't prove every renderer will draw it, so the portability rules still apply.
 
 For ASCII, use the checklist in `references/ascii-diagrams.md`.
 

@@ -1,43 +1,189 @@
 # the pipeline
 
-A change moves through eight stages, each run by one skill or by your agent's normal session; the `ship` skill works out which stage the branch is at and hands off to the next one, and each stage skill ends with a `next:` line naming the stage after it.
+A change moves through nine stages, 0 to 8, each run by one skill or by your agent's normal session. The `ship` skill works out which stage the branch is at from the evidence files on disk and hands off to the next one; each stage skill ends with a `next:` line naming the stage after it, and ends its report with `Checked:` / `Not checked:` lines so the next stage knows what it inherits. The line stops where evidence is missing: a plan that was never confirmed is shown as such at every stage, a verify report for an older commit counts as not verified, and nothing merges or publishes on a claim.
 
 ## stages
 
-| # | Stage | Runs with | Agents it starts | Who starts it |
-|---|---|---|---|---|
-| 0 | explain | `walkthrough` | | you or the agent |
-| 1 | plan | your agent's plan mode, or a plan written in chat | | you |
-| 2 | test design | `design-tests` | `test-designer` (in multi-agent runs) | you or the agent |
-| 3 | implement | you and your agent in the normal session; `db-migration` when a database schema changes | | you or the agent |
-| 4 | verify live | `live-verify` | `live-verifier` (in multi-agent runs) | you or the agent |
-| 5 | review | `pr-review` | `concern-reviewer`, `review-verifier` | you, `/shipyard-delivery:pr-review` |
-| 6 | describe | `pr-description`, drawing with `flow-diagram` | | you, `/shipyard-delivery:pr-description` |
-| 7 | demo | no skill yet | | |
+| # | Stage | Runs with | Writes | Agents it starts | Who starts it |
+|---|---|---|---|---|---|
+| 0 | explain | `walkthrough` | | | you or the agent |
+| 1 | plan | `grill-plan` | `.claude/shipyard/plans/<branch>.md`: decisions, out of scope, acceptance checks, open questions, flow diagram, and an `## approval` section with `Approved: <date> plan-hash <hash>` once you confirm it (the hash covers the bytes above that heading) | fact lookups by subagent | you or the agent |
+| 2 | test design | `design-tests` | | `test-designer` (in multi-agent runs) | you or the agent |
+| 3 | implement | you and your agent in the normal session; `db-migration` when a database schema changes | | | you or the agent |
+| 4 | verify live | `live-verify`; `eval-loop` too when the change is prompt or skill text | `.claude/shipyard/reports/live-verify-<branch>.md` with `Commit: <HEAD sha>` and `Result: pass\|fail\|blocked`; `eval-loop-<branch>.md` beside it | `live-verifier` (in multi-agent runs) | you or the agent |
+| 5 | review | `pr-review`, or the project gate your settings name (run by `land`) | | `concern-reviewer`, `review-verifier` | you, `/shipyard-delivery:pr-review` (H4); or `land` for a gate |
+| 6 | describe | `pr-description`, drawing with `flow-diagram` (reusing the plan's diagram) | the pull request | | you, `/shipyard-delivery:pr-description` |
+| 7 | land | `land` | `.claude/shipyard/reports/land-<branch>.md` with `Verdict: landed \| gate failed \| not merged \| deploy did not run` | | you or the agent; the merge inside it waits for your yes unless its settings say `merge: auto` |
+| 8 | demo | the skill your `ship` settings name; none in this pack | | | |
 
-Usable at any stage: `flow-diagram` (Mermaid for pages that render it, ASCII for terminals and editors), `skill-auditor` (scores `SKILL.md` files), and in Claude Code the `signal` output style (answer first, one next step, progress markers), picked in Claude Code's settings.
+`<branch>` in a file name is the branch name with `/` replaced by `-`: `feat/x` writes `plans/feat-x.md` and `reports/live-verify-feat-x.md`.
 
-Some stages need tools beyond the agent itself. `pr-review` reads pull requests and `pr-description` creates or updates them, both through your code host's CLI or API, signed in. `live-verify` in browser mode needs a browser the agent can drive. Each skill says what it needs when it's missing.
+Side skills, usable at any stage: `flow-diagram` draws for any written artifact (plans, PR descriptions, issues, docs; Mermaid for pages that render it, ASCII for terminals and editors) and reuses or updates the plan's diagram when it is the same flow; `eval-loop` runs grader rounds on a frozen grader set when the change is prompt, skill, or instruction text; `runner-creation` builds a scheduled headless runner, entering through `grill-plan` and handing off to verify live, then land; `build-workflow` runs the remaining stages as one multi-agent run; `skill-auditor` scores `SKILL.md` files; and in Claude Code the `signal` output style (answer first, one next step, progress markers), picked in Claude Code's settings.
+
+Some stages need tools beyond the agent itself. `pr-review` reads pull requests and `pr-description` creates or updates them, and `land` merges, all through your code host's CLI or API, signed in. `live-verify` in browser mode needs a browser the agent can drive. Each skill says what it needs when it's missing.
 
 ## how ship places a branch
 
-`ship` only routes; it never does a stage's work. It reads the project's `.claude/shipyard/ship.md` if there is one, then looks at the branch with cheap read-only checks: the current branch, files changed against the merge base plus uncommitted ones, whether a pull request is open, a plan file, test files for the changed code, database schema files and their migrations. It runs no builds and no tests; a test result is a claim from a commit message, you, or CI. Which files count as schema and migrations comes from `db-migration`: the `schema path` and `migrations path` in its settings file, `.claude/shipyard/db-migration.md` (or the older `prisma-workflow.md`), or else the schema and migration globs in its enabled adapters (only the Prisma adapter is enabled). `ship` reads those small files and runs no migration tool.
+`ship` only routes; it never does a stage's work, and it is the authority on evidence: a stage skill's `next:` line is a suggestion, the files decide. It reads the project's `.claude/shipyard/ship.md` if there is one, then looks at the branch with cheap read-only checks: the current branch and HEAD, files changed against the merge base plus uncommitted ones, whether a pull request is open, the plan file, the stage reports, test files for the changed code, database schema files and their migrations. It runs no builds, no tests, and no agents; a test result is a claim from a commit message, you, or CI. Which files count as schema and migrations comes from `db-migration`: the `schema path` and `migrations path` in its settings file, `.claude/shipyard/db-migration.md` (or the older `prisma-workflow.md`), or else the schema and migration globs in its enabled adapters (only the Prisma adapter is enabled). `ship` reads those small files and runs no migration tool.
 
-It walks the stage table top-down. The current stage is the last one done, or one left half-done; the next stage is the first whose work isn't done and isn't skipped. Evidence of a later stage (code in the diff, an open pull request) marks the stages before it done. A changed schema with no new migration means implement isn't done, so it routes to `db-migration` first. Its report has four lines, `Stage:`, `Skipped:`, `next:`, and `Then:`, and it stops to ask before starting the next stage. [examples/ship-transcript.md](../examples/ship-transcript.md) shows one run.
+It walks the stage table top-down. The current stage is the last one with current evidence, or one left half-done; the next stage is the first whose evidence is missing and that isn't skipped. Code in the diff or an open pull request marks explain, plan, and test design done; nothing marks verify, review, or land done except their own reports. The evidence per stage:
 
-On a yes, it starts the next skill itself when the agent may start it (walkthrough, design-tests, db-migration, live-verify, flow-diagram). For `pr-review`, `pr-description`, and `build-workflow` it prints the exact command for you to run, because those skills set `disable-model-invocation` and Claude Code blocks the agent from starting them. Agents that ignore that field may start them unasked, which is why the [AGENTS.md snippet](agents-install.md#3-paste-the-agentsmd-snippet) says not to. Plan and implement belong to your agent: `ship` tells you to enter plan mode or to continue in the session.
+| Stage | Done when | Otherwise |
+|---|---|---|
+| 1 plan | `plans/<branch>.md` exists; the `Approved:` line in its `## approval` section makes it `confirmed`; with a shell, `ship` recomputes the hash over the bytes above that heading and reports `edited since` on a mismatch | a goal with no plan file and no code goes to `grill-plan`, unless it is a one-file obvious change. A plan without the `Approved:` line is `unconfirmed`, and code with no plan is `Plan: none`; both appear on the report's `Plan:` line at every later stage, and neither blocks routing, since you chose to build |
+| 4 verify live | `reports/live-verify-<branch>.md` says `Result: pass` and its `Commit:` is the current HEAD, or the settings skip verify (a library, docs only) | no report, a `fail` or `blocked`, or a report for an older commit (stale: the code moved after the check) all mean verify isn't done; `ship` names the gap (`report is for a1b2c3d, HEAD is e4f5a6b`) and routes to `live-verify`. A third `fail` in a row, or `blocked` after live-verify's own fix attempt, stops the line (H5): `ship` names the failing check and asks whether to fix, re-plan, or stop |
+| 4 eval-loop | when the diff touches prompt, skill, or instruction text (the settings' `prompt paths`), `reports/eval-loop-<branch>.md` says `Result: pass` for HEAD; the settings can make it the verify evidence where there is no app to boot | `eval-loop` comes before verify counts as done |
+| 5 review | the station the settings name (`review station: pr-review \| project gate` in `ship.md`, else in `land.md`): `pr-review`, which only you run (`ship` prints the command, H4), or `project gate`, which `land` runs, so review is deferred to stage 7 and describe comes next | with neither settings file the station is `pr-review` |
+| 6 describe | an open pull request that describes HEAD, or the settings' `describe` report path | `pr-description` |
+| 7 land | `reports/land-<branch>.md` says `Verdict: landed` | any other verdict means land isn't done: `deploy did not run` is a stopped line (H5), which `ship` reports with the command the report hands over and routes no further; `gate failed` and `not merged` go back to implement with the report's reason |
+| 8 demo | the settings name a demo skill | `ship` names demo as the last stage and stops |
 
-Arguments: a stage (number, name, or skill name) jumps to it, asking first if its entry condition isn't met. `all` prints a `/shipyard-delivery:build-workflow <plan file> <remaining stages>` command, which runs the remaining stages as one multi-agent run; it shows its own run plan and waits for a go. When demo comes next, `ship` says it has no skill yet and stops.
+A changed schema with no new migration means implement isn't done, so it routes to `db-migration` before verify. The report has five lines, `Stage:`, `Plan:`, `Skipped:`, `next:`, and `Then:`, and it stops to ask before starting the next stage. [examples/ship-transcript.md](../examples/ship-transcript.md) shows one run.
+
+On a yes, it starts the next skill itself when the agent may start it (walkthrough, grill-plan, design-tests, db-migration, live-verify, eval-loop, flow-diagram, land). `land` takes the repo's land lock (`.git/shipyard-land.lock`) and merges only when its settings say `merge: auto` or you say yes to the merge inside it. For `pr-review`, `pr-description`, and `build-workflow` it prints the exact command for you to run, because those skills set `disable-model-invocation` and Claude Code blocks the agent from starting them. Agents that ignore that field may start them unasked, which is why the [AGENTS.md snippet](agents-install.md#3-paste-the-agentsmd-snippet) says not to. Implement belongs to your session: `ship` tells you to continue here.
+
+Arguments: a stage (number, name, or skill name) jumps to it, asking first if its entry condition isn't met; jumping to review never skips the verify gate silently. `all` prints a `/shipyard-delivery:build-workflow <plan file> <remaining stages>` command, which runs the remaining stages as one multi-agent run; it shows its own run plan and waits for a go.
+
+## where a person is needed
+
+The names below are used in the skills' text, so a stop reads the same everywhere.
+
+| Point | Where | What you see | If you don't answer |
+|---|---|---|---|
+| H1 ask | intake | nothing yet; the first grill round follows | no work starts |
+| H2 answer a round | `grill-plan` | numbered questions, each with a recommended answer first, so "yes" accepts it | the round stays open; after the round cap, "proceed open or one more round" |
+| H3 confirm plan | end of `grill-plan` | the plan file | the plan is marked `unconfirmed`; `ship` shows that at every stage; no build unless you say "just build it" |
+| H4 run pr-review | review, when the settings name `pr-review` | the exact command | `land` runs the project gate instead where the settings say so; otherwise the branch waits at review |
+| H5 andon | verify failed 3 times or blocked, `deploy did not run`, read-back mismatch | the failing check or missing item, the report, and the one command or fact needed | the line stays stopped; nothing merges or publishes |
+| H6 exact-text yes | the always-ask list: public posts, deletes, money, facts about you | the exact text or object, what is lost (for deletes), the version the yes applies to | nothing is sent, deleted, paid, or asserted |
+| H7 read 3 eval transcripts | `eval-loop` pass | 3 raw transcripts plus the pass table | not passed |
+| H8 batched user-only steps | multi-agent and side-session runs | one list with the exact page or command (trust, fork, sign-in) | the child reports blocked; the parent waits on that list only |
+| H9 retro | kaizen, on a cadence | each rule with its fire count | rules are kept |
+| H10 needs-you digest | a runner from `runner-creation` | one aged list with first-seen and escalation | items stay quarantined |
+
+A skill that merges, publishes, or deletes asks before the irreversible step unless the project's settings grant it (`land`: `merge: auto`). The always-ask list is never automatic.
+
+## caps
+
+Defaults; every project's settings file can change them.
+
+| Cap | Default | Where |
+|---|---|---|
+| grill rounds | 4, then the plan is written with open questions marked | `grill-plan` |
+| fact lookup | 5 min, then the fact is marked unknown and the question held | `grill-plan` |
+| verify fix loop | 3 fails, then andon (H5) | `ship`, `live-verify` |
+| review fix rounds | 2, then you decide | `pr-review`, `land` |
+| eval fix rounds | 5, then the trend is reported | `eval-loop` |
+| deploy wait T | 10 min, then `deploy did not run` | `land` |
+| re-sync after the base moved | 2, then stop and report | `land` |
+| lands per repo | 1 at a time (lock file `.git/shipyard-land.lock`) | `land` |
+| child start check | 2 min, then the user-only step is batched (H8) | `build-workflow` |
+
+## the factory on one page
+
+The main line runs top to bottom; the lanes on the right run beside it. Reddish-purple stadiums are the human points above, orange diamonds are gates, blue boxes are scripts and hooks, slate boxes are agent stations, cylinders are files on disk.
+
+```mermaid
+graph TB
+    U(("H1 HUMAN: ask")) --> GP["grill-plan: frontier round"]
+    GP --> HA2(["H2 HUMAN: answer round"])
+    HA2 -->|frontier open, max 4| GP
+    HA2 -->|frontier empty| HA3(["H3 HUMAN: confirm plan"])
+    HA3 --> PF[("plan file + flow diagram")]
+    PF --> IM["design-tests, implement"]
+    IM --> LV["live-verify"]
+    LV --> G1{"pass for HEAD?"}
+    G1 -->|fail, max 3| IM
+    G1 -->|pass| RV["review: pr-review or project gate"]
+    RV -.->|settings name pr-review| HA4(["H4 HUMAN: run pr-review"])
+    HA4 -.-> RV
+    RV -->|bugs, max 2 rounds| IM
+    RV -->|clean| PD["describe: PR, issues, docs"]
+    PF -.->|reuse diagram| PD
+    PD --> LD["land: gate, merge, record"]
+    LD --> G3{"deployed within T?"}
+    G3 -->|yes| G5{"always-ask item?"}
+    G5 -->|no| DONE[/"landed and verified"/]
+    G5 -->|"yes: post, delete, money, facts"| HA6(["H6 HUMAN: exact-text yes"])
+    HA6 --> RB[["read back live artifact"]]
+    RB -->|match| DONE
+    G1 -->|fail x3 or blocked| HA5(["H5 HUMAN: andon: fix, re-plan or stop"])
+    G3 -->|no| HA5
+    RB -->|mismatch| HA5
+
+    subgraph EVAL["eval-loop lane"]
+        direction TB
+        E1[["freeze grader hash"]] --> E2[["3 replicates in the background"]]
+        E2 --> E3{"better, same hash?"}
+        E3 -->|no, max 5 rounds| E2
+        E3 -->|yes| HA7(["H7 HUMAN: read 3 transcripts"])
+    end
+    IM -.->|prompt or skill text| E1
+    HA7 -.->|pass| LV
+
+    subgraph ORCH["orchestration lane"]
+        direction TB
+        O1["brief from template"] --> O2{"started in 2 min?"}
+        O2 -->|no| HA8(["H8 HUMAN: trust, fork, sign-in"])
+        HA8 --> O1
+        O2 -->|yes| O5[("child report file")]
+        O5 --> O6["parent verifies claims"]
+    end
+    IM -.->|sub-sessions| O1
+    O6 -.-> LV
+
+    subgraph KAI["kaizen lane"]
+        direction TB
+        HK[["hook blocks a known-bad command"]] --> K2[["project rule + changelog"]]
+        K2 --> HA9(["H9 HUMAN: retro"])
+        HA9 -->|keep, delete, promote to hook| K2
+    end
+    IM -.->|bad command| HK
+
+    subgraph RUN["runner lane: runner-creation"]
+        direction TB
+        R1[["lease + pre-flight gate"]] --> R2{"takeable work?"}
+        R2 -->|no| R6[("ledger")]
+        R2 -->|yes| R4["headless run under caps"]
+        R4 --> R5[["outcome from facts"]]
+        R5 --> R6
+        R6 -->|aged needs-you| HA10(["H10 HUMAN: needs-you digest"])
+    end
+
+    class U,HA2,HA3,HA4,HA5,HA6,HA7,HA8,HA9,HA10 human
+    class G1,G3,G5,E3,O2,R2 gate
+    class RB,E1,E2,HK,K2,R1,R5 script
+    class GP,IM,LV,RV,PD,LD,O1,O6,R4 logic
+    class PF,O5,R6 data
+    class DONE ok
+
+    classDef human  fill:#CC79A7,color:#1a1a19,stroke:#5a2d4a,stroke-width:2.5px
+    classDef gate   fill:#E69F00,color:#1a1a19,stroke:#888,stroke-width:1.5px
+    classDef script fill:#0072B2,color:#fff,stroke:#888,stroke-width:1.5px
+    classDef logic  fill:#52514e,color:#fff,stroke:#888,stroke-width:1.5px
+    classDef data   fill:#56B4E9,color:#1a1a19,stroke:#888,stroke-width:1.5px
+    classDef ok     fill:#009E73,color:#1a1a19,stroke:#888,stroke-width:1.5px
+    style EVAL fill:none,stroke:#888
+    style ORCH fill:none,stroke:#888
+    style KAI fill:none,stroke:#888
+    style RUN fill:none,stroke:#888,stroke-dasharray:6 4
+```
 
 ## handoffs
 
+Every stage skill ends with a `next:` line and closes its report with `Checked:` / `Not checked:` lines; `ship` reads the report, not the `next:` line, to decide.
+
 | Skill | `next:` |
 |---|---|
+| `grill-plan` | the test design stage, through `design-tests` with the plan file; a one-file change skips to implement |
 | `design-tests` | the implement stage, or whoever writes the tests |
 | `db-migration` | back to implement, with the migration name and the final status output from the migration tool |
 | `live-verify` | a pass goes to review; a fail goes back to implement with the report |
+| `eval-loop` | a pass goes to verify live when the change also touches running code, else to review; `stopped` or a holdout match goes back to you with the trend |
 | `pr-review` | fixes go back to implement; a clean review goes to describe |
-| `pr-description` | the pull request's human reviewers, with its link; demo when the change is user-facing and the project has one |
+| `pr-description` | land, with the pull request's link; its human reviewers read it meanwhile |
+| `land` | `gate failed`, or `not merged` on a conflict or a moving base, goes back to implement with the report's reason; `not merged` because you declined goes to the pull request's human reviewers; after `landed`, demo when the settings name one, else done; `deploy did not run` is an andon (H5) |
+| `runner-creation` | verify live (the headless dry run and forced-failure checks against the real agent CLI), then land for the wrapper and the schedule |
 | `build-workflow` | a clean run goes to describe if it didn't run; a blocked or halted run goes back to you with the blocker |
 | `ship` | the stage you confirm, through its own skill |
 

@@ -7,6 +7,8 @@ A project keeps this at `.claude/shipyard/pr-description.md`. The values below a
 
 - base branch: main
 - code host: the one in `origin`; publish with the host's CLI
+- plan file: `.claude/shipyard/plans/<branch>.md` (default; `<branch>` with `/` replaced by `-`)
+- verify report: `.claude/shipyard/reports/live-verify-<branch>.md` (default)
 - description length limit: 4000 characters, counted in UTF-16 code units
 - title: imperative, no prefix
 - tags: emoji plus word (✨ Feature, 🐛 Fix, ♻️ Refactor, 📝 Docs, 🔧 Chore)

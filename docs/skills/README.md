@@ -6,13 +6,17 @@ One page per skill, generated from its `SKILL.md`.
 
 | Skill | Who starts it | Arguments |
 |---|---|---|
-| [build-workflow](build-workflow.md) | you | `[goal \| plan file] [stages to run] [go]` |
+| [build-workflow](build-workflow.md) | you | `[goal \| plan file] [stages to run] [go \| brief <entry>]` |
 | [db-migration](db-migration.md) | you or the agent |  |
 | [design-tests](design-tests.md) | you or the agent |  |
+| [eval-loop](eval-loop.md) | you or the agent | `[what changed] [round \| baseline \| pass]` |
 | [flow-diagram](flow-diagram.md) | you or the agent |  |
-| [live-verify](live-verify.md) | you or the agent | `[what to verify] [api \| browser]` |
+| [grill-plan](grill-plan.md) | you or the agent | `[the ask \| re-grill <decision>]` |
+| [land](land.md) | you or the agent | `[branch]` |
+| [live-verify](live-verify.md) | you or the agent | `[what to verify \| the claims] [api \| browser \| claims]` |
 | [pr-description](pr-description.md) | you |  |
 | [pr-review](pr-review.md) | you | `[base-branch \| pull-request] \| mine` |
+| [runner-creation](runner-creation.md) | you or the agent | `[job name] [create \| harden]` |
 | [ship](ship.md) | you or the agent | `[stage \| all]` |
 | [skill-auditor](skill-auditor.md) | you or the agent | `[skill-file-or-dir] [report-path]` |
 | [walkthrough](walkthrough.md) | you or the agent |  |

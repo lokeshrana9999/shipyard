@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: deploy-timeout-verdict
+description: A branch with a passing live-verify report for HEAD, a local bare repo as the remote, a passing gate, merge auto, a deploy probe that never succeeds, and a 20-second deploy wait. The skill must merge, record the merge, poll the probe, and end in the named verdict `deploy did not run` with the settings' manual deploy command handed over and never run.
+tags: [land]
+context:
+  scaffold_script: fixture.sh

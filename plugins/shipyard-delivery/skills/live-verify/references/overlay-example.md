@@ -1,6 +1,6 @@
 # Project settings example
 
-A project keeps this at `.claude/shipyard/live-verify.md`. The values below are illustrative; every setting is optional, and anything left out is discovered as SKILL.md describes.
+A project keeps this at `.claude/shipyard/live-verify.md`. The values below are illustrative; every setting is optional, and anything left out is discovered as SKILL.md describes or uses the default named there.
 
 ```markdown
 # live-verify settings
@@ -9,6 +9,7 @@ A project keeps this at `.claude/shipyard/live-verify.md`. The values below are 
   - dependencies: `docker compose up -d db`
   - api: `npm run dev` in `api/`; ready when `GET http://localhost:4000/health` answers 200
   - web: `npm run dev` in `web/`; ready when `http://localhost:5173` renders the sign-in page
+  - readiness timeout: 180 s (default 120 s; this monorepo's cold start is slow)
 - test session: sign a token with the api's own JWT library and the secret its config loader provides; claim shape in `api/src/auth/`; test user `dev@example.test`; expiry 1 hour
 - datastores:
   - the local database at `localhost:5432`: check rows with a read-only query
@@ -17,4 +18,9 @@ A project keeps this at `.claude/shipyard/live-verify.md`. The values below are 
 - project checks:
   - streamed replies: a progress event arrives before the final result event
 - extension: build with `npm run build` in `browser-extension/`, load `browser-extension/dist`
+- reports: `.claude/shipyard/reports/` (default); the plan file is read from `.claude/shipyard/plans/`
+- fail rounds before the line stops: 3 (default)
+- claims: when no list is given with `claims` mode, take the pull request body's testing section
 ```
+
+The `boot` entries are what the one fix attempt fills in when a run is blocked: a run that had to discover the start command, the port, or the session recipe proposes the line here, so the next run reads it instead of rediscovering it.

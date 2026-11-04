@@ -4,6 +4,7 @@ Contents: how to brief · status mapping · the shared prefix · the no-cleanup 
 
 ## How to brief
 
+- **Use the template.** Every brief has the sections of [brief-template.md](brief-template.md): background, task, interfaces and call order, files owned, constraints, autonomy, model per role, report. The stage sections below say what goes into those sections for each stage; they don't replace the shape. The parent's duties after sending a brief (the 2-minute start check, the children list, accepting only against the report file) are in the template too.
 - **Give each agent the text itself**: the plan entry, the orientation, the findings. Agents handed only paths spend many calls re-deriving context before their first useful one. Large files (the spec, a long plan) go by path.
 - **A byte-stable prefix, then a divider, then the per-item facts.** The prefix is identical for every agent of a stage, so it's cached; anything that varies goes after the divider.
 - **Short output.** Ask for the return shape and nothing else; cap free text to a few sentences.
@@ -114,6 +115,7 @@ In modes 2 and 3 the orchestrator appends one line to `STATUS.md` itself (where 
 
 ```
 <UTC time> | stage 3/6 implement | entries landed 4/7 | last gate: verify pass | next: entry 5
+<UTC time> | child implement-5 | brief: <path> | report: <path> | started: yes
 ```
 
-A failed append is logged and ignored.
+The second kind of line is written once per child started, and updated to `started: no, needs you: <item>` when the start check fails, so a compaction can't lose a child in flight. A failed append is logged and ignored.

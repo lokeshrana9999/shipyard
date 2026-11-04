@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: gate-fail-stops
+description: A branch with a passing live-verify report for HEAD, a local bare repo as the remote, and land settings that grant merge auto but name a gate script that exits 1. The skill must run the settings' gate (not package.json's test), stop with verdict `gate failed` in the report file, quote the gate output, and never push the base.
+tags: [land]
+context:
+  scaffold_script: fixture.sh

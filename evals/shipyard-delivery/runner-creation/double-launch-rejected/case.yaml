@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: double-launch-rejected
+description: One takeable unit and a stand-in agent CLI that runs for 15 seconds; the prompt asks for two overlapping launches. The wrapper must hold a lease at the settings' lock path so the second launch records skipped and the CLI is invoked exactly once, while the first derives ok. Needs --scaffold and --allow-tools Bash Write.
+tags: [runner-creation]
+context:
+  scaffold_script: fixture.sh
