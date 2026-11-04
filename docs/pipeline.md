@@ -182,7 +182,7 @@ Every stage skill ends with a `next:` line and closes its report with `Checked:`
 | `eval-loop` | a pass goes to verify live when the change also touches running code, else to review; `stopped` or a holdout match goes back to you with the trend |
 | `pr-review` | fixes go back to implement; a clean review goes to describe |
 | `pr-description` | land, with the pull request's link; its human reviewers read it meanwhile |
-| `land` | the pull request's human reviewers when not merged; after a landed merge, demo when the settings name one, else done; `deploy did not run` is an andon (H5) |
+| `land` | `gate failed`, or `not merged` on a conflict or a moving base, goes back to implement with the report's reason; `not merged` because you declined goes to the pull request's human reviewers; after `landed`, demo when the settings name one, else done; `deploy did not run` is an andon (H5) |
 | `runner-creation` | verify live (the headless dry run and forced-failure checks against the real agent CLI), then land for the wrapper and the schedule |
 | `build-workflow` | a clean run goes to describe if it didn't run; a blocked or halted run goes back to you with the blocker |
 | `ship` | the stage you confirm, through its own skill |

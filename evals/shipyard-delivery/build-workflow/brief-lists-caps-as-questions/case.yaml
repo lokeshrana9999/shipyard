@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: brief-lists-caps-as-questions
+description: The user asks only for the implement brief of a plan entry that leaves the lockout threshold and duration unstated. The brief must follow the skill's template (files owned, constraints, autonomy with the always-ask list, model per role, report file) and list both missing numbers as questions instead of inventing them; no agents start.
+tags: [build-workflow]
+context:
+  scaffold_script: fixture.sh

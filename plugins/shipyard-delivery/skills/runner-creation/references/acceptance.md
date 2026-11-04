@@ -1,6 +1,6 @@
 # Acceptance gates
 
-Every gate runs through the wrapper, with the real agent CLI and the real permission profile, and names its expected row before it runs. The schedule is enabled only when all seven pass. The report is this table, filled in, followed by the open questions and the exact scheduler entry waiting for the user's yes.
+Every gate runs through the wrapper, with the real agent CLI and the real permission profile, and names its expected row before it runs. The schedule is enabled only when gates 1 to 6 pass; gate 7 is checked after. The report is this table, filled in, followed by the open questions and the exact scheduler entry waiting for the user's yes.
 
 | # | Gate | How to check | Passes when |
 |---|---|---|---|
@@ -24,6 +24,8 @@ Gate 7 is checked after enabling; the first six block it.
 Open questions: <none | the inputs still unanswered, one per line>
 Scheduler entry to enable: <the exact entry>
 Caps in force: <turns, spend, wall-clock, units per run, per day>
+Checked: <the gates that ran, through the wrapper with the real agent CLI>
+Not checked: <gates not run, and gate 7 until five scheduled runs exist>
 ```
 
 Then STOP — WAIT for the user to enable the entry. A gate that didn't run is `not run` with the reason, never a pass.

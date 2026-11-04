@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: routes-to-land-after-describe
-description: An HTTP API branch with a confirmed plan, code and tests, a live-verify report that passes for HEAD, settings naming the project gate as the review station (run by land) and a describe report that exists; the router should name land as the next stage, not review or verify, say the merge needs `merge: auto` or a yes, and start nothing.
+description: "An HTTP API branch with a confirmed plan, code and tests, a live-verify report that passes for HEAD, settings naming the project gate as the review station (run by land) and a describe report that exists; the router should name land as the next stage, not review or verify, say the merge needs `merge: auto` or a yes, and start nothing."
 tags: [ship]
 context:
   scaffold_script: fixture.sh

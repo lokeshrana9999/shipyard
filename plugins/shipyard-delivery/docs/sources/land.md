@@ -41,5 +41,5 @@ Provenance for `skills/land/`. Kept outside the skill folder so it never loads i
 ## Specifics removed from the skill
 
 - The owner's project helpers (`record_merge.sh`, `post_merge_verify.py`, `/pending`, the routines API) are examples in `references/overlay-example.md` only.
-- The first real overlay (job-agent) is the project's own file, not part of this repo.
+- The first real overlay belongs to a private project and is not part of this repo.
 - A code host's CLI (`gh pr merge`, issue close) is not named in `SKILL.md`; the skill says "the host's CLI or API" and the overlay names the tracker.

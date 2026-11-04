@@ -2,13 +2,13 @@
 
 # live-verify
 
-Verifies a change in the running app, over HTTP or in a browser (browser extensions included), and reports each check with its evidence. Use when asked to "check it actually works", "verify this live", or "smoke-test it in the browser", or to prove a change before merge. Not for writing or running unit or end-to-end test suites, or for just starting the app.
+Verifies a change in the running app or browser extension, or checks a list of claims against it, and writes a report bound to the verified commit. Use when asked to "check it actually works", "does it actually work", "verify this live", "check it live", "smoke-test it in the browser", or "verify these claims", or to prove it before merge. Not for unit or end-to-end suites, or for just starting the app.
 
 | | |
 |---|---|
 | Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:live-verify` in Claude Code); the agent also starts it when the request matches the description. |
-| Arguments | `[what to verify] [api \| browser]` |
-| Project settings | `.claude/shipyard/live-verify.md` |
+| Arguments | `[what to verify \| the claims] [api \| browser \| claims]` |
+| Project settings | `.claude/shipyard/plans/<branch>.md`, `.claude/shipyard/live-verify.md`, `.claude/shipyard/reports/live-verify-<branch>.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/live-verify/references/overlay-example.md) |
-| Hands off to | a pass goes to the review stage; a fail goes back to the implement stage with the report. |
+| Hands off to | a pass goes to the review stage; a fail goes back to the implement stage with the report, until the round cap stops the line. |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/live-verify/SKILL.md); where its rules came from: [docs/sources/live-verify.md](../../plugins/shipyard-delivery/docs/sources/live-verify.md) |

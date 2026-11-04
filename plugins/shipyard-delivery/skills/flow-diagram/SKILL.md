@@ -1,9 +1,11 @@
 ---
 name: flow-diagram
-description: Draws flowcharts, sequence and state diagrams, and data-flow pictures for any written artifact (a plan, a PR description, an issue, a doc), in Mermaid where the page renders it and ASCII elsewhere, reusing the plan's diagram when the flow is the same. Use when asked to "draw a diagram of this flow" or "add a sequence diagram", when about to draw any diagram, or when another skill asks for one. For charts of data (bar, line, pie), use a charting skill instead.
+description: Draws flowcharts, sequence and state diagrams for any written artifact (plan, PR, issue, doc), in Mermaid where it renders and ASCII elsewhere, reusing the plan's diagram for the same flow. Use when asked to "draw a diagram of this flow" or "add a sequence diagram", when about to draw any diagram, or when another skill asks for one. For data charts (bar, line, pie), use a charting skill instead.
 ---
 
 # Flow diagram
+
+Input: the flow to draw and where the diagram will be read. Output: one diagram in that destination's syntax, checked as section 7 says.
 
 A diagram works when the reader can tell each node's role from its shape before reading its label, and can follow the flow in one direction without backtracking. Three conventions get there: a shape per role, a color per role, and layout discipline. Apply all three; they reinforce each other.
 
@@ -88,7 +90,7 @@ A default `classDef` block that meets these rules is in `references/mermaid-synt
 For Mermaid, check the structure by eye once, then parse once:
 
 1. Every meaningful node has a class; no role is left as a bare rectangle. Every branch is visible: a diamond with labelled exits, or an `alt` block in a sequence diagram.
-2. Parse the diagram with the bundled script, run (not read) once per diagram: `node <this skill's folder>/scripts/parse-mermaid.mjs <file>`, where the file is the markdown artifact (every ```` ```mermaid ```` block in it is parsed) or a `.mmd` file holding one diagram. It uses the official Mermaid parser and warns about syntax outside the portable subset in `references/mermaid-syntax.md`. The first run may download the parser through npx; `--no-npx` uses only an installed one. Read the result as follows:
+2. Parse the diagram with the bundled script, run (not read) once per diagram: `node <this skill's folder>/scripts/parse-mermaid.mjs <file>`, where the file is the markdown artifact (every ```` ```mermaid ```` block in it is parsed) or a `.mmd` file holding one diagram. It uses the official Mermaid parser and warns about syntax outside the portable subset in `references/mermaid-syntax.md`. The first run may download the parser (`mermaid` and `jsdom`, unpinned, from the npm registry) through npx; `--no-npx` refuses the download and uses only an installed one. Read the result as follows:
    - `error`: fix what it names and run once more. A parser may be stricter than renderers, so when it rejects a form the Mermaid docs allow, switch to the simpler syntax it accepts instead of arguing with it.
    - `warn`: change the syntax unless the project settings say this renderer supports the form.
    - exit code 2 (parser unavailable): apply the portability rules in `references/mermaid-syntax.md` by hand, and say in the artifact that the diagram wasn't parsed.

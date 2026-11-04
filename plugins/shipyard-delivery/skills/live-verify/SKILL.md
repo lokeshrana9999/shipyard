@@ -1,6 +1,6 @@
 ---
 name: live-verify
-description: Verifies a change in the running app, over HTTP, in a browser, or in a browser extension, or checks a list of claims against it, and writes a report bound to the verified commit. Use when asked to "check it actually works", "does it actually work", "verify this live", "check it live", "smoke-test it in the browser", or "verify these claims", or to prove a change before merge. Not for writing or running unit or end-to-end test suites, or for just starting the app.
+description: Verifies a change in the running app or browser extension, or checks a list of claims against it, and writes a report bound to the verified commit. Use when asked to "check it actually works", "does it actually work", "verify this live", "check it live", "smoke-test it in the browser", or "verify these claims", or to prove it before merge. Not for unit or end-to-end suites, or for just starting the app.
 argument-hint: "[what to verify | the claims] [api | browser | claims]"
 ---
 
@@ -24,7 +24,7 @@ One report, written to `.claude/shipyard/reports/live-verify-<branch>.md` (`<bra
 Commit: <full HEAD sha the checks ran against>
 Result: <pass | fail | blocked>
 Mode: <api | browser | claims>
-Round: <n> of 3
+Round: <n> of <cap>
 
 - [pass] <check>: <evidence: a frame path, a response excerpt, before and after counts>
 - [fail] <check>: <what was observed instead>
@@ -70,7 +70,7 @@ The verdict is `pass` only when every check passed; `fail` when any check failed
 5. **Drive the flow.** In `api` mode, call the endpoints the change touches, reading routes and payloads from the code; consume a stream to the end and record the events in order. In `browser` mode, follow [references/browser-evidence.md](references/browser-evidence.md), and for an extension, [references/browser-extensions.md](references/browser-extensions.md).
 6. **Check the stored effect.** Count or read the affected rows before the action and after it, and compare the difference with what the action should produce. Check that negative paths left state unchanged.
 7. **Judge the claims not observed** (claims mode). Where subagents exist, hand the unobserved claims, the diff, and the files they concern to the `review-verifier` agent (namespaced, e.g. `shipyard-delivery:review-verifier`) as fix claims to check cold: each claim as a finding with an id, the claim as its description, and the file it concerns as its location. Without subagents, do the same reading yourself: open the code the claim names before re-reading the claim. A claim it tags `false-positive` is `[fail]` with the contradicting location; one it tags `confirmed` stays `[not run]`, marked code-consistent, since reading isn't observing.
-8. **Write the report** in the output shape, to the report file and the reply. Every `pass` carries its evidence, and every path not driven is in `Not checked:`. `Round:` is the previous report's round plus one after a `fail` on the same branch, 1 otherwise.
+8. **Write the report** in the output shape, to the report file and the reply. Every `pass` carries its evidence, and every path not driven is in `Not checked:`. `Round:` is the previous report's round plus one after a `fail` on the same branch, 1 otherwise; `<cap>` is 3 unless the settings change it.
 
 Steps are agent-owned unless marked.
 

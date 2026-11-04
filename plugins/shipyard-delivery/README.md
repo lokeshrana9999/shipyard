@@ -1,6 +1,6 @@
 # shipyard-delivery
 
-`shipyard-delivery` is the plugin in the [shipyard](https://github.com/lokeshrana9999/shipyard) marketplace. It takes a code change from question to pull request in eight stages: explain, plan, test design, implement, verify live, review, describe, and demo. Say "ship this" (or run `/shipyard-delivery:ship`) and the `ship` skill reads your branch, names the stage it is at, and names the one stage that comes next. Every stage skill ends with a `next:` line, so you always know what to run after it.
+`shipyard-delivery` is the plugin in the [shipyard](https://github.com/lokeshrana9999/shipyard) marketplace. It takes a code change from question to merged pull request in nine stages: explain, plan, test design, implement, verify live, review, describe, land, and demo, gated on evidence files (the plan's approval line, a verify report bound to the commit, a land report). Say "ship this" (or run `/shipyard-delivery:ship`) and the `ship` skill reads your branch, names the stage it is at, and names the one stage that comes next. Every stage skill ends with a `next:` line, so you always know what to run after it.
 
 ## Skills
 
@@ -8,13 +8,17 @@
 |---|---|
 | `ship` | Places the branch in the pipeline and names the next stage and the command that runs it. |
 | `walkthrough` | Explains code or writes a plan, handoff, or report answer-first, with one next action. |
+| `grill-plan` | Interviews you in numbered rounds with a recommended answer per question and writes the confirmed plan file that later stages enforce. |
 | `design-tests` | Writes a test-design document from the spec and the real code; it writes no test code. |
 | `db-migration` | Plans and makes a database migration through the project's migration tool, reviewing the SQL before it's applied. Ships with a Prisma adapter. |
 | `live-verify` | Boots the app, drives the changed flow over HTTP or in a browser, and reports each check with evidence. |
 | `pr-review` | Reviews a branch against the project's recurring review concerns and validates every finding with a second agent. You start it. |
 | `pr-description` | Drafts the PR title and body, shows it for approval, then creates or updates the pull request. You start it. |
+| `land` | Syncs the base, runs the project gate, merges as the project's settings allow (it asks unless they say `merge: auto`), records the merge with a read-back, waits a bounded time for the deploy, and writes a report with a named verdict. |
+| `eval-loop` | Improves prompt, skill, or instruction text in scored eval rounds: frozen grader hash, replicates, holdout cases, and a human read of raw transcripts before pass. |
+| `runner-creation` | Creates or hardens an unattended runner around any agent CLI: wrapper, pre-flight gate, permission profile, ledger, watchdog, caps, needs-you queue. |
 | `build-workflow` | Runs several stages as one multi-agent run, with capped fix loops and a separate verifier. You start it. |
-| `flow-diagram` | Draws flowcharts, sequence, and state diagrams in Mermaid or ASCII, whichever the destination renders. |
+| `flow-diagram` | Draws flowcharts, sequence, and state diagrams in Mermaid or ASCII, whichever the destination renders, for plans, PR descriptions, issues, and docs. |
 | `skill-auditor` | Audits `SKILL.md` files and writes a scored report with concrete fixes. |
 
 "You start it" means the skill sets `disable-model-invocation`, so Claude won't run it on its own; run it as `/shipyard-delivery:<skill>`.
@@ -34,7 +38,7 @@ If you installed the plugin under its old name, `delivery`, the marketplace's `r
 
 ## What it runs
 
-The plugin has no hooks and no MCP servers, and it sends nothing anywhere on its own. Its skills tell the agent to run commands in your project with your usual permission prompts: `git` to read the branch; your code host's CLI (such as `gh`) to read pull requests and, in `pr-description` after you approve the draft, to create or update one; in `db-migration`, your project's migration tool (the Prisma CLI, through the Prisma adapter) against the development database, plus a one-line script that prints only the database's hostname, to check it's a development database; and in `live-verify`, your app's own start command plus local HTTP requests or a browser. `db-migration` pre-approves none of its commands; the Prisma adapter lists permission rules you can add to your project's settings instead. `pr-review` includes `scope.sh`, a shell script that writes the diff to a scratch folder.
+The plugin has no hooks and no MCP servers, and it sends nothing anywhere on its own. Its skills tell the agent to run commands in your project with your usual permission prompts: `git` to read the branch; your code host's CLI (such as `gh`) to read pull requests and, in `pr-description` after you approve the draft, to create or update one; in `db-migration`, your project's migration tool (the Prisma CLI, through the Prisma adapter) against the development database, plus a one-line script that prints only the database's hostname, to check it's a development database; in `live-verify`, your app's own start command plus local HTTP requests or a browser; in `land`, plain git to sync the branch, merge, and push the base (the merge asks unless the project's settings grant `merge: auto`), plus the gate, deploy probe, and record commands your settings name; in `eval-loop` and `runner-creation`, the runner and agent CLI commands your settings name, under the cost and time caps they set. `db-migration` pre-approves none of its commands; the Prisma adapter lists permission rules you can add to your project's settings instead. `pr-review` includes `scope.sh`, a shell script that writes the diff to a scratch folder.
 
 ## More
 

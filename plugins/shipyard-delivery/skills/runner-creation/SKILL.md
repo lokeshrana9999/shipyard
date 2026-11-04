@@ -22,7 +22,7 @@ Turn "run this unattended" into a runner whose cheap decisions are made by scrip
 
 ## Output
 
-Files committed to the project, filled from the templates named here, plus a report in the shape of [references/acceptance.md](references/acceptance.md) saying which gates passed.
+Files written into the project for the user to commit, filled from the templates named here, plus a report in the shape of [references/acceptance.md](references/acceptance.md) saying which gates passed.
 
 | Piece | What it does | Template |
 |---|---|---|
@@ -60,12 +60,12 @@ Ledger status is one of: `ok` (facts confirm the claimed units), `ok-flagged` (w
 ```
 
 1. **Read settings and plan.** Collect the seven inputs from the plan file and the settings; list which are still open.
-2. **Fill the gaps.** Ask the open ones in one grill round (H2), recommendation first. Unattended: record them as open questions and apply the defaults.
+2. **Fill the gaps.** Ask the open ones in one grill round (H2), recommendation first, then **STOP — WAIT**. Unattended: record them as open questions and apply the defaults.
 3. **Generate the pieces** from the templates, in the host's shell, with paths and caps from the settings. For an eval or batch sweep, add the take validator.
 4. **Dry run headless** with the real permission profile and the real agent CLI, from the wrapper, not by hand: the result must show 0 denials and the ledger must hold the row. Fix the profile or the prompt and repeat until it does.
 5. **Force the failures**, each through the wrapper: nothing takeable (expect `idle`, no model call), a second launch during the first (expect `skipped`), a kill at the deadline (expect `killed`), the CLI's simulated limit message (expect `limit` and a fail ping), a dependency down (expect `skipped` or a fail ping). Each check names its expected row before it runs, so the result can't be fitted afterwards.
 6. **Gates report.** Fill the table in [references/acceptance.md](references/acceptance.md) from steps 4 and 5. **STOP — WAIT**: show it with the exact scheduler entry to be enabled and the caps it runs under, and ask the user to enable it.
-7. **Enable and watch five runs.** After the user enables the schedule, report cost per productive unit after the first five runs, with the `lesson` column, as a review prompt.
+7. **Enable and watch five runs.** **HUMAN TRIGGER**: the user enables the schedule. After that, report cost per productive unit after the first five runs, with the `lesson` column, as a review prompt.
 
 Steps are agent-owned unless marked.
 

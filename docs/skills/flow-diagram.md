@@ -2,13 +2,13 @@
 
 # flow-diagram
 
-Draws flowcharts, sequence and state diagrams, and architecture or data-flow pictures, in Mermaid where the page renders it and ASCII elsewhere. Use when asked to "draw a diagram of this flow" or "add a sequence diagram", when about to draw any diagram, or when another skill asks for one. For charts of data (bar, line, pie), use a charting skill instead.
+Draws flowcharts, sequence and state diagrams for any written artifact (plan, PR, issue, doc), in Mermaid where it renders and ASCII elsewhere, reusing the plan's diagram for the same flow. Use when asked to "draw a diagram of this flow" or "add a sequence diagram", when about to draw any diagram, or when another skill asks for one. For data charts (bar, line, pie), use a charting skill instead.
 
 | | |
 |---|---|
 | Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:flow-diagram` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | none |
-| Project settings | `.claude/shipyard/flow-diagram.md` |
+| Project settings | `.claude/shipyard/flow-diagram.md`, `.claude/shipyard/plans/<branch>.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/flow-diagram/references/overlay-example.md) |
 | Hands off to | nothing: this skill has no `next:` line |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/flow-diagram/SKILL.md); where its rules came from: [docs/sources/flow-diagram.md](../../plugins/shipyard-delivery/docs/sources/flow-diagram.md) |

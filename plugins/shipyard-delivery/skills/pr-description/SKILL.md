@@ -11,7 +11,7 @@ Turn a branch into a pull request a reviewer can understand in under a minute: w
 ## Inputs
 
 - The branch's diff and commit history against its base branch.
-- **The plan file**, when the plan stage wrote one: `.claude/shipyard/plans/<branch>.md` (`<branch>` is the branch name with `/` replaced by `-`). Its lead line and decisions are the why, its `## acceptance checks` are what the change promised, and its `## flow` is the diagram the reviewer diagram starts from.
+- **The plan file**, when the plan stage wrote one: `.claude/shipyard/plans/<branch>.md` (`<branch>` is the branch name with `/` replaced by `-`). Its lead line and decisions are the why, its `## acceptance checks` are what the change promised, and its `## flow` is the diagram the reviewer diagram reuses.
 - **The verify report**, when the verify stage ran: `.claude/shipyard/reports/live-verify-<branch>.md`, with `Commit:`, `Result:`, and `Checked:` / `Not checked:` lines. Other QA or test evidence counts too: scenario results, screenshots, commands and their output.
 - **Project settings**: on every invocation, read `.claude/shipyard/pr-description.md` in the project root if it exists; its settings win over the defaults below. It can set the code host and how to publish to it, the base branch, the plan and report paths, the description length limit, title and tag conventions, and an extended-context destination (such as a wiki page) with its layout. Its shape is in [references/overlay-example.md](references/overlay-example.md).
 
@@ -51,14 +51,14 @@ A pull request created or updated on the code host, with its title and descripti
 
 **Gate**
 
-5. `STOP — WAIT`. Show the user, together: the title; the full description; whether step 6 **creates** a pull request or **updates** an existing one; the extended-context plan, if any; each diagram. Add a size note when the change is large (default: more than about 400 changed lines or 10 files) or has unrelated changes: large pull requests get slower, less thorough review, so suggest splitting, without blocking. Wait for explicit approval, then run steps 6 to 8 as one batch.
+5. **STOP — WAIT**. Show the user, together: the title; the full description; whether step 6 **creates** a pull request or **updates** an existing one; the extended-context plan, if any; each diagram. Add a size note when the change is large (default: more than about 400 changed lines or 10 files) or has unrelated changes: large pull requests get slower, less thorough review, so suggest splitting, without blocking. Wait for explicit approval, then run steps 6 to 8 as one batch.
 
 **Publish (after approval)**
 
 6. **Create or update the pull request** with the host's CLI, API, or a connected tool, as the settings say or as available. Offer a draft pull request if the user asked for one. If creating fails (branch not pushed, no access, no tool), stop publishing, print the title and description for manual use, and say why.
 7. **Publish extended context**, only if the settings configure a destination. Hand it to a subagent with a self-contained brief, per [references/extended-context.md](references/extended-context.md), since it's tool-heavy and fails independently of the pull request. Then update the description with a one-sentence summary and link for each page, and the testing tally if QA evidence was published. Re-check the length limit before this update.
-8. **Report**: the pull request link and title, each extended-context link or why it failed, and the final description length against the limit.
+8. **Report**: the pull request link and title, each extended-context link or why it failed, and the final description length against the limit; then `Checked:` / `Not checked:` lines naming what the description was checked against (the diff, the verify report, the host's length limit) and the evidence it lacked (a missing or stale verify report, an unpublished page).
 
 ## Handoff
 
-`next:` the pull request's human reviewers, with its link; the demo stage when the change is user-facing and the project has one.
+`next:` land, with the pull request's link; its human reviewers read it meanwhile.

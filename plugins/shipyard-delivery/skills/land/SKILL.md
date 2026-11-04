@@ -1,6 +1,6 @@
 ---
 name: land
-description: Lands a verified, reviewed branch on its base: takes the repo lock, syncs the base, runs the project gate, merges as the project settings allow, records the merge with a read-back, waits a bounded time for the deploy, closes linked issues, and writes a report with a named verdict. Takes the branch to land (default the current one). Use when the user asks to land or merge a branch, or when ship routes a verified, reviewed branch here; not for opening or describing a pull request.
+description: Lands a verified, reviewed branch on its base. Takes the repo lock, syncs the base, runs the project gate, merges as the project settings allow, records the merge with a read-back, waits a bounded time for the deploy, closes linked issues, and writes a report with a named verdict. Takes the branch to land (default the current one). Use when asked to "land this branch" or "merge it", or when ship routes a verified, reviewed branch here; not for opening or describing a pull request.
 argument-hint: "[branch]"
 ---
 
@@ -8,12 +8,12 @@ argument-hint: "[branch]"
 
 Take a branch that has passed verify and review onto its base, and end with one verdict a later reader can trust: `landed`, `gate failed`, `not merged`, or `deploy did not run`. Every step either leaves evidence (a sha, a read-back, a probe result) or stops the line and says what it needs.
 
-The agent may start this skill (from `ship` or on the user's ask), because nothing irreversible happens before the merge gate: the reads, the sync push to the branch itself, and the gate run are safe to repeat. The merge itself waits for the user's yes unless the project settings grant `merge: auto`; the always-ask list (public posts, deletes, money, facts about the user) is never granted, so this skill deletes nothing (not the branch, not records) and posts nowhere public.
+The agent may start this skill (from `ship` or on the user's ask), because nothing irreversible happens before the merge gate: the reads, the sync push to the branch itself, and the gate run are safe to repeat. The merge itself waits for the user's yes unless the project settings grant `merge: auto`; the always-ask list (public posts, deletes, money, facts about the user) is never granted, so this skill deletes no branch or record (only its own lock file) and posts nowhere public.
 
 ## Inputs
 
 - **The branch**: the argument, else the current branch. Its base: the settings, else the remote's default branch, else whichever of `main` or `master` exists.
-- **Entry evidence**: the verify report `live-verify-<branch>.md` under `.claude/shipyard/reports/` (a `/` in the branch name becomes `-`, as in every report path) with `Result: pass` and a `Commit:` equal to the branch HEAD at entry, before the sync (an older commit counts as not verified; the gate in step 3 covers the synced tree), unless the settings skip verify for this change; and a clean review: an approved pull request when the settings name `pr-review` as the review station, or nothing yet when they name the project gate, because step 3 is then the review.
+- **Entry evidence**: the verify report `live-verify-<branch>.md` under `.claude/shipyard/reports/` (a `/` in the branch name becomes `-`, as in every report path) with `Result: pass` and a `Commit:` equal to the branch HEAD at entry, before the sync (an older commit counts as not verified; the gate in step 3 covers the synced tree), unless the settings skip verify for this change (for a change to prompt, skill, or instruction text, the `eval-loop-<branch>.md` report with `Result: pass` for the same commit, when the settings make it the verify evidence); and a clean review: a `pr-review` the user ran and reports clean (or an approved pull request) when the settings name `pr-review` as the review station, or nothing yet when they name the project gate, because step 3 is then the review.
 - **Project settings**: on every invocation, read `.claude/shipyard/land.md` in the project root if it exists; its settings win over the defaults here. It names the base and remote, the review station, the gate command, whether merging is `auto`, the merge strategy, where to record the merge, the deploy probe and wait, the manual deploy command, external records to sync, and the issue tracker. Its shape is in [references/overlay-example.md](references/overlay-example.md). Without a gate command, a probe, or a record, the matching step is reported as `not configured`, never improvised.
 
 ## Output
@@ -29,7 +29,7 @@ The report `land-<branch>.md` under `.claude/shipyard/reports/` (a `/` in the br
 - **Every write is read back.** The merge: fetch the base and confirm it is the merge sha. The record: read the row or line back. An external record: compare its hash to what was sent. A mismatch is an andon (`H5`): report it, change nothing more, and hand the user the record and the difference.
 - **Deploy wait ends in a verdict.** Poll the settings' probe at its interval until it succeeds or the wait `T` (default 10 minutes) elapses; one bounded loop, never an open-ended watch. At `T`, the verdict is `deploy did not run`, the report hands the user the settings' manual deploy command, and this skill does not run that command itself: a deploy that did not start is the human's call.
 - **Issues close explicitly.** A `Closes #a, #b` line in a merge message closes one issue on some hosts and none on others, so each linked issue is closed through the tracker's CLI or API, one call each, and the report lists what closed and what did not.
-- **An honest stop is the safe outcome.** A conflict, a failed gate, a refused push, or a missing tool ends with its verdict and the evidence; nothing is force-pushed, retried past the caps, or fixed under the user's name.
+- **An honest stop is the safe outcome.** A conflict, a failed gate, a refused push, or a missing tool ends with its verdict and the evidence; nothing is bare force-pushed (a `rebase` sync pushes with `--force-with-lease` against the sha it fetched, as git-steps shows), retried past the caps, or fixed under the user's name.
 
 ## Steps
 
@@ -52,9 +52,9 @@ Steps are agent-owned unless marked.
 4. **Merge.** `STOP — WAIT` unless the settings say `merge: auto`. Then merge through the code host when a pull request is open and its CLI is signed in (branch protection may require that path), else with plain git in a temporary worktree, pushing the result to the base; a push the remote rejects as not fast-forward means the base moved and counts toward the re-sync cap. Read the base back: it must equal the merge sha.
 5. **Record the merge** where the settings say, read it back, and quote the read-back in the report. With no record configured, the report is the record.
 6. **Wait for the deploy, up to T**, polling the probe. Success: note the time to live. `T` reached: verdict `deploy did not run`; `HUMAN TRIGGER`: the report hands the user the manual deploy command, step 7 is skipped (records and issues follow a live change), and the run goes to step 8.
-7. **Sync external records** the settings list (one call each, hash compared after) and **close each linked issue** (from the pull request, the plan file, and the settings) with one call each, reading the state back. Report each as closed, failed, or `not configured`.
+7. **Sync external records** the settings list (one call each, hash compared after) and **close each linked issue** (from the pull request, the plan file `.claude/shipyard/plans/<branch>.md`, and the settings) with one call each, reading the state back. Report each as closed, failed, or `not configured`.
 8. **Write the report**, then release the lock. The reply is the report.
 
 ## Handoff
 
-`next:` the pull request's human reviewers when not merged; after a landed merge, the demo stage when the settings name one, else done.
+`next:` `gate failed`, or `not merged` on a conflict or a moving base, goes back to the implement stage with the report's reason; `not merged` because the user declined goes to the pull request's human reviewers; after `landed`, the demo stage when the settings name one, else done; `deploy did not run` is an andon (H5) with the manual deploy command.

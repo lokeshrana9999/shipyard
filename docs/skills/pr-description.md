@@ -8,7 +8,7 @@ Drafts the pull request title and body from the branch's diff and history, shows
 |---|---|
 | Who starts it | You, by name: `/shipyard-delivery:pr-description` in Claude Code, or ask for it in other agents. The agent doesn't start it on its own. |
 | Arguments | none |
-| Project settings | `.claude/shipyard/pr-description.md` |
+| Project settings | `.claude/shipyard/plans/<branch>.md`, `.claude/shipyard/reports/live-verify-<branch>.md`, `.claude/shipyard/pr-description.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/pr-description/references/overlay-example.md) |
-| Hands off to | the pull request's human reviewers, with its link; the demo stage when the change is user-facing and the project has one. |
+| Hands off to | land, with the pull request's link; its human reviewers read it meanwhile. |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/pr-description/SKILL.md); where its rules came from: [docs/sources/pr-description.md](../../plugins/shipyard-delivery/docs/sources/pr-description.md) |
