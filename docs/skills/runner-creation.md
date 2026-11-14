@@ -8,7 +8,7 @@ Creates or hardens an unattended runner, the wrapper, pre-flight gate, permissio
 |---|---|
 | Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:runner-creation` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | `[job name] [create \| harden]` |
-| Project settings | `.claude/shipyard/plans/<branch>.md`, `.claude/shipyard/runner-creation.md` |
+| Project settings | `.claude/shipyard/plans/<branch>.md`, `.claude/shipyard/models.md`, `.claude/shipyard/runner-creation.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/runner-creation/references/overlay-example.md) |
 | Hands off to | verify live: run the headless dry run and the forced-failure checks against the real agent CLI, then land the wrapper and the schedule through the land stage. |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/runner-creation/SKILL.md); where its rules came from: [docs/sources/runner-creation.md](../../plugins/shipyard-delivery/docs/sources/runner-creation.md) |

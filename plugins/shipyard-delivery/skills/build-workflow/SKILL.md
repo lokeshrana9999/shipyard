@@ -22,8 +22,8 @@ This skill launches many agents, so it runs only when the user invokes it; that 
 |---|---|---|
 | Pre-flight | one read-only agent checks the tree, plan, commands, and tools, and writes the shared orientation (subsystem map, HEAD, test baseline) | single |
 | Test design | `test-designer`, one per slice | parallel, read-only |
-| Implement | general-purpose subagent, one call per plan entry | serial; parallel only in separate worktrees |
-| Verify live | `live-verifier`, after every commit lands | single, serialized |
+| Implement | in modes 2 and 3 the builder seat (`implement`, then `fixer` for round 1), one message per plan entry, checked by the checker seat; in mode 1 a fresh agent per entry and per check (loops.md "Seats") | serial; parallel only in separate worktrees, one builder seat each |
+| Verify live | the checker seat writes `live-plan.md` (`live-plan`); `live-verifier` runs it (`live-run`) and returns `matches` per check; the verdict is mapped mechanically (briefs.md) | single, serialized, after every commit lands |
 | Review | pr-review's pipeline: `concern-reviewer` per slice of the diff maps and reviews concerns, `review-verifier` validates every finding; the report is compiled mechanically | slices in parallel, then validate, all as siblings |
 | Describe | the session drafts the description from pr-description's body template; the skill itself is user-started | single |
 
@@ -31,14 +31,17 @@ The orientation is written by an agent, not the walkthrough skill, because its r
 
 ## Rules
 
-- **Every stage is a direct child of the orchestrator**, never a grandchild. A stage handles in-run recoveries (fix, retry, rescope) itself by the four-action rule, without starting a subagent; only a blocker it can't recover from returns `blocked`, and the orchestrator's decision agent decides it. Review's agents run as siblings under the orchestrator.
+- **Every stage is a direct child of the orchestrator**, never a grandchild. A stage handles in-run recoveries (fix, retry, rescope) itself by the four-action rule, without starting a subagent; only a blocker it can't recover from returns `blocked`, and the orchestrator's decision agent decides it. Review's agents run as siblings under the orchestrator. One exception: a read-only research or design swarm may run under a nested lead whose brief carries the line `Nested lead: read-only swarm` and an empty `## Files owned`.
+- **No fan-out without an approved plan.** Parallel children start only when the plan file's `## approval` section holds an `Approved:` line (grill-plan's format). Without one (no plan file, or an unsigned one), write a one-line explain-back of what the run will do and wait for the user; a `go` in the invocation is that answer, given in advance.
+- **Every brief passes `scripts/check-briefs.mjs` before dispatch**, first briefs and continuations alike: run (not read) `node <this skill's folder>/scripts/check-briefs.mjs <brief folder> --project <project root>` (`--resolve` instead of a folder prints the role table). Fix every failing rule and re-run; without node, check the same rules by reading each brief (the rule list is in the script's header).
 - **Every result is branched on.** The orchestrator maps each stage's raw return to `{status: pass | pass-with-gap | blocked | halt, gaps, reason}` by the table in [references/briefs.md](references/briefs.md), and has an `if` for every value. A field nothing reads is a label, not a gate; delete it.
 - **Blocked is a correct result.** A pass the stage didn't observe is the only wrong answer.
-- **Check the goal, not the tests.** The verifier checks the result against the plan entry or spec, not only that tests pass.
-- **Every agent runs on the model of the session that invoked the skill.** The run plan doesn't pick models per stage. A fix is checked by a separate agent that didn't write it and doesn't see its reasoning (loops.md).
+- **Check the goal, not the tests.** The verifier checks the result against the plan's acceptance checks in the user's words, pasted verbatim into every message it gets, never against the producer's claims or only that tests pass. A frame or screenshot check that passes is never approval of crop, framing, or taste; that stays the user's.
+- **Every agent runs on its role's model, passed on the agent call.** Resolve each role from the project's `.claude/shipyard/models.md`, then `~/.claude/shipyard/models.md`, then the defaults in loops.md "Sizing and models"; the call's model overrides an agent file's `model: inherit`. A role resolving to `inherit` gets no model option, so with no config every agent runs on the session model. A fix is checked by a separate agent that didn't write it and doesn't see its reasoning (loops.md).
 - **Every brief comes from the template** in [references/brief-template.md](references/brief-template.md): background, task, interfaces and call order, files owned, constraints (no new caps, defaults, or facts: they go in as questions), autonomy with the always-ask list, model per role, and the report file the parent checks for. A brief typed from memory is where invented caps and unverifiable "done" messages come from.
 - **One child per shared resource.** A browser profile, a shared checkout, a deploy target, a database, an eval runner over one case set: exactly one active child holds each at a time, and its brief says so. Children that write in parallel own disjoint files and their own worktrees, never a shared checkout. These are correctness rules, not a cap: two writers on one resource produce wrong results at any volume, so the number of children is unlimited and the number touching one thing is one.
-- **A child that hasn't started isn't running.** Within 2 minutes (default: longer than a cold start, shorter than the parent's next stage) of starting a child, confirm its first move. One that hasn't moved is blocked on something only a person can do; batch those into one user step (H8) instead of waiting on it (brief-template.md).
+- **A child that hasn't started isn't running.** Within 2 minutes (default: longer than a cold start, shorter than the parent's next stage) of starting a child, confirm its first move, and that the working folder on its report's first line matches its brief's `## Working folder`. One that hasn't moved is blocked on something only a person can do; batch those into one user step (H8) instead of waiting on it. A wrong folder makes the child `blocked` (brief-template.md).
+- **Status lives in the status file.** Interim notices from children get no reply; a question about running children is answered from the status file, which gets a closing line when each child ends (briefs.md "Beacon").
 
 Tests read-only to fixers, the skeptic verifier, loop caps, and exclusive resources are in loops.md; cheap fact checks and never cleaning up are in briefs.md.
 
@@ -61,8 +64,9 @@ Tests read-only to fixers, the skeptic verifier, loop caps, and exclusive resour
 
    ```
    Run plan (mode <n>: <why>)
-   - <Stage>: <agent name> x<count>, <parallel | serial | worktree>
+   - <Stage>: <agent name> x<count> on <model>, <parallel | serial | worktree>
    - <Stage>: held (<why: settings, user, or no input>)
+   Seats: builder on <model>, checker on <model>, live-run on <model>   (or "none: mode 1")
    Agents: <total> of a cap of <cap>   (review's own agents counted separately)
    Shared resources: <resource>: <the one agent that holds it>, ...
    Loop caps: <n> fix rounds per entry, <n> review fix rounds
@@ -71,7 +75,7 @@ Tests read-only to fixers, the skeptic verifier, loop caps, and exclusive resour
 
    Name each agent (`test-designer`, `review-verifier`, a general-purpose implementer); a held stage gets its stage name only. With no cap in the settings, the `Agents:` line reads `Agents: <total>, no cap; expected cost: <one line>` instead, and the run proceeds at that size. If the plan won't fit a set cap, say how it splits into runs. If step 2 already chose one agent, don't show a run plan.
 5. **Pre-flight**, before any expensive agent: the tree and HEAD are what the plan assumes, the plan isn't landed or closed, stage commands and tools exist, and the orientation is written. A failure ends the run as `blocked` with its reason.
-6. **Run the stages** with [references/briefs.md](references/briefs.md) and loops.md, every brief in the template's shape. After starting each child, run the start check; record each child in flight in the status file. Verify live runs once, after every commit lands. In modes 2 and 3, append one line to `STATUS.md` at each stage transition (briefs.md); in mode 1, only when the settings name a status path.
+6. **Run the stages** with [references/briefs.md](references/briefs.md) and loops.md, every brief in the template's shape and through `check-briefs.mjs`. After starting each child, run the start check; record each child in flight in the status file. Verify live runs once, after every commit lands. In modes 2 and 3, append one line to `STATUS.md` at each stage transition (briefs.md); in mode 1, only when the settings name a status path.
 7. **Report**: one line per stage with its status, commits landed, open gaps, blocked lanes, stages held or not run, and the agent count, then `Checked:` / `Not checked:` lines. Pushing, merging, and opening a pull request are **HUMAN TRIGGER**: the run drafts the description and stops.
 
 Steps are agent-owned unless marked.

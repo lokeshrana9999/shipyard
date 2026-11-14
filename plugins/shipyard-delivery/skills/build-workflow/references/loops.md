@@ -1,6 +1,6 @@
 # Loops and honesty
 
-Contents: sizing and models · the stage contract · what drives a loop · the per-entry loop · the review fix loop · the skeptic verifier · read-only tests · blocked twice · no progress · exclusive resources · merging parallel work · held stages · the final gate
+Contents: sizing and models · seats · the stage contract · what drives a loop · the per-entry loop · the review fix loop · the skeptic verifier · read-only tests · blocked twice · no progress · exclusive resources · merging parallel work · held stages · the final gate
 
 ## Sizing and models
 
@@ -8,9 +8,44 @@ Scale the run to the work: a small change (one slice, a few plan entries) needs 
 
 Caps never weaken a check. If a cap would drop a verifier, a fix round, or a review agent, split the run instead.
 
-Every stage agent, verifier, and decision agent runs on the model of the session that invoked the skill. The only exceptions: agents that only read files and summarize them in a fan-out, and bringing up the stack before `live-verifier` runs, may use a smaller, faster model.
+Every agent runs on the model its role resolves to, and the orchestrator passes that model on every agent call, which overrides an agent file's `model: inherit`. A role that resolves to `inherit` gets no model option at all, since agent tools take only model names; the agent then runs on the session model. Resolve it per role from the project's `.claude/shipyard/models.md`, then the user's `~/.claude/shipyard/models.md`, then the default below; `check-briefs.mjs --resolve` (the path SKILL.md gives) prints the table. The format and the reasons are in the repo's `docs/models.md`.
+
+| Role | Stage | Default |
+|---|---|---|
+| `test-design` | test design (`test-designer`) | the session model |
+| `implement` | implement, one plan entry | the session model |
+| `fixer` | a fix round | the session model |
+| `verify` | goal verifier | the session model |
+| `decide` | decision agent | the session model |
+| `review` | review (`concern-reviewer`) | the session model |
+| `review-verify` | review validation (`review-verifier`) | the session model |
+| `live-plan` | writes `live-plan.md` | the session model |
+| `live-run` | brings up the stack and runs `live-plan.md` (`live-verifier`) | the smaller, faster model |
+| `reader` | a read-and-summarize fan-out | the smaller, faster model |
+| `researcher` | a web lookup (outside build runs: grill-plan) | the smaller, faster model |
+| `cold-read` | a fresh read of a plan or brief (grill-plan) | the smaller, faster model |
+| `frame-check` | screenshots against a checklist; never approves taste | the smaller, faster model |
+
+The smaller, faster model is the config's `smaller` value; with no config at all, every role runs on the session model. The lead is not a role.
 
 The review stage runs pr-review's two stages as siblings: `concern-reviewer` agents, one per slice of the diff (one slice for a small change, at most 6), each map catalog concerns to their slice's added lines and review them, in parallel; a mechanical check drops findings whose evidence line isn't in the diff; one `review-verifier` validates every finding as `confirmed`, `false-positive`, `pre-existing`, or `duplicate`. The report is compiled mechanically from the confirmed findings. Its slicing rule and caps are in pr-review's `references/stages.md` (schemas in `references/workflow.js`).
+
+## Seats
+
+A seat is one agent continued by message across tasks, so the files it read stay in its context instead of being re-read by a fresh agent. Three seats, in modes 2 and 3 only (mode 1 starts fresh agents):
+
+| Seat | Roles | Holds |
+|---|---|---|
+| builder | `implement`, then `fixer` for fix round 1 | the entries it built |
+| checker | `verify`, then `live-plan` after the last entry | the diffs and the acceptance checks, never the builder's reasoning |
+| live-run | `live-run` | the stack it brought up |
+
+- **Every continuation is a brief file** with `Seat: <name>` and `Continues: <first brief's file name>` after the `---` line, checked in a folder with a copy of the seat's first brief. The message sent to the warm seat is only the part after `---`: the seat already holds the shared context, and re-sending it grows the seat's context every entry.
+- **A seat's roles resolve to one model**, else it splits into fresh agents (`seat-model-split`). **A seat never holds a producer** (`implement`, `fixer`, `test-design`, `review`) **with a checker** (`verify`, `review-verify`, `live-plan`) (`seat-mixes-checker`). Briefs in one seat may own the same files; briefs in different seats may not (`overlap`).
+- **Replace a seat, don't resume it**, after 4 entries; after 5 idle minutes (the cache has expired, so a resume re-writes the whole context and costs more than a fresh agent); on a second fix round for one entry, which goes to a fresh fixer; and on no-progress, a rescope, or compaction. The replaced seat writes a handoff note to its report path, and its successor gets that note plus the standard brief.
+- **Briefs of one role share a byte-identical `## Shared context` block** before the `---` line (`prefix-drift`).
+
+Measured costs behind these numbers are in the repo's `docs/models.md`. The other rules `check-briefs.mjs` enforces: `report-path`, `model-missing`, `unknown-role`, `bad-value`, `model-mismatch`, `working-folder`, `orphan-continuation`.
 
 ## The stage contract
 
@@ -34,7 +69,7 @@ implement entry -> committed?
   no  -> decision: fix | retry | rescope | abort
   yes -> goal verifier
            pass / pass-with-gap -> next entry (record gaps)
-           blocked -> fixer closes exactly the violations -> goal verifier again   (round 1 of 2)
+           blocked -> fixer closes exactly the violations -> goal verifier again   (round 1 of 2: builder seat; round 2: fresh fixer)
            halt    -> stop the run
 ```
 

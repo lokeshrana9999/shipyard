@@ -8,7 +8,7 @@ Improves prompt, skill, or instruction text in scored rounds against locked eval
 |---|---|
 | Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:eval-loop` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | `[what changed] [round \| baseline \| pass]` |
-| Project settings | `.claude/shipyard/eval-loop.md`, `.claude/shipyard/reports/eval-loop-<branch>.md` |
+| Project settings | `.claude/shipyard/eval-loop.md`, `.claude/shipyard/reports/eval-loop-<branch>.md`, `.claude/shipyard/models.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/eval-loop/references/overlay-example.md) |
 | Hands off to | a pass goes to the verify live stage (live-verify) when the change also touches running code, else to review; `stopped` or a holdout match goes back to the human with the trend. |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/eval-loop/SKILL.md); where its rules came from: [docs/sources/eval-loop.md](../../plugins/shipyard-delivery/docs/sources/eval-loop.md) |

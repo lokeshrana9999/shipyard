@@ -66,6 +66,20 @@ Evidence is from the owner's workflow retro, cited by batch (b01-b18) as in the 
 - **Model per role stated in every brief.** 24 "use sonnet" retypes and an inherited top-tier agent at 269k tokens (b15, b17). The rule that every agent runs on the invoking model stands; the brief now says so explicitly so no child picks one, and a project's settings may name a model per role.
 - **Eval added**: `brief-lists-caps-as-questions` (a plan entry with an unstated lockout threshold and duration; the brief must carry the template's sections and put both numbers under questions instead of inventing them).
 
+## Orchestration study changes (228 owner sessions; plan `fix-orchestration-study`, as of 2026-11-14)
+
+Evidence is from the owner's study of 228 Claude and Codex sessions (notes `opus_failures.md`, `opus_structures.md`) and a cache measurement on 2026-11-14.
+
+- **Model per role from one config** (loops.md "Sizing and models", SKILL.md rule, `scripts/check-briefs.mjs --resolve`). "use sonnet" was retyped 24 times; Haiku on judgement work made 108 errors across 54 agents against 0 across 39 for Sonnet. The owner set per-role models (opus for building, checking and review; fable for decisions; sonnet for review validation, live running and reading), which supersedes "every agent runs on the invoking model". Skills still name tiers only; values live in config files.
+- **`check-briefs.mjs` before dispatch** (SKILL.md rule, loops.md "Seats"). Prose rules recurred after being written (shared servers twice, a read-only child applied twice), so the brief rules became a script: overlap, report path, model lines, working folder, and the seat rules.
+- **Nested lead for read-only swarms** (SKILL.md first rule). Nested leads over read-only research worked 3 times (11-02, 11-08, 11-11); build stages keep the grandchild rule.
+- **Fan-out gate** (SKILL.md rule). Misread intent fanned out 11 times; parallel children now wait for grill-plan's `Approved:` line or a one-line explain-back.
+- **Status closing line** (briefs.md "Beacon"). "what are the 2 running agents" and a half-done run acted on: the beacon gains `closed: done | blocked | stopped` and answers status questions.
+- **Working folder** (brief-template.md). 3 to 4 handoffs landed in the wrong project; the child writes its folder first and the start check compares it.
+- **Checker input** (SKILL.md "Check the goal"). Checkers passed proxies 8 times; the verifier gets the acceptance checks verbatim, and a frame check never approves taste.
+- **Seats** (loops.md "Seats"). Measured on sonnet subagents: a fresh agent writes 31.5k tokens and never reuses a sibling's byte-identical brief; a resume after 25 s writes 142 and reads 71.1k; a resume after 6 minutes writes 31.7k again. So agents that share files are kept and continued while warm (builder, checker, live-run), replaced after 5 idle minutes or 4 entries, and a long runner that reached 739k context and $27 is the failure the rotation rule prevents. The checker never shares a seat with a producer.
+- **Live plan and live run** (briefs.md "Verify live"). The owner's split: the live strategy is designed on the checker's model, the run on a smaller one, and the verdict is mapped from `matches` mechanically.
+
 ## Dropped as project-specific
 
 - The original's stage list (plan attack, slice smoke, API tests, browser story, triage, CI parity, publish) is replaced by the pack's six stages.

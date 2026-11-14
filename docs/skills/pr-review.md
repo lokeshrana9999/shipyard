@@ -8,7 +8,7 @@ Reviews the current branch or a pull request in two agent stages and reports onl
 |---|---|
 | Who starts it | You, by name: `/shipyard-delivery:pr-review` in Claude Code, or ask for it in other agents. The agent doesn't start it on its own. |
 | Arguments | `[base-branch \| pull-request] \| mine` |
-| Project settings | `.claude/shipyard/pr-review.md`, `.claude/shipyard/pr-review/concerns.md` |
+| Project settings | `.claude/shipyard/models.md`, `.claude/shipyard/pr-review.md`, `.claude/shipyard/pr-review/concerns.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/pr-review/references/overlay-example.md) |
 | Hands off to | fixes go back to the implement stage; a clean review goes to the describe stage. |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/pr-review/SKILL.md); where its rules came from: [docs/sources/pr-review.md](../../plugins/shipyard-delivery/docs/sources/pr-review.md) |

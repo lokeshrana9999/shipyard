@@ -64,7 +64,7 @@ Ask for it by name ("run the ship skill"); Codex also takes `$ship` and Cursor `
 
 - Preloaded skills: a Claude agent's `skills:` list becomes an instruction to read that skill first.
 - Nested agents: Gemini agents can't start other agents, and Codex allows one level by default. Agents that would ask a subagent for a decision make it themselves.
-- Model: every agent uses the model of the session that starts it; the generated files set no model or reasoning effort, so each tool's default applies.
+- Model: the generated files set no model or reasoning effort, so each tool's default applies. The per-role config in [models.md](models.md) is applied by Claude Code skills on each agent call; `codex.<role>` lines are parsed but no generated Codex file reads them yet.
 - Read-only: enforced by the sandbox on Codex; stated in the instructions on Gemini.
 - `disable-model-invocation`: Claude Code won't start `pr-review`, `pr-description`, or `build-workflow` unasked. Agents that ignore the field may, so the snippet says not to.
 - The `signal` output style, slash-command arguments, and the Workflow tool are Claude Code only. Elsewhere, say a skill's arguments in the request.

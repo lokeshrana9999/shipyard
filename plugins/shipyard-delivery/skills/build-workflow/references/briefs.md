@@ -6,7 +6,7 @@ Contents: how to brief · status mapping · the shared prefix · the no-cleanup 
 
 - **Use the template.** Every brief has the sections of [brief-template.md](brief-template.md): background, task, interfaces and call order, files owned, constraints, autonomy, model per role, report. The stage sections below say what goes into those sections for each stage; they don't replace the shape. The parent's duties after sending a brief (the 2-minute start check, the children list, accepting only against the report file) are in the template too.
 - **Give each agent the text itself**: the plan entry, the orientation, the findings. Agents handed only paths spend many calls re-deriving context before their first useful one. Large files (the spec, a long plan) go by path.
-- **A byte-stable prefix, then a divider, then the per-item facts.** The prefix is identical for every agent of a stage, so it's cached; anything that varies goes after the divider.
+- **A byte-stable prefix, then a divider, then the per-item facts.** The prefix is identical for every agent of a stage, so `check-briefs` can compare it (`prefix-drift`) and a seat's continuation can leave it out; anything that varies goes after the divider. Fresh agents don't share a cached prefix (measured, `docs/models.md`).
 - **Short output.** Ask for the return shape and nothing else; cap free text to a few sentences.
 - **Name the one rule a stage needs** rather than pasting the project's whole instructions file; subagents usually load that file already.
 
@@ -21,7 +21,8 @@ Stages return their own shapes. The orchestrator maps each to `{status, gaps, re
 | Implement | `{committed, sha, testPassed, summary, blocker}` | `committed: false` or `testPassed: false` → blocked with `blocker`; else pass | `sha` (new HEAD), `summary` (into later briefs) |
 | Fixer | implement's shape plus `closed: [ids]` | as implement | `sha` (the verifier's diff), `closed` (what the verifier checks) |
 | Goal verifier | `{status, gaps, violations, reason}` | as returned | `violations` (into the fixer brief) |
-| Verify live | `live-verifier`'s `{verdict, checks, notExercised, errors, ...}` | `fail` → blocked with the failed `checks`; `blocked` → blocked with `errors`; `pass` → pass, or pass-with-gap when `notExercised` is non-empty or a check is `not run` | failed `checks` (into the fixer brief), `errors`, `notExercised` as gaps |
+| Verify live, with `live-plan.md` | `live-verifier`'s `checks[].matches` | any `no` → blocked with those checks; any `unclear` → one message to the checker seat (`live-plan`) with the evidence, then map again, and what it still can't settle is a gap; all `yes` → pass, or pass-with-gap when `notExercised` is non-empty; `verdict: blocked` → blocked with `errors` | the `no` checks (into the fixer brief), `errors`, `notExercised` and unsettled `unclear` as gaps |
+| Verify live, standalone | `live-verifier`'s `{verdict, checks, notExercised, errors, ...}` | `fail` → blocked with the failed `checks`; `blocked` → blocked with `errors`; `pass` → pass, or pass-with-gap when `notExercised` is non-empty or a check is `not run` | failed `checks` (into the fixer brief), `errors`, `notExercised` as gaps |
 | Review | pr-review's report, compiled from `review-verifier`'s confirmed findings, and its coverage line | a confirmed `bug`, or a broken funnel, → blocked; else pass | bug findings (into the fixer brief); issues and nits go to the report |
 | Describe | the drafted description | drafted → pass; else blocked | the description, into the report |
 
@@ -84,15 +85,20 @@ After the divider: the plan entry verbatim, HEAD, the test baseline, one-line su
 
 ## Fixer
 
-Same prefix as implement. After the divider: exactly the violations or confirmed findings to close, each with its location, and the test files it may not touch (loops.md, read-only tests).
+Round 1 is a continuation brief to the builder seat (`Seat: builder`, `Continues: <the entry's implement brief>`); round 2 goes to a fresh fixer with the same prefix (loops.md "Seats"). After the divider: exactly the violations or confirmed findings to close, each with its location, and the test files it may not touch (loops.md, read-only tests).
 
 ## Goal verifier
 
-A separate agent from the implementer or fixer whose commit it checks, given the diff but not their reasoning. Read-only, one per landed commit. It reads the commit's diff and checks, in order: the diff does what the entry says (not something adjacent); every file is within the entry's scope; no earlier commit's change was undone; each new test reaches the code through its real wiring (a registry, a route, a module) rather than calling a handler directly or asserting through a mock of the thing under test; and, after a fix, tests weren't weakened: in the tree the fixer worked in, `git diff <pre-fix-sha> -- <test paths>` shows no change to an existing test. A gap names only what wasn't established and what would establish it, never "probably fine".
+The checker seat (`verify`), never in the builder's seat, given the diff and the plan's acceptance checks verbatim but never the builder's reasoning. Read-only; one continuation message per landed commit; after a fix it re-checks its own violations, and a fresh verifier makes the final-gate pass. It reads the commit's diff and checks, in order: the diff does what the entry says (not something adjacent); every file is within the entry's scope; no earlier commit's change was undone; each new test reaches the code through its real wiring (a registry, a route, a module) rather than calling a handler directly or asserting through a mock of the thing under test; and, after a fix, tests weren't weakened: in the tree the fixer worked in, `git diff <pre-fix-sha> -- <test paths>` shows no change to an existing test. A gap names only what wasn't established and what would establish it, never "probably fine".
 
 ## Verify live
 
-The `live-verifier` agent, once, after every commit lands, holding the browser, ports, and database alone. After the divider: the diff range, the mode, the spec's observable outcomes, and: "Inside this run, don't start a decision subagent, even though your instructions allow one: decide blockers yourself by your fix, retry, rescope, abort rules."
+Two steps, once, after every commit lands.
+
+1. The checker seat gets one more message (`live-plan`): write `live-plan.md` next to the run's reports, one block per acceptance check with `id`, the steps to drive, the expected observable and stored effect, the evidence to capture, and the exact fail condition, plus a `not exercised` list with reasons. Pass criteria need no judgement to match.
+2. The `live-verifier` agent (`live-run`) holds the browser, ports, and database alone, brings the stack up, and runs `live-plan.md` as written (its "With a live plan" section). The orchestrator maps its `matches` mechanically: any `no` is `fail`, all `yes` is `pass`, and `unclear` goes back to the checker seat with the evidence; what that round can't settle is a gap.
+
+The live-run brief, after the divider: the diff range, the mode, the path of `live-plan.md`, and: "Inside this run, don't start a decision subagent, even though your instructions allow one: decide blockers yourself by your fix, retry, rescope, abort rules."
 
 ## Review
 
@@ -115,7 +121,8 @@ In modes 2 and 3 the orchestrator appends one line to `STATUS.md` itself (where 
 
 ```
 <UTC time> | stage 3/6 implement | entries landed 4/7 | last gate: verify pass | next: entry 5
-<UTC time> | child implement-5 | brief: <path> | report: <path> | started: yes
+<UTC time> | child implement-5 | seat: builder, entry 2 of 4 | brief: <path> | report: <path> | started: yes
+<UTC time> | child implement-5 | closed: done
 ```
 
-The second kind of line is written once per child started, and updated to `started: no, needs you: <item>` when the start check fails, so a compaction can't lose a child in flight. A failed append is logged and ignored.
+The child line is written once per child started or seat continued (seat and entry count only for seats), and updated to `started: no, needs you: <item>` when the start check fails, so a compaction can't lose a child in flight. When a child ends, append its closing line, `closed: done | blocked | stopped`. A question about running children is answered from these lines, never by messaging a child. A failed append is logged and ignored.

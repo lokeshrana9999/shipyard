@@ -8,7 +8,7 @@ Turns a build ask into a confirmed plan file through numbered question rounds, e
 |---|---|
 | Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:grill-plan` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | `[the ask \| re-grill <decision>]` |
-| Project settings | `.claude/shipyard/grill-plan.md`, `.claude/shipyard/plans/<branch>.md` |
+| Project settings | `.claude/shipyard/grill-plan.md`, `.claude/shipyard/plans/<branch>.md`, `.claude/shipyard/models.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/grill-plan/references/overlay-example.md) |
 | Hands off to | the test design stage, through design-tests with the plan file; a one-file change skips to implement. |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/grill-plan/SKILL.md); where its rules came from: [docs/sources/grill-plan.md](../../plugins/shipyard-delivery/docs/sources/grill-plan.md) |

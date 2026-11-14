@@ -28,6 +28,18 @@ _Avoid_: guess, arbitrary default, unsourced default
 The tool-specific part of the migration skill: which tool a project uses, how it is detected, and the commands that create, apply, and check migrations. Shipped per tool, overridden by the settings file.
 _Avoid_: driver, provider, backend
 
+**Role**:
+A named job an agent does in a run (`implement`, `verify`, `live-run`, and the rest of the 13 in `docs/models.md`); the unit a model is configured per.
+_Avoid_: agent type, persona
+
+**Model layer**:
+One of the places a role's model is read from, in order: the project's `.claude/shipyard/models.md`, the user's `~/.claude/shipyard/models.md`, the default.
+_Avoid_: model config level, tier
+
+**Seat**:
+One agent continued by message across several tasks of a run, so the files it read stay in its context; replaced, not resumed, once its cache has expired.
+_Avoid_: persistent agent, worker, task agent
+
 **Development database**:
 A database whose data can be lost without harming anyone. Defined by that role, not by where it is hosted.
 _Avoid_: local database, dev DB

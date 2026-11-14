@@ -1,6 +1,6 @@
 # helper agents
 
-The pack has four agents, each running one step in its own context so the main session doesn't carry that step's reading. Skills start them; you don't call them directly. Every agent file sets `model: inherit`, so each runs on the model of the session that started it. Without subagent support, the skill does the agent's step in the main session and says so.
+The pack has four agents, each running one step in its own context so the main session doesn't carry that step's reading. Skills start them; you don't call them directly. Every agent file sets `model: inherit`; the skill that starts an agent passes the model of the agent's role from [models.md](models.md), and with no config each runs on the model of the session that started it. Without subagent support, the skill does the agent's step in the main session and says so.
 
 | Agent | Job | Started by | Tools |
 |---|---|---|---|

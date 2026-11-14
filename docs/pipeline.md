@@ -191,7 +191,7 @@ Every stage skill ends with a `next:` line and closes its report with `Checked:`
 
 ## how pr-review works
 
-`pr-review` slices the diff, has one agent per slice map the review concerns to the added lines and review each one, drops any finding whose quoted line isn't in the diff, and has a separate agent validate what's left. Every agent runs on the model of the session that started the skill, and nothing edits files or commits.
+`pr-review` slices the diff, has one agent per slice map the review concerns to the added lines and review each one, drops any finding whose quoted line isn't in the diff, and has a separate agent validate what's left. Reviewers run on the `review` role's model and the validator on `review-verify`'s ([models.md](models.md)), and nothing edits files or commits.
 
 ```
 scope.sh ──> full.diff + diff.txt ("path:line: code", added lines only)

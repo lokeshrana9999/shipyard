@@ -46,3 +46,7 @@ Provenance for `skills/eval-loop/`. Kept outside the skill folder so it never lo
 - The owner's project names (the support bot, its helpline numbers 112 / 181 / 14416 / 1930, Hinglish mirroring) appear only as illustrations in references, never as rules; the `required` grader type carries whatever exact strings a project needs.
 - The owner's `bg-run.ps1` wrapper is the `run wrapper` setting, unnamed in the skill.
 - `claude plugin eval` flags appear once, marked as an example, in `references/overlay-example.md`.
+
+## Orchestration study (as of 2026-11-14)
+
+- **Models per role** (as of 2026-11-14, orchestration study). Without a judge in the settings, the LLM grader runs on the `verify` role's model from `models.md`, the role that checks claims against acceptance criteria.
