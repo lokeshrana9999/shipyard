@@ -8,7 +8,7 @@ Verifies a change in the running app or browser extension, or checks a list of c
 |---|---|
 | Who starts it | You or the agent. You can ask for it by name (`/shipyard-delivery:live-verify` in Claude Code); the agent also starts it when the request matches the description. |
 | Arguments | `[what to verify \| the claims] [api \| browser \| claims]` |
-| Project settings | `.claude/shipyard/plans/<branch>.md`, `.claude/shipyard/live-verify.md`, `.claude/shipyard/reports/live-verify-<branch>.md` |
+| Project settings | `.claude/shipyard/plans/<branch>.md`, `.claude/shipyard/live-verify.md`, `.claude/shipyard/reports/live-verify-<branch>.md`, `.claude/shipyard/models.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/live-verify/references/overlay-example.md) |
 | Hands off to | a pass goes to the review stage; a fail goes back to the implement stage with the report, until the round cap stops the line. |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/live-verify/SKILL.md); where its rules came from: [docs/sources/live-verify.md](../../plugins/shipyard-delivery/docs/sources/live-verify.md) |

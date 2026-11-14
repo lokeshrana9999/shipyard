@@ -57,3 +57,7 @@ Provenance for `skills/runner-creation/`. Kept outside the skill folder so it ne
 ## Evals
 
 Five cases under `evals/shipyard-delivery/runner-creation/`, one per acceptance gate 1 to 5 in `references/acceptance.md`. Each fixture ships a stand-in agent CLI (`bin/agent-cli`) that logs every invocation, honours a prefix allow list with a dry run, simulates a usage-limit death, and in one case returns a lying result, so every grader reads a file. The ledger path, lock path, prompt-file path, and allow-list path live only in the settings file the fixture plants, which is what makes the no-plugin baseline fail by construction.
+
+## Orchestration study (as of 2026-11-14)
+
+- **Models per role** (as of 2026-11-14, orchestration study). The runner's CLI model is recommended from the `models.md` role closest to the run's job and pinned with `--model`; the study found runners that inherited a top-tier model and grew to 739k context at $27.

@@ -55,3 +55,7 @@ Evidence is from the owner's workflow retro, cited by batch (b01-b18) as in the 
 - The original decision subagent was pinned to Opus and the verifier to Sonnet (superseded history). The verifier now has `model: inherit` and its decision subagent is a separate agent on the same model; only pre-flight and boot may use a smaller, faster model.
 - Evals showed blocked runs grouping checks ("all not run") and dropping `Not exercised:`; the skill's Output and the agent's return rules now require one `[not run]` line per check and the `Not exercised:` line on every report.
 - Removed as project internals: a remote-database warning (now the general local-datastore rule and a settings entry), stream-ordering checks for one chat endpoint (now a settings entry), a model-routing decision, the extension's injection files and root element id.
+
+## Orchestration study (as of 2026-11-14)
+
+- **Models per role** (as of 2026-11-14, orchestration study). The delegated pre-flight and boot run on the `live-run` role's model from `models.md` instead of an unnamed smaller model; checks stay on the invoking model. In build runs the strategy is written by `live-plan` (the owner: "its strategy designed by opus").

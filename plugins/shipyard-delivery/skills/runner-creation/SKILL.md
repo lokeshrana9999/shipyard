@@ -16,7 +16,7 @@ Turn "run this unattended" into a runner whose cheap decisions are made by scrip
   3. Dependencies to pre-check: browser, network, credentials, stop flag, repo freshness.
   4. Caps: turns, spend, and wall-clock per run; daily and per-target caps; subagent budget; yield threshold.
   5. Side effects: which are irreversible, their idempotency keys, and which writes never happen without a fact.
-  6. The agent CLI, its auth mode, model and effort, and how it reports a machine-readable result.
+  6. The agent CLI, its auth mode, model and effort, and how it reports a machine-readable result. For a Claude CLI, recommend the model of the role closest to the run's job (`implement` for runs that write, `reader` for runs that only read), resolved from the project's `.claude/shipyard/models.md`, then `~/.claude/shipyard/models.md`; the runner pins it with `--model`.
   7. The needs-you channel and the age at which an unanswered item escalates.
 - **Project settings.** On every invocation, read `.claude/shipyard/runner-creation.md` in the project root if it exists; its values win over anything inferred. It names the job, the agent CLI command and result format, the scheduler, the ledger store and path, the lock, the dependency checks, the caps, the permission profile, and the escalation channel. Its shape and defaults are in [references/overlay-example.md](references/overlay-example.md).
 

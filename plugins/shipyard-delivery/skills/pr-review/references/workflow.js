@@ -8,10 +8,12 @@ export const meta = {
   ],
 }
 
-// Every agent inherits the model of the session that invoked the skill: no `model` option anywhere.
+// Each agent runs on its role's model from `models` (resolved by the caller from models.md);
+// a missing role or `inherit` omits the option, so the agent runs on the session model.
 // The script has no filesystem access, so the caller passes diff.txt's contents in `diff`.
 // args: { worktree, base, scratch, skillDir, diff, files, title, focus, cap, ciRules,
-//         securityPaths, sliceLines, maxAgents, singleFiles }
+//         securityPaths, sliceLines, maxAgents, singleFiles, models }
+//   models       optional { review, 'review-verify' }: sonnet | opus | haiku | fable | inherit
 //   worktree     absolute path checked out at the change's head
 //   base         base ref (default origin/main)
 //   scratch      directory where scope.sh wrote full.diff and diff.txt
@@ -31,6 +33,8 @@ if (!A.worktree || !A.scratch || !A.skillDir || typeof A.diff !== 'string') {
 
 const REVIEWER = 'shipyard-delivery:concern-reviewer'
 const VERIFIER = 'shipyard-delivery:review-verifier'
+const MODELS = A.models || {}
+const modelOpt = (role) => (MODELS[role] && MODELS[role] !== 'inherit' ? { model: MODELS[role] } : {})
 const BASE = A.base || 'origin/main'
 const num = (v, d) => (Number(v) > 0 ? Math.floor(Number(v)) : d)
 const CAP = num(A.cap, 10)
@@ -158,7 +162,7 @@ ${slice.lines.map((l) => l.raw).join('\n')}
 
 Phase 1 MAP: write out every catalog concern with a site in your slice (location verbatim from the lines above, plus the code line); add adhoc/<slug> for a likely defect the catalog doesn't cover.
 Phase 2 REVIEW: for each mapped concern, read its sites, callers, callees, and tests; emit a finding only with a concrete failure scenario, else clear it with a reason. Every mapped id must appear in findings or cleared.`,
-  { label: `review-slice-${i + 1}`, phase: 'Map and review', agentType: REVIEWER, schema: REVIEW_SCHEMA })))
+  { label: `review-slice-${i + 1}`, phase: 'Map and review', agentType: REVIEWER, schema: REVIEW_SCHEMA, ...modelOpt('review') })))
 
 // ---------- Mechanical check (no model) ----------
 const check = checkReviews(reviews, slices, byLocation)
@@ -192,7 +196,7 @@ const validated = await agent(`${CTX}
 Validate every finding below, per your instructions. They come from ${slices.length} reviewer(s), each over one slice of the diff; mark cross-slice duplicates. Base ref for the pre-existing check: ${BASE}.
 
 Findings:
-${JSON.stringify(findings, null, 1)}`, { label: 'validate-findings', phase: 'Validate', agentType: VERIFIER, schema: VALIDATE_SCHEMA })
+${JSON.stringify(findings, null, 1)}`, { label: 'validate-findings', phase: 'Validate', agentType: VERIFIER, schema: VALIDATE_SCHEMA, ...modelOpt('review-verify') })
 
 if (!validated) {
   return { error: 'validator died; findings are unvalidated and not reported', coverage: cov, findings }

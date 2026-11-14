@@ -60,3 +60,7 @@ Each addition answers a failure counted in the retro's batches (b01-b18 in plan 
 
 - Walkthrough's writing principles and cold-read check: `skills/walkthrough/SKILL.md`, provenance in `docs/sources/walkthrough.md`.
 - The human-in-the-loop points this skill owns, H2 (answer a round) and H3 (confirm the plan), are named in plan v3 section 8 and the approved diagram `factory-flow.mmd`.
+
+## Orchestration study (as of 2026-11-14)
+
+- **Models per role** (as of 2026-11-14, orchestration study). The cold-read and lookup agents run on the `cold-read`, `reader`, and `researcher` roles' models from `models.md`, so a read-only check stops inheriting the top-tier session model (an inherited top-tier agent reached 269k tokens in the study).

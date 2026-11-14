@@ -4,6 +4,22 @@ Notable changes to the shipyard pack, in the [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-11-14
+
+Orchestration fixes from a study of 228 of the owner's agent sessions: each agent's model comes from one config file, briefs are checked by a script before dispatch, and build runs keep the agents that share files across tasks while their cache is warm.
+
+### Added
+
+- Model per role: `.claude/shipyard/models.md` in the project, then `~/.claude/shipyard/models.md`, then a default (`smaller` for read-only roles and `live-run`, the session model for the rest). 13 roles; every skill that starts an agent passes the resolved model on the call. Format, roles, and measured cache costs in `docs/models.md`; an example in `examples/nestjs-prisma/.claude/shipyard/models.md`.
+- `build-workflow/scripts/check-briefs.mjs`: fails a brief folder on `overlap`, `report-path`, `model-missing`, `unknown-role`, `bad-value`, `model-mismatch`, `working-folder`, `seat-model-split`, `seat-mixes-checker`, `prefix-drift`, `orphan-continuation`; `--resolve` prints the role table. Fixture test: `node tests/check-briefs/run.mjs`.
+- Seats in `build-workflow`: builder (`implement`, `fixer`), checker (`verify`, `live-plan`), live-run, continued by message and replaced after 4 entries, 5 idle minutes, a second fix round, or compaction.
+- Verify live splits into `live-plan.md`, written by the checker seat, and `live-verifier` running it and returning `matches` per check, mapped to a verdict mechanically.
+
+### Changed
+
+- `build-workflow`: parallel children wait for the plan's `Approved:` line; a read-only swarm may run under a nested lead; briefs carry `## Working folder`, checked at the start check; the status file gets a closing line per child and answers status questions; the verifier gets the acceptance checks verbatim, and a frame check never approves taste.
+- `live-verifier` starts its decision subagent on the `decide` role's model instead of its own.
+
 ## [0.4.0] - 2026-11-05
 
 The pipeline becomes a factory with gates at both ends: a plan stage that interviews you before anything is built, and evidence files that `ship` checks before it moves past verify, review, and land. Built from a retrospective of two weeks of real agent sessions; each skill's `docs/sources` note records the evidence behind its rules.

@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # PR review
 
-Slice the diff; for each slice, one agent maps the catalog onto its added lines and reviews every concern it mapped; a separate skeptic validates every finding. The report is compiled mechanically from validated findings only. Every agent runs on the model of the session that invoked the skill. It launches a multi-agent run, so it runs only when the user invokes it.
+Slice the diff; for each slice, one agent maps the catalog onto its added lines and reviews every concern it mapped; a separate skeptic validates every finding. The report is compiled mechanically from validated findings only. Reviewers run on the `review` role's model and the skeptic on the `review-verify` role's, each resolved from the project's `.claude/shipyard/models.md`, then `~/.claude/shipyard/models.md`, then the session model, and passed on every agent call (it overrides the agent files' `model: inherit`; `references/workflow.js` takes the resolved pair as its `models` argument). It launches a multi-agent run, so it runs only when the user invokes it.
 
 ## Modes
 
@@ -61,7 +61,7 @@ Contracts, schemas, the slicing rule, and the report template: [references/stage
 
 1. **Read settings and resolve the base**: the settings' base branch, else the default branch; for a pull request, fetch its head into a worktree.
 2. **Scope the diff**: `bash <skill>/scope.sh <worktree> <base> <scratch> [review paths, :!skips]`, or `--diff <file>` when you were handed a diff. It prints `files=N added=M`; on `added=0` report "No changes to review." and stop. Without a shell, build `diff.txt` from the diff yourself.
-3. **Run the two stages**. With a workflow runner, run `references/workflow.js` with args `worktree`, `base`, `scratch`, `skillDir`, `diff` (the contents of `diff.txt`), `title`, `focus` (plus `cap`, `ciRules`, `securityPaths`, `sliceLines`, `maxAgents` from settings) and print its `report` verbatim. Without one, follow "Running without a workflow runner" in [references/stages.md](references/stages.md): `concern-reviewer` per slice (namespaced, e.g. `shipyard-delivery:concern-reviewer`) in parallel, the check, then `review-verifier`, each a direct child of this session.
+3. **Run the two stages**. With a workflow runner, run `references/workflow.js` with args `worktree`, `base`, `scratch`, `skillDir`, `diff` (the contents of `diff.txt`), `title`, `focus` (plus `cap`, `ciRules`, `securityPaths`, `sliceLines`, `maxAgents` from settings, plus `models` with the resolved `review` and `review-verify` values) and print its `report` verbatim. Without one, follow "Running without a workflow runner" in [references/stages.md](references/stages.md): `concern-reviewer` per slice (namespaced, e.g. `shipyard-delivery:concern-reviewer`) in parallel, the check, then `review-verifier`, each a direct child of this session.
 4. **Print the report**: Bugs, Issues, Nits (each says `none` when empty, never omitted), then the Summary with the verdict and the coverage line.
 5. **Offer rejected findings on request**: only if the user asks; they're the audit trail of what the check and validation killed.
 

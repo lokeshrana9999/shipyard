@@ -8,7 +8,7 @@ Runs a plan, the remaining delivery stages, or another multi-step job as one mul
 |---|---|
 | Who starts it | You, by name: `/shipyard-delivery:build-workflow` in Claude Code, or ask for it in other agents. The agent doesn't start it on its own. |
 | Arguments | `[goal \| plan file] [stages to run] [go \| brief <entry>]` |
-| Project settings | `.claude/shipyard/build-workflow.md` |
+| Project settings | `.claude/shipyard/build-workflow.md`, `.claude/shipyard/models.md` |
 | Settings fields | [overlay-example.md](../../plugins/shipyard-delivery/skills/build-workflow/references/overlay-example.md) |
 | Hands off to | a clean run goes to the describe stage (pr-description) if it didn't run; a blocked or halted run goes back to the user with the blocker and the run's trail. |
 | Source | [SKILL.md](../../plugins/shipyard-delivery/skills/build-workflow/SKILL.md); where its rules came from: [docs/sources/build-workflow.md](../../plugins/shipyard-delivery/docs/sources/build-workflow.md) |

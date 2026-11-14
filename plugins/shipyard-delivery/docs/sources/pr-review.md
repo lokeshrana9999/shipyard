@@ -60,3 +60,7 @@ Merged the map and review stages into one agent, `concern-reviewer` (the `review
 - **Slicing by diff keeps each agent's load small.** Instead of one mapper over the whole diff and reviewers batched by concern (10 each, at most 6), each agent gets the whole catalog but only about 400 added lines, grouped by top-level directory so related files stay together, with security-sensitive paths in their own slices. A change of at most 10 files and 400 added lines is one slice. At most 6 agents; past that, slices grow and the run logs it. Each agent may still read the whole repository for callers, registries, and tests.
 - **Two checks moved out of the models.** A finding whose `evidence_line` isn't at its `location` in `diff.txt` is dropped before validation, and a mapped concern with no finding and no clearance is reported as unreviewed on the coverage line rather than silently lost.
 - Coverage now reads: slices, concerns read, mapped, findings (dropped on evidence check), confirmed, rejected, unreviewed. All agents stay `model: inherit`.
+
+## Orchestration study (as of 2026-11-14)
+
+- **Models per role** (as of 2026-11-14, orchestration study). Reviewers run on the `review` role's model and the skeptic on `review-verify`'s, resolved from `models.md` and passed to `references/workflow.js` as `models`; the owner set review to opus and validation to sonnet. Evidence: "use sonnet" retyped 24 times; per-role models in the plan `fix-orchestration-study`.

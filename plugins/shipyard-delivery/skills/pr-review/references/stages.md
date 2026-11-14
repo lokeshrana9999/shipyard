@@ -2,7 +2,7 @@
 
 Contents: scope · slices · map and review · check · validate · report · running without a workflow runner
 
-[workflow.js](workflow.js) is the executable form of this file: the prompts, schemas, slicing, check, and report template live there. Every agent runs on the model of the session that invoked the skill.
+[workflow.js](workflow.js) is the executable form of this file: the prompts, schemas, slicing, check, and report template live there. Reviewers run on the `review` role's model and the validator on `review-verify`'s, as SKILL.md resolves them; `workflow.js` takes them as `models`.
 
 ## Scope
 
